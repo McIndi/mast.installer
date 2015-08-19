@@ -1,0 +1,84 @@
+# **IMPORTANT**: Do not modify this file! Instead make your changes in
+# MAST_HOME/etc/local/appliances.conf
+#
+# logging.conf
+#
+# This is used to configure the logging system for MAST. There are four
+# loggers to configure here each with their own stanza, and one additional
+# stanza.
+#
+# [mast]
+#
+# This is the mast log and only has to do with the mast command line utility.
+# This will log what applications were launched and when. It will not log
+# any specific details about the appliances affected or their responses.
+#
+# you have the following options:
+#
+# log_file - the path and filename of the log file which will be written to
+#            by this logger
+#
+# log_mode - either "a" or "w" if set to "a" then the log file will be appended
+#            to, if it is set to "w" then the log file will be written fresh
+#            (emptied) each time it is written to
+#
+# log_level - This is the level (an integer) of verbosity for the logger. The
+#             lower the number the more verbose the logging.
+#
+# console - If true this logger will log to the console as well as to the
+#           file.
+#
+# [application]
+#
+# This is the application logger. It will log activity of the application
+# launched by mast. There will be little activity here as it is being phased
+# out in favor of the appliance level loggers.
+#
+# The options available here are the same as above, except that in the log_file
+# option "{}" will be replaced with the name of the application.
+#
+# [DataPower]
+#
+# This is a collection of each appliance's log. anything that any utility in
+# MAST does to any appliance will be logged here.
+#
+# You have the same options as in the [mast] section.
+#
+# [appliance]
+#
+# This is where events concerning a specific appliance are logged. Anything
+# done with MAST to a specific appliance is logged here.
+#
+# You have the same options here as you do with the above sections, but in the
+# log_file option "{}" will be replaced with the appliances hostname.
+#
+# [from_appliance]
+#
+# This is not a logger of MAST rather you are able to specify here one option
+# which is the default location to store logs retrieved from the appliance.
+[mast]
+log_file = var/log/mast.log
+log_mode = a
+log_level = 10
+console = false
+
+[application]
+log_file = var/log/{}.log
+log_mode = a
+log_level = 10
+console = false
+
+[DataPower]
+log_file = var/log/DataPower.log
+log_mode = a
+log_level = 10
+console = false
+
+[appliance]
+log_file = var/log/{}.log
+log_mode = a
+log_level = 10
+console = false
+
+[from_appliance]
+log_dir = var/log/

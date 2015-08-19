@@ -1,0 +1,15 @@
+<table class="width-100">
+    <tr class="results_table_header_row">
+    {% for column in header_row %}
+        <td class="results_table_header_column">{{ column }}</td>
+    {% endfor %}
+    </tr>
+
+    {% for row in rows %}
+        <tr class="result_table_row">
+        {% for column in row %}
+            <td class="result_table_cell">{{ column }}</td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+</table>

@@ -1,0 +1,23 @@
+<div id="{{ key }}" class="multiSelectOuter">
+    <br />
+    {{ key }}:
+    <br />
+    <select class="multiSelect">
+        <option value=""></option>
+        {% for option in options %}
+            <option value="{{ option }}">{{ option }}</option>
+        {% endfor %}
+    </select>
+    {% if disclaimer %}
+        <small>
+            * Note: This is a list of items common to all appliances checked above.
+            If you are not seeing what you expect, it is usually because it does not exist
+            in one or more of the appliances checked above.
+        </small>
+    {% endif %}
+
+    <br />
+    <span class="multiSelectCurrent" id="current_{{ key }}">
+        <i>Current selection: </i>
+    </span>
+</div>

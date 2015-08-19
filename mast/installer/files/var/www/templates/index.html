@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--<link rel="stylesheet" href="/static/css/XMLDisplay.css" />-->
+        <!--<link rel="stylesheet" href="/static/css/jquery.sidr.light.css" />-->
+        <link rel="stylesheet" href="/static/css/smoothness/jquery-ui-1.10.4.custom.min.css" />
+<!--        <link rel="stylesheet" href="/static/css/bootstrap.min.css" />-->
+        <link rel="stylesheet" href="/static/css/mast.css" />
+        <style>
+            {{plugins['css']}}
+        </style>
+        <script src="/static/js/jquery-1.11.1.min.js"></script>
+        <script src="/static/js/jquery.download.js"></script>
+        <script src='/static/js/jquery-ui-1.10.4.custom.min.js'></script>
+        <script src='/static/js/jquery-pubsub.js'></script>
+        <!--<script src='/static/js/jquery.sidr.min.js'></script>-->
+        <script src='/static/js/mast.js'></script>
+        <script src='/static/js/mast-util.js'></script>
+        <script src='/static/js/Chart.min.js'></script>
+<!--        <script src='/static/js/bootstrap.min.js'></script>-->
+        <title>M.A.S.T. for DP</title>
+    </head>
+    <body>
+        <div id="title">McIndi Automated Solutions Tool for IBM DataPower</div>
+        <hr />
+        <img id="hiddenLoadingIMG" src="/static/images/loading.gif" />
+
+        <form id="addApplianceForm" class="centered">
+            <b>Add an appliance</b><br />
+            Hostname/Environment: <input type="textbox" name="hostname" />
+            <input type="hidden" name="ephemeral_session" value="{{ ephemeral_session }}" />
+            Username: <input type="textbox" name="username" />
+            Password: <input type="password" name="password"/>
+            <input type="button" id="addAppliance" value="Add">
+        </form>
+
+        <div id="currentAppliances">
+            <i>Current Appliances: </i>
+        </div>
+
+        <div id="main">
+            <div id="tabs">
+                <ul>
+                    {{ plugins['tabs'] }}
+                </ul>
+                    {{ plugins['html'] }}
+            </div>
+        </div>
+        <script>
+            $( document ).ready(function(){
+                {{ plugins['js'] }}
+            })
+        </script>
+    </body>
+</html>
