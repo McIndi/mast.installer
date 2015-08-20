@@ -1,2 +1,6 @@
 build/
+
 dist/
+*.egg-info/
+*.*.log
+mast/installer/scripts/anaconda/

@@ -4,10 +4,22 @@ import os
 import subprocess
 import shutil
 import logging
+import platform
 from tstamp import Timestamp
 
 # TODO: make this conditional on platform
-ANACONDA_INSTALL_SCRIPT = os.path.join(os.getcwd(), "scripts", "anaconda", "Anaconda-2.3.0-Linux-x86_64.sh")
+if "Windows" in platform.system():
+    ANACONDA_INSTALL_SCRIPT = os.path.join(
+        os.getcwd(),
+        "scripts",
+        "anaconda",
+        "Anaconda-2.3.0-Windows-x86_64.exe")
+elif "Linux" in platform.system():
+    ANACONDA_INSTALL_SCRIPT = os.path.join(
+        os.getcwd(),
+        "scripts",
+        "anaconda",
+        "Anaconda-2.3.0-Linux-x86_64.sh")
 INSTALL_DIR = os.getcwd()
 
 # Move some of the logging options to the command line
@@ -16,7 +28,7 @@ logging.basicConfig(
     filename="{}-mast-install.log".format(t.timestamp),
     filemode="w",
     format="level=%(levelname)s; datetime=%(asctime)s; process_name=%(processName)s; pid=%(process)d; thread=%(thread)d; module=%(module)s; function=%(funcName)s; line=%(lineno)d; message=%(message)s")
-logger = logging.getLogger("file_sizes")
+logger = logging.getLogger("mast.installer")
 logger.setLevel(10)
 
 
@@ -47,12 +59,19 @@ def install_anaconda(prefix):
     directory.
     """
     prefix = os.path.join(os.path.realpath(prefix), "anaconda")
-    command = [
-        ANACONDA_INSTALL_SCRIPT,
-        "-b",
-        "-p",
-        "{}".format(prefix),
-        "-f"]
+    if "Windows" in platform.system():
+        command = [
+            ANACONDA_INSTALL_SCRIPT,
+            "/S",
+            "/D={}".format(prefix)]
+        print command
+    elif "" in platform.system():
+        command = [
+            ANACONDA_INSTALL_SCRIPT,
+            "-b",
+            "-p",
+            "{}".format(prefix),
+            "-f"]
     out = system_call(command)
     return out
 
@@ -74,22 +93,35 @@ def install_packages(prefix):
 #    logger.debug("Installing setuptools...Result: out: {}, err: {}".format(out, err))
 #    out, err = system_call([os.path.join(prefix, "bin", "conda"), "install", "-y", "openpyxl"])
 #    logger.debug("Installing openpyxl...Result: out: {}, err: {}".format(out, err))
-    out, err = system_call([os.path.join(prefix, "bin", "conda"), "install", "-y", "flask"])
+    if "Windows" in platform.system():
+        conda = os.path.join(prefix, "Scripts", "conda")
+        pip = os.path.join(prefix, "Scripts", "pip")
+        python = os.path.join(prefix, "python")
+    elif "Linux" in platform.system():
+        conda = os.path.join(prefix, "bin", "conda")
+        pip = os.path.join(prefix, "bin", "pip")
+        python = os.path.join(prefix, "bin", "python")
+
+    out, err = system_call([conda, "install", "-y", "flask"])
     logger.debug("Installing flask...Result: out: {}, err: {}".format(out, err))
-    out, err = system_call([os.path.join(prefix, "bin", "conda"), "install", "-y", "paramiko"])
+
+    out, err = system_call([conda, "install", "-y", "paramiko"])
     logger.debug("Installing paramiko...Result: out: {}, err: {}".format(out, err))
-    out, err = system_call([os.path.join(prefix, "bin", "pip"), "install", "commandr"])
+
+    out, err = system_call([pip, "install", "commandr"])
     logger.debug("Installing commandr...Result: out: {}, err: {}".format(out, err))
-    out, err = system_call([os.path.join(prefix, "bin", "pip"), "install", "cherrypy"])
+
+    out, err = system_call([pip, "install", "cherrypy"])
     logger.debug("Installing cherrypy...Result: out: {}, err: {}".format(out, err))
-    out, err = system_call([os.path.join(prefix, "bin", "pip"), "install", "markdown"])
+
+    out, err = system_call([pip, "install", "markdown"])
     logger.debug("Installing markdown...Result: out: {}, err: {}".format(out, err))
 
     for d in os.listdir(directory):
         _dir = os.path.join(directory, d)
         if os.path.exists(_dir) and os.path.isdir(_dir):
             os.chdir(_dir)
-            out, err = system_call([os.path.join(prefix, "bin", "python"), "setup.py", "install"])
+            out, err = system_call([python, "setup.py", "install"])
             logger.debug("Installing {}...Result: out: {}, err: {}".format(d, out, err))
 
 
@@ -99,43 +131,46 @@ def add_scripts(prefix):
 
     adds files and scripts needed in order to complete the mast installation.
     """
-    logger.debug(prefix)
-    with open(os.path.join(INSTALL_DIR, "files", "linux", "mast"), "r") as fin:
-        with open(os.path.join(prefix, "mast"), "w") as fout:
-            fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-    with open(os.path.join(INSTALL_DIR, "files", "linux", "notebook"), "r") as fin:
-        with open(os.path.join(prefix, "notebook"), "w") as fout:
-            fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-    with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-system"), "r") as fin:
-        with open(os.path.join(prefix, "mast-system"), "w") as fout:
-            fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-    with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-accounts"), "r") as fin:
-        with open(os.path.join(prefix, "mast-accounts"), "w") as fout:
-            fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-    with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-backups"), "r") as fin:
-        with open(os.path.join(prefix, "mast-backups"), "w") as fout:
-            fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-    with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-deployment"), "r") as fin:
-        with open(os.path.join(prefix, "mast-deployment"), "w") as fout:
-            fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-    with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-developer"), "r") as fin:
-        with open(os.path.join(prefix, "mast-developer"), "w") as fout:
-            fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-    with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-network"), "r") as fin:
-        with open(os.path.join(prefix, "mast-network"), "w") as fout:
-            fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-    with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-web"), "r") as fin:
-        with open(os.path.join(prefix, "mast-web"), "w") as fout:
-            fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-    os.chmod(os.path.join(prefix, "mast"), 0755)
-    os.chmod(os.path.join(prefix, "mast-system"), 0755)
-    os.chmod(os.path.join(prefix, "mast-accounts"), 0755)
-    os.chmod(os.path.join(prefix, "mast-backups"), 0755)
-    os.chmod(os.path.join(prefix, "mast-deployment"), 0755)
-    os.chmod(os.path.join(prefix, "mast-developer"), 0755)
-    os.chmod(os.path.join(prefix, "mast-network"), 0755)
-    os.chmod(os.path.join(prefix, "mast-web"), 0755)
-    os.chmod(os.path.join(prefix, "notebook"), 0755)
+    if "Windows" in platform.system():
+        pass
+    elif "Linux" in platform.system():
+        with open(os.path.join(INSTALL_DIR, "files", "linux", "mast"), "r") as fin:
+            with open(os.path.join(prefix, "mast"), "w") as fout:
+                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        with open(os.path.join(INSTALL_DIR, "files", "linux", "notebook"), "r") as fin:
+            with open(os.path.join(prefix, "notebook"), "w") as fout:
+                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-system"), "r") as fin:
+            with open(os.path.join(prefix, "mast-system"), "w") as fout:
+                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-accounts"), "r") as fin:
+            with open(os.path.join(prefix, "mast-accounts"), "w") as fout:
+                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-backups"), "r") as fin:
+            with open(os.path.join(prefix, "mast-backups"), "w") as fout:
+                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-deployment"), "r") as fin:
+            with open(os.path.join(prefix, "mast-deployment"), "w") as fout:
+                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-developer"), "r") as fin:
+            with open(os.path.join(prefix, "mast-developer"), "w") as fout:
+                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-network"), "r") as fin:
+            with open(os.path.join(prefix, "mast-network"), "w") as fout:
+                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-web"), "r") as fin:
+            with open(os.path.join(prefix, "mast-web"), "w") as fout:
+                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        os.chmod(os.path.join(prefix, "mast"), 0755)
+        os.chmod(os.path.join(prefix, "mast-system"), 0755)
+        os.chmod(os.path.join(prefix, "mast-accounts"), 0755)
+        os.chmod(os.path.join(prefix, "mast-backups"), 0755)
+        os.chmod(os.path.join(prefix, "mast-deployment"), 0755)
+        os.chmod(os.path.join(prefix, "mast-developer"), 0755)
+        os.chmod(os.path.join(prefix, "mast-network"), 0755)
+        os.chmod(os.path.join(prefix, "mast-web"), 0755)
+        os.chmod(os.path.join(prefix, "notebook"), 0755)
+
     shutil.copytree(os.path.join(INSTALL_DIR, "files", "bin"), os.path.join(prefix, "bin"))
     shutil.copytree(os.path.join(INSTALL_DIR, "files", "etc"), os.path.join(prefix, "etc"))
     shutil.copytree(os.path.join(INSTALL_DIR, "files", "var"), os.path.join(prefix, "var"))
