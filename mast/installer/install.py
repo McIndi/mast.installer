@@ -85,6 +85,7 @@ def install_packages(prefix):
     This should install the necessary packages into the Anaconda installation
     in order for MAST to run.
     """
+    _prefix = prefix
     prefix = os.path.join(os.path.realpath(prefix), "anaconda")
     directory = os.path.join(os.getcwd(), "packages")
 #    out, err = system_call([os.path.join(prefix, "bin", "conda"), "install", "-y", "ipython-notebook"])
@@ -132,7 +133,9 @@ def add_scripts(prefix):
     adds files and scripts needed in order to complete the mast installation.
     """
     if "Windows" in platform.system():
-        pass
+        with open(os.path.join(INSTALL_DIR, "files", "windows", "mast.bat"), "r") as fin:
+            with open(os.path.join(prefix, "mast.bat"), "w") as fout:
+                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
     elif "Linux" in platform.system():
         with open(os.path.join(INSTALL_DIR, "files", "linux", "mast"), "r") as fin:
             with open(os.path.join(prefix, "mast"), "w") as fout:
@@ -191,4 +194,3 @@ def main(prefix="."):
 if __name__ == "__main__":
     _cli = cli.Cli(main=main)
     _cli.run()
-
