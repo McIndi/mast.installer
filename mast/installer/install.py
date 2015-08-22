@@ -63,6 +63,7 @@ def install_anaconda(prefix):
         command = [
             ANACONDA_INSTALL_SCRIPT,
             "/S",
+            "/AddToPath=0",
             "/D={}".format(prefix)]
         print command
     elif "" in platform.system():
@@ -136,6 +137,11 @@ def add_scripts(prefix):
         with open(os.path.join(INSTALL_DIR, "files", "windows", "mast.bat"), "r") as fin:
             with open(os.path.join(prefix, "mast.bat"), "w") as fout:
                 fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        # copy python27.dll to site-packages/win32 directory to get around
+        # issue when starting mastd
+        src = os.path.join(prefix, "anaconda", "python27.dll")
+        dst = os.path.join(prefix, "anaconda", "Lib", "site-packages", "win32", "python27.dll")
+        shutil.copyfile(src, dst)
     elif "Linux" in platform.system():
         with open(os.path.join(INSTALL_DIR, "files", "linux", "mast"), "r") as fin:
             with open(os.path.join(prefix, "mast"), "w") as fout:

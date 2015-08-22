@@ -1,5 +1,6 @@
 @echo off
 
-SET MAST_HOME=C:\Users\ilovetux\workspaces\mast\mast.installer\mast\installer\tmp\mast
+SET MAST_HOME=<%MAST_HOME%>
+SET PATH=<%MAST_HOME%>\anaconda;<%MAST_HOME%>\anaconda\Scripts;%PATH%
 
-%MAST_HOME%/anaconda/python %*
+%MAST_HOME%\anaconda\python %*
