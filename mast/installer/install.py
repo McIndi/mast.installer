@@ -1,26 +1,29 @@
 #!/usr/bin/env python
 import cli
 import os
+import sys
 import subprocess
 import shutil
 import logging
 import platform
 from tstamp import Timestamp
 
+cwd = sys._MEIPASS
+
 # TODO: make this conditional on platform
 if "Windows" in platform.system():
     ANACONDA_INSTALL_SCRIPT = os.path.join(
-        os.getcwd(),
+        cwd,
         "scripts",
         "anaconda",
         "Anaconda-2.3.0-Windows-x86_64.exe")
 elif "Linux" in platform.system():
     ANACONDA_INSTALL_SCRIPT = os.path.join(
-        os.getcwd(),
+        cwd,
         "scripts",
         "anaconda",
         "Anaconda-2.3.0-Linux-x86_64.sh")
-INSTALL_DIR = os.getcwd()
+INSTALL_DIR = cwd
 
 # Move some of the logging options to the command line
 t = Timestamp()
@@ -88,7 +91,7 @@ def install_packages(prefix):
     """
     _prefix = prefix
     prefix = os.path.join(os.path.realpath(prefix), "anaconda")
-    directory = os.path.join(os.getcwd(), "packages")
+    directory = os.path.join(sys._MEIPASS, "packages")
 #    out, err = system_call([os.path.join(prefix, "bin", "conda"), "install", "-y", "ipython-notebook"])
 #    logger.debug("Installing IPython Notebook...Result: out: {}, err: {}".format(out, err))
 #    out, err = system_call([os.path.join(prefix, "bin", "python"), os.path.join(directory, "ez_setup.py")])
@@ -136,6 +139,33 @@ def add_scripts(prefix):
     if "Windows" in platform.system():
         with open(os.path.join(INSTALL_DIR, "files", "windows", "mast.bat"), "r") as fin:
             with open(os.path.join(prefix, "mast.bat"), "w") as fout:
+                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        with open(os.path.join(INSTALL_DIR, "files", "windows", "notebook.bat"), "r") as fin:
+            with open(os.path.join(prefix, "notebook.bat"), "w") as fout:
+                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        with open(os.path.join(INSTALL_DIR, "files", "windows", "mast-system.bat"), "r") as fin:
+            with open(os.path.join(prefix, "mast-system.bat"), "w") as fout:
+                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        with open(os.path.join(INSTALL_DIR, "files", "windows", "mast-accounts.bat"), "r") as fin:
+            with open(os.path.join(prefix, "mast-accounts.bat"), "w") as fout:
+                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        with open(os.path.join(INSTALL_DIR, "files", "windows", "mast-backups.bat"), "r") as fin:
+            with open(os.path.join(prefix, "mast-backups.bat"), "w") as fout:
+                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        with open(os.path.join(INSTALL_DIR, "files", "windows", "mast-deployment.bat"), "r") as fin:
+            with open(os.path.join(prefix, "mast-deployment.bat"), "w") as fout:
+                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        with open(os.path.join(INSTALL_DIR, "files", "windows", "mast-developer.bat"), "r") as fin:
+            with open(os.path.join(prefix, "mast-developer.bat"), "w") as fout:
+                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        with open(os.path.join(INSTALL_DIR, "files", "windows", "mast-network.bat"), "r") as fin:
+            with open(os.path.join(prefix, "mast-network.bat"), "w") as fout:
+                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        with open(os.path.join(INSTALL_DIR, "files", "windows", "mast-web.bat"), "r") as fin:
+            with open(os.path.join(prefix, "mast-web.bat"), "w") as fout:
+                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        with open(os.path.join(INSTALL_DIR, "files", "windows", "mastd.bat"), "r") as fin:
+            with open(os.path.join(prefix, "mastd.bat"), "w") as fout:
                 fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
         # copy python27.dll to site-packages/win32 directory to get around
         # issue when starting mastd
