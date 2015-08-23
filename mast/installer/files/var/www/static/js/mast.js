@@ -63,7 +63,7 @@ var Environment = function(){
     self = this;
     self.appliances = [];
 
-    self.addAppliance = function(host, user, pass){
+    self.addAppliance = function(host, user, pass, no_check_hostname){
         if (/\s/g.test(host)){
             alert("Hostname/Environment names cannot contain whitespace");
             return
@@ -105,7 +105,8 @@ $.subscribe('modifyAppliances', function(event, appliances){
     $.each(appliances, function(index, appliance){
         htm.push(applianceTemplate(appliance.hostname))
         credentials = xor.encode(appliance.credentials, xor.encode(getCookie("9x4h/mmek/j.ahba.ckhafn"), "_"))
-        data = {"credentials": credentials, "check_hostname": false};
+        no_check_hostname = $( "#addApplianceForm" ).find("input[name='global_no_check_hostname']").prop('checked');
+        data = {"credentials": credentials, "check_hostname": !no_check_hostname};
         $.get("/test/connectivity/"+appliance.hostname, data, function( data ){
             var id = "#" + appliance.hostname.replace( /(:|\.|\[|\])/g, "\\$1" );
             if (data.soma === false){
