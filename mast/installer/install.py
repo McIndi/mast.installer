@@ -200,6 +200,9 @@ def add_scripts(prefix):
         with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-web"), "r") as fin:
             with open(os.path.join(prefix, "mast-web"), "w") as fout:
                 fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-daemon"), "r") as fin:
+            with open(os.path.join(prefix, "mast-daemon"), "w") as fout:
+                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
         os.chmod(os.path.join(prefix, "mast"), 0755)
         os.chmod(os.path.join(prefix, "mast-system"), 0755)
         os.chmod(os.path.join(prefix, "mast-accounts"), 0755)
@@ -208,6 +211,7 @@ def add_scripts(prefix):
         os.chmod(os.path.join(prefix, "mast-developer"), 0755)
         os.chmod(os.path.join(prefix, "mast-network"), 0755)
         os.chmod(os.path.join(prefix, "mast-web"), 0755)
+        os.chmod(os.path.join(prefix, "mast-daemon"), 0755)
         os.chmod(os.path.join(prefix, "notebook"), 0755)
 
     shutil.copytree(os.path.join(INSTALL_DIR, "files", "bin"), os.path.join(prefix, "bin"))

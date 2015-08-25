@@ -5,3 +5,5 @@ dist/
 *.*.log
 mast/installer/scripts/anaconda/
 mast/installer/tmp/
+.spyderworkspace
+mast/.spyderproject
