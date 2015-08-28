@@ -1,7 +1,7 @@
 #!/bin/bash
 # Note that this will build an executable installer for MAST for
 # IBM DataPower. The resulting binary will be stored in the directory
-# "`pwd`/dist/install"  and will work on either 32 or 64 bit Linux
+# "`pwd`/dist/install" and will work on either 32 or 64 bit Linux
 # systems depending on which platform this script is run
 #
 # This script has the following dependencies:
