@@ -106,10 +106,8 @@ def install_packages(prefix):
         # Another possible fix for PYTHONPATH issue
         bin_dir = os.path.join(prefix, "bin")
         lib_dir = os.path.join(prefix, "lib")
-        out, err = system_call([
-            'export PYTHONPATH="{}:{}"'.format(bin_dir, lib_dir)])
-        logger.debug("Setting PYTHONPATH...result: out: {}, err: {}".format(
-            out, err))
+        os.putenv('PYTHONPATH','{}:{}'.format(bin_dir, lib_dir))
+
         conda = os.path.join(prefix, "bin", "conda")
         pip = os.path.join(prefix, "bin", "pip")
         python = os.path.join(prefix, "bin", "python")
