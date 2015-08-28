@@ -103,13 +103,15 @@ def install_packages(prefix):
         pip = os.path.join(prefix, "Scripts", "pip")
         python = os.path.join(prefix, "python")
     elif "Linux" in platform.system():
-        # Possible fix of PYTHONPATH issue
-        lib_dir = os.path.join(prefix, "lib")
-        bin_dir = os.path.join(prefix, "bin")
-        sys.path = ["", bin_dir, lib_dir]
         conda = os.path.join(prefix, "bin", "conda")
         pip = os.path.join(prefix, "bin", "pip")
         python = os.path.join(prefix, "bin", "python")
+
+    logger.debug("PATH: {}".format(os.environ["PATH"]))
+    try:
+        logger.debug("PYTHONPATH: {}".format(os.environ["PYTHONPATH"]))
+    except:
+        pass
 
     out, err = system_call([conda, "install", "-y", "flask"])
     logger.debug("Installing flask...Result: out: {}, err: {}".format(out, err))
