@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/env sh
 
 export MAST_HOME=<%MAST_HOME%>
 export PYTHONPATH=<%MAST_HOME%>/anaconda/lib/python2.7:<%MAST_HOME%>/anaconda/lib/python2.7/site-packages:<%MAST_HOME%>/anaconda/lib:<%MAST_HOME%>/bin:<%MAST_HOME%>/var:<%MAST_HOME%>:$PATH

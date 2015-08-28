@@ -22,7 +22,7 @@ elif "Linux" in platform.system():
         cwd,
         "scripts",
         "anaconda",
-        "Anaconda-2.3.0-Linux-x86_64.sh")
+        "anaconda-2.3.0-linux-install.sh")
 INSTALL_DIR = cwd
 
 # Move some of the logging options to the command line
@@ -200,8 +200,8 @@ def add_scripts(prefix):
         with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-web"), "r") as fin:
             with open(os.path.join(prefix, "mast-web"), "w") as fout:
                 fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-        with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-daemon"), "r") as fin:
-            with open(os.path.join(prefix, "mast-daemon"), "w") as fout:
+        with open(os.path.join(INSTALL_DIR, "files", "linux", "mastd"), "r") as fin:
+            with open(os.path.join(prefix, "mastd"), "w") as fout:
                 fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
         os.chmod(os.path.join(prefix, "mast"), 0755)
         os.chmod(os.path.join(prefix, "mast-system"), 0755)
