@@ -106,8 +106,7 @@ def install_packages(prefix):
         # Possible fix of PYTHONPATH issue
         lib_dir = os.path.join(prefix, "lib")
         bin_dir = os.path.join(prefix, "bin")
-        os.environ["PATH"] = ["", bin_dir, lib_dir]
-        os.environ["PYTHONPATH"] = ["", bin_dir, lib_dir]
+        sys.path = ["", bin_dir, lib_dir]
         conda = os.path.join(prefix, "bin", "conda")
         pip = os.path.join(prefix, "bin", "pip")
         python = os.path.join(prefix, "bin", "python")
