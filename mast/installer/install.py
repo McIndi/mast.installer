@@ -103,6 +103,15 @@ def install_packages(prefix):
         pip = os.path.join(prefix, "Scripts", "pip")
         python = os.path.join(prefix, "python")
     elif "Linux" in platform.system():
+        # Another possible fix for PYTHONPATH issue
+        bin_dir = os.path.join(prefix, "bin")
+        lib_dir = os.path.join(prefix, "lib")
+        out, err = system_call([
+            "set",
+            "PYTHONPATH={}:{}".format(
+                bin_dir, lib_dir)])
+        logger.debug("Setting PYTHONPATH...result: out: {}, err: {}".format(
+            out, err))
         conda = os.path.join(prefix, "bin", "conda")
         pip = os.path.join(prefix, "bin", "pip")
         python = os.path.join(prefix, "bin", "python")
