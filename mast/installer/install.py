@@ -35,7 +35,12 @@ logger = logging.getLogger("mast.installer")
 logger.setLevel(10)
 
 
-def system_call(command):
+def system_call(
+        command,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        shell=False):
     """
     system_call
 
@@ -45,9 +50,10 @@ def system_call(command):
     stderr = subprocess.STDOUT
     pipe = subprocess.Popen(
         command,
-        stdin=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT)
+        stdin=stdin,
+        stdout=stdout,
+        stderr=stderr,
+        shell=shell)
     stdout, stderr = pipe.communicate()
     return stdout, stderr
 
@@ -137,7 +143,7 @@ def install_packages(prefix):
         _dir = os.path.join(directory, d)
         if os.path.exists(_dir) and os.path.isdir(_dir):
             os.chdir(_dir)
-            out, err = system_call([python, "setup.py", "install"])
+            out, err = system_call([python, "setup.py", "install"], shell=True)
             logger.debug("Installing {}...Result: out: {}, err: {}".format(d, out, err))
 
 
