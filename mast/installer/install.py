@@ -107,9 +107,7 @@ def install_packages(prefix):
         bin_dir = os.path.join(prefix, "bin")
         lib_dir = os.path.join(prefix, "lib")
         out, err = system_call([
-            "set",
-            "PYTHONPATH={}:{}".format(
-                bin_dir, lib_dir)])
+            'set PYTHONPATH="{}:{}"'.format(bin_dir, lib_dir)])
         logger.debug("Setting PYTHONPATH...result: out: {}, err: {}".format(
             out, err))
         conda = os.path.join(prefix, "bin", "conda")
