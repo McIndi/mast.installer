@@ -211,7 +211,7 @@ def add_scripts(prefix):
         os.chmod(os.path.join(prefix, "mast-developer"), 0755)
         os.chmod(os.path.join(prefix, "mast-network"), 0755)
         os.chmod(os.path.join(prefix, "mast-web"), 0755)
-        os.chmod(os.path.join(prefix, "mast-daemon"), 0755)
+        os.chmod(os.path.join(prefix, "mastd"), 0755)
         os.chmod(os.path.join(prefix, "notebook"), 0755)
 
     shutil.copytree(os.path.join(INSTALL_DIR, "files", "bin"), os.path.join(prefix, "bin"))
