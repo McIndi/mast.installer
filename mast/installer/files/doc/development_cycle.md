@@ -19,8 +19,7 @@ $ passwd mast_build
 $ su - mast_build
 $ cd /tmp
 $ git clone --recursive https://github.com/mcindi/mast.installer
-$ cd mast.installer/mast/installer/scripts/anaconda
-$ wget https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda-2.3.0-Linux-x86_64.sh
+$ cd mast.installer/mast/installer/
 $ cd ../..
 $ mv install.spec.linux install.spec
 $ pyinstaller --onefile install.spec
