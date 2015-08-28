@@ -113,6 +113,19 @@ def install_packages(prefix):
         bin_dir = os.path.join(prefix, "bin")
         lib_dir = os.path.join(prefix, "lib")
         os.putenv('PYTHONPATH','{}:{}'.format(bin_dir, lib_dir))
+        
+        # Fix for the SELinux issue
+        out, err = system_call([
+            "execstack",
+            "-c",
+            os.path.join(
+                lib_dir,
+                "python2.7",
+                "lib-dynload",
+                "_ctypes.so")])
+        logger.debug(
+            "removing execstack issue on _ctypes.so:"
+            "Result: out: {}, err: {}".format(out, err))
 
         conda = os.path.join(prefix, "bin", "conda")
         pip = os.path.join(prefix, "bin", "pip")
@@ -143,7 +156,7 @@ def install_packages(prefix):
         _dir = os.path.join(directory, d)
         if os.path.exists(_dir) and os.path.isdir(_dir):
             os.chdir(_dir)
-            out, err = system_call([python, "setup.py", "install"], shell=True)
+            out, err = system_call([python, "setup.py", "install"])
             logger.debug("Installing {}...Result: out: {}, err: {}".format(d, out, err))
 
 
