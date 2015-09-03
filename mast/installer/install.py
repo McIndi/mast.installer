@@ -42,10 +42,10 @@ def system_call(
         stderr=subprocess.STDOUT,
         shell=False):
     """
-    system_call
+    # system_call
 
-    convenience method for shelling out commands. This is platform agnostic, but
-    the commands sent in should not be.
+    helper function to shell out commands. This should be platform
+    agnostic.
     """
     stderr = subprocess.STDOUT
     pipe = subprocess.Popen(
