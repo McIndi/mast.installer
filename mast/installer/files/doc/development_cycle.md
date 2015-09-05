@@ -39,6 +39,7 @@ The following dependencies need to be installed:
 2. Anaconda Python Distribution (I use Anaconda because it makes everything
 easier, but you can install the standard CPython, pywin32, pip and
 pyinstaller to get everything you need)
+3. pyinstaller
 
 
 To build on Windows:

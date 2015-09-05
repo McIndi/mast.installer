@@ -61,3 +61,18 @@
 [submodule "mast/installer/packages/mast.cli"]
 	path = mast/installer/packages/mast.cli
 	url = https://github.com/mcindi/mast.cli
+[submodule "mast\\installer\\packages\\commandr"]
+	path = mast\\installer\\packages\\commandr
+	url = https://github.com/tellapart/commandr
+[submodule "mast\\installer\\packages\\cherrypy"]
+	path = mast\\installer\\packages\\cherrypy
+	url = https://github.com/cherrypy/cherrypy
+[submodule "mast\\installer\\packages\\flask"]
+	path = mast\\installer\\packages\\flask
+	url = https://github.com/mitsuhiko/flask
+[submodule "mast\\installer\\packages\\paramiko"]
+	path = mast\\installer\\packages\\paramiko
+	url = https://github.com/paramiko/paramiko
+[submodule "mast\\installer\\packages\\markdown"]
+	path = mast\\installer\\packages\\markdown
+	url = https://github.com/waylan/Python-Markdown

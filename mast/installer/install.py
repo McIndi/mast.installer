@@ -10,7 +10,6 @@ from tstamp import Timestamp
 
 cwd = sys._MEIPASS
 
-# TODO: make this conditional on platform
 if "Windows" in platform.system():
     ANACONDA_INSTALL_SCRIPT = os.path.join(
         cwd,
@@ -25,7 +24,7 @@ elif "Linux" in platform.system():
         "anaconda-2.3.0-linux-install.sh")
 INSTALL_DIR = cwd
 
-# Move some of the logging options to the command line
+# TODO: Move some of the logging options to the command line
 t = Timestamp()
 logging.basicConfig(
     filename="{}-mast-install.log".format(t.timestamp),
@@ -58,8 +57,7 @@ def system_call(
     return stdout, stderr
 
 
-# TODO: add in conditionals around platform, and move some
-# options to the command line.
+# TODO: Move some options to the command line.
 def install_anaconda(prefix):
     """
     install_anaconda
@@ -95,21 +93,12 @@ def install_packages(prefix):
     This should install the necessary packages into the Anaconda installation
     in order for MAST to run.
     """
-    _prefix = prefix
     prefix = os.path.join(os.path.realpath(prefix), "anaconda")
     directory = os.path.join(sys._MEIPASS, "packages")
-#    out, err = system_call([os.path.join(prefix, "bin", "conda"), "install", "-y", "ipython-notebook"])
-#    logger.debug("Installing IPython Notebook...Result: out: {}, err: {}".format(out, err))
-#    out, err = system_call([os.path.join(prefix, "bin", "python"), os.path.join(directory, "ez_setup.py")])
-#    logger.debug("Installing setuptools...Result: out: {}, err: {}".format(out, err))
-#    out, err = system_call([os.path.join(prefix, "bin", "conda"), "install", "-y", "openpyxl"])
-#    logger.debug("Installing openpyxl...Result: out: {}, err: {}".format(out, err))
+
     if "Windows" in platform.system():
-        conda = os.path.join(prefix, "Scripts", "conda")
-        pip = os.path.join(prefix, "Scripts", "pip")
         python = os.path.join(prefix, "python")
     elif "Linux" in platform.system():
-        # Another possible fix for PYTHONPATH issue
         bin_dir = os.path.join(prefix, "bin")
         lib_dir = os.path.join(prefix, "lib")
         os.putenv('PYTHONPATH','{}:{}'.format(bin_dir, lib_dir))
@@ -127,8 +116,6 @@ def install_packages(prefix):
             "removing execstack issue on _ctypes.so:"
             "Result: out: {}, err: {}".format(out, err))
 
-        conda = os.path.join(prefix, "bin", "conda")
-        pip = os.path.join(prefix, "bin", "pip")
         python = os.path.join(prefix, "bin", "python")
 
     logger.debug("PATH: {}".format(os.environ["PATH"]))
@@ -136,21 +123,6 @@ def install_packages(prefix):
         logger.debug("PYTHONPATH: {}".format(os.environ["PYTHONPATH"]))
     except:
         pass
-
-    out, err = system_call([conda, "install", "-y", "flask"])
-    logger.debug("Installing flask...Result: out: {}, err: {}".format(out, err))
-
-    out, err = system_call([conda, "install", "-y", "paramiko"])
-    logger.debug("Installing paramiko...Result: out: {}, err: {}".format(out, err))
-
-    out, err = system_call([pip, "install", "commandr"])
-    logger.debug("Installing commandr...Result: out: {}, err: {}".format(out, err))
-
-    out, err = system_call([pip, "install", "cherrypy"])
-    logger.debug("Installing cherrypy...Result: out: {}, err: {}".format(out, err))
-
-    out, err = system_call([pip, "install", "markdown"])
-    logger.debug("Installing markdown...Result: out: {}, err: {}".format(out, err))
 
     for d in os.listdir(directory):
         _dir = os.path.join(directory, d)
