@@ -75,3 +75,8 @@ else:
     print "\tAn Error occurred:"
     print "\nError: {}".format(err)
     print "\nOutput: {}".format(out)
+
+# Rename the spec file to get ready for the next build
+print "Renaming spec file"
+os.rename("install.spec", spec_file)
+print "\tDone."
