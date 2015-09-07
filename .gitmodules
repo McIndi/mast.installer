@@ -76,6 +76,6 @@
 [submodule "mast/installer/packages/ecdsa"]
 	path = mast/installer/packages/ecdsa
 	url = https://github.com/warner/python-ecdsa
-[submodule "pycrypto"]
+[submodule "mast/installer/packages/pycrypto"]
 	path = mast/installer/packages/pycrypto
 	url = https://github.com/dlitz/pycrypto
