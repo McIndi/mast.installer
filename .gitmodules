@@ -67,12 +67,15 @@
 [submodule "mast\\installer\\packages\\cherrypy"]
 	path = mast\\installer\\packages\\cherrypy
 	url = https://github.com/cherrypy/cherrypy
-[submodule "mast\\installer\\packages\\flask"]
-	path = mast\\installer\\packages\\flask
-	url = https://github.com/mitsuhiko/flask
 [submodule "mast\\installer\\packages\\paramiko"]
 	path = mast\\installer\\packages\\paramiko
 	url = https://github.com/paramiko/paramiko
 [submodule "mast\\installer\\packages\\markdown"]
 	path = mast\\installer\\packages\\markdown
 	url = https://github.com/waylan/Python-Markdown
+[submodule "mast\\installer\\packages\\ecdsa"]
+	path = mast\\installer\\packages\\ecdsa
+	url = https://github.com/warner/python-ecdsa
+[submodule "pycrypto"]
+	path = mast\\installer\\packages\\pycrypto
+	url = https://github.com/dlitz/pycrypto

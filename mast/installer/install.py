@@ -124,7 +124,9 @@ def install_packages(prefix):
     except:
         pass
 
-    for d in os.listdir(directory):
+    dir_list = os.listdir(directory)
+    dir_list.sort()
+    for d in dir_list:
         _dir = os.path.join(directory, d)
         if os.path.exists(_dir) and os.path.isdir(_dir):
             os.chdir(_dir)
