@@ -79,3 +79,6 @@
 [submodule "mast/installer/packages/pycrypto"]
 	path = mast/installer/packages/pycrypto
 	url = https://github.com/dlitz/pycrypto
+[submodule "mast\\installer\\packages\\pycrypto"]
+	path = mast\\installer\\packages\\pycrypto
+	url = https://github.com/dlitz/pycrypto
