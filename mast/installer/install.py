@@ -134,6 +134,13 @@ def install_packages(prefix):
         _dir = os.path.join(directory, d)
         if os.path.exists(_dir) and os.path.isdir(_dir):
             os.chdir(_dir)
+            if "ecdsa" in d:
+                out, err = system_call([python, "setup.py", "version"])
+                with open("setup.py", "r") as fin:
+                    content = fin.read()
+                content = content.replace("version=versioneer.get_version(),", "version=0.13,")
+                with open("setup.py", "w") as fout:
+                    fout.write(content)
             out, err = system_call([python, "setup.py", "install"])
             logger.debug("Installing {}...Result: out: {}, err: {}".format(d, out, err))
 

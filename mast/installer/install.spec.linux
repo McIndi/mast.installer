@@ -7,14 +7,14 @@ a = Analysis(['install.py'],
 
 def extra_datas(mydir):
     def rec_glob(p, files):
-        import os
-        import glob
-        for d in glob.glob(p):
-            if os.path.isfile(d):
-                files.append(d)
-            rec_glob("%s/*" % d, files)
+        for dirname, dirnames, filenames in os.walk(p):
+            for subdirname in dirnames:
+                rec_glob(subdirname, files)
+
+            for filename in filenames:
+                files.append(os.path.join(dirname, filename))
     files = []
-    rec_glob("%s/*" % mydir, files)
+    rec_glob(mydir, files)
     extra_datas = []
     for f in files:
         extra_datas.append((f, f, 'DATA'))
