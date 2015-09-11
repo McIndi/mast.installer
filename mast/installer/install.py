@@ -17,11 +17,19 @@ if "Windows" in platform.system():
         "anaconda",
         "Anaconda-2.3.0-Windows-x86_64.exe")
 elif "Linux" in platform.system():
-    ANACONDA_INSTALL_SCRIPT = os.path.join(
-        cwd,
-        "scripts",
-        "anaconda",
-        "anaconda-2.3.0-linux-install.sh")
+    if '32bit' in platform.architecture():
+        ANACONDA_INSTALL_SCRIPT = os.path.join(
+            cwd,
+            "scripts",
+            "anaconda",
+            "anaconda-2.3.0-linux32-install.sh")
+    elif '64bit' in platform.architecture():
+        ANACONDA_INSTALL_SCRIPT = os.path.join(
+            cwd,
+            "scripts",
+            "anaconda",
+            "anaconda-2.3.0-linux64-install.sh")
+
 INSTALL_DIR = cwd
 
 # TODO: Move some of the logging options to the command line
@@ -102,19 +110,20 @@ def install_packages(prefix):
         bin_dir = os.path.join(prefix, "bin")
         lib_dir = os.path.join(prefix, "lib")
         os.putenv('PYTHONPATH','{}:{}'.format(bin_dir, lib_dir))
-        
-        # Fix for the SELinux issue
-        out, err = system_call([
-            "execstack",
-            "-c",
-            os.path.join(
-                lib_dir,
-                "python2.7",
-                "lib-dynload",
-                "_ctypes.so")])
-        logger.debug(
-            "removing execstack issue on _ctypes.so:"
-            "Result: out: {}, err: {}".format(out, err))
+
+        # Fix for the SELinux issue on the 32 bit installer
+        if "32bit" in platform.architecture():
+            out, err = system_call([
+                "execstack",
+                "-c",
+                os.path.join(
+                    lib_dir,
+                    "python2.7",
+                    "lib-dynload",
+                    "_ctypes.so")])
+            logger.debug(
+                "removing execstack issue on _ctypes.so:"
+                "Result: out: {}, err: {}".format(out, err))
 
         python = os.path.join(prefix, "bin", "python")
 

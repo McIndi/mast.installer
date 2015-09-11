@@ -43,22 +43,26 @@ if "Windows" in platform.system():
 elif "Linux" in platform.system():
     # Set Linux parameters here
     if '32bit' in platform.architecture():
-        anaconda_installer_url = "https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda-2.3.0-Linux-x86_64.sh"
-    elif '64bit' in platform.architecture():
         anaconda_installer_url = "https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda-2.3.0-Linux-x86.sh"
-    anaconda_installer = "anaconda-2.3.0-linux-install.sh"
+        anaconda_installer = "anaconda-2.3.0-linux32-install.sh"
+    elif '64bit' in platform.architecture():
+        anaconda_installer_url = "https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda-2.3.0-Linux-x86_64.sh"
+        anaconda_installer = "anaconda-2.3.0-linux64-install.sh"
     spec_file = "install.spec.linux"
 
 # Grab the Anaconda installer
-print "Downloading Anaconda installer"
 dst = os.path.join(
     "scripts",
     "anaconda",
     anaconda_installer)
-download_file(
-    anaconda_installer_url,
-    dst)
-print "\tDone"
+if not os.path.exists(dst):
+    print "Downloading Anaconda installer"
+    download_file(
+        anaconda_installer_url,
+        dst)
+    print "\tDone"
+else:
+    print "Anaconda installer already downloaded, reusing."
 
 # Pyinstaller bahaves strangely if the spec file doesn't end in .spec
 print "Renaming spec file"
