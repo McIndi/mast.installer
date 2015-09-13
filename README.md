@@ -6,10 +6,10 @@ this is a list of todo items which I wish to include in the documentation,
 so I am including them as if they are true, but listing them here so
 readers are aware:
 
-[ ] move `build.py` to the root directory of the package
-[ ] write at least some tests
-[ ] have `build.py` create the installer in the root directory of the project
-[ ] implement installer options
+- [ ] move `build.py` to the root directory of the package
+- [ ] write at least some tests
+- [ ] have `build.py` create the installer in the root directory of the project
+- [ ] implement installer options
 
 ## The Package
 
