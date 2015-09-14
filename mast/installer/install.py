@@ -66,7 +66,7 @@ def system_call(
 
 
 # TODO: Move some options to the command line.
-def install_anaconda(prefix):
+def _install_anaconda(prefix):
     """
     install_anaconda
 
@@ -88,13 +88,15 @@ def install_anaconda(prefix):
             "-p",
             "{}".format(prefix),
             "-f"]
-    out = system_call(command)
-    return out
+    out, err = system_call(command)
+    logger.info(
+        "Finished installing Anaconda Python distribution. "
+        "Output: {}, err: {}".format(out, err))
 
 
 # TODO: Tailor package installation based on options specified on the command line
 # Should take into account the options surrounding installing Anaconda.
-def install_packages(prefix):
+def _install_packages(prefix, net_install):
     """
     install_packages
 
@@ -133,127 +135,170 @@ def install_packages(prefix):
     except:
         pass
 
-    # Sort the packages
-    dir_list = os.listdir(directory)
-    dir_list.sort()
-    # Switch pycrypto and paramiko for dependency reasons
-    a, b = dir_list.index("paramiko"), dir_list.index("pycrypto")
-    dir_list[a], dir_list[b] = dir_list[b], dir_list[a]
-    for d in dir_list:
-        _dir = os.path.join(directory, d)
-        if os.path.exists(_dir) and os.path.isdir(_dir):
-            os.chdir(_dir)
-            if "ecdsa" in d:
-                out, err = system_call([python, "setup.py", "version"])
-                with open("setup.py", "r") as fin:
-                    content = fin.read()
-                content = content.replace("version=versioneer.get_version(),", "version=0.13,")
-                with open("setup.py", "w") as fout:
-                    fout.write(content)
-            out, err = system_call([python, "setup.py", "install"])
-            logger.debug("Installing {}...Result: out: {}, err: {}".format(d, out, err))
+    if net_install:
+        print "Not Implemented!"
+    else:
+        # Sort the packages
+        dir_list = os.listdir(directory)
+        dir_list.sort()
+        # Switch pycrypto and paramiko for dependency reasons
+        a, b = dir_list.index("paramiko"), dir_list.index("pycrypto")
+        dir_list[a], dir_list[b] = dir_list[b], dir_list[a]
+        for d in dir_list:
+            _dir = os.path.join(directory, d)
+            if os.path.exists(_dir) and os.path.isdir(_dir):
+                os.chdir(_dir)
+                if "ecdsa" in d:
+                    out, err = system_call([python, "setup.py", "version"])
+
+                    with open("setup.py", "r") as fin:
+                        content = fin.read()
+
+                    content = content.replace(
+                        "version=versioneer.get_version(),",
+                        "version=0.13,")
+
+                    with open("setup.py", "w") as fout:
+                        fout.write(content)
+
+                out, err = system_call([python, "setup.py", "install"])
+                logger.debug(
+                    "Installing {}...Result: out: {}, err: {}".format(
+                        d, out, err))
 
 
-def add_scripts(prefix):
+def render_template(string, mappings):
+    for k, v in mappings.items():
+        string = string.replace("<%{}%>".format(k), v)
+    return string
+
+
+def render_template_file(fname, mappings):
+    with open(fname, "r") as fin:
+        ret = render_template(fin.read(), mappings)
+    return ret
+
+
+def write_file(dst, content):
+    with open(dst, "w") as fout:
+        fout.write(dst)
+
+def _add_scripts(prefix):
     """
     add_scripts
 
     adds files and scripts needed in order to complete the mast installation.
     """
+    mapping = {"MAST_HOME": prefix}
     if "Windows" in platform.system():
-        with open(os.path.join(INSTALL_DIR, "files", "windows", "mast.bat"), "r") as fin:
-            with open(os.path.join(prefix, "mast.bat"), "w") as fout:
-                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-        with open(os.path.join(INSTALL_DIR, "files", "windows", "notebook.bat"), "r") as fin:
-            with open(os.path.join(prefix, "notebook.bat"), "w") as fout:
-                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-        with open(os.path.join(INSTALL_DIR, "files", "windows", "mast-system.bat"), "r") as fin:
-            with open(os.path.join(prefix, "mast-system.bat"), "w") as fout:
-                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-        with open(os.path.join(INSTALL_DIR, "files", "windows", "mast-accounts.bat"), "r") as fin:
-            with open(os.path.join(prefix, "mast-accounts.bat"), "w") as fout:
-                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-        with open(os.path.join(INSTALL_DIR, "files", "windows", "mast-backups.bat"), "r") as fin:
-            with open(os.path.join(prefix, "mast-backups.bat"), "w") as fout:
-                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-        with open(os.path.join(INSTALL_DIR, "files", "windows", "mast-deployment.bat"), "r") as fin:
-            with open(os.path.join(prefix, "mast-deployment.bat"), "w") as fout:
-                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-        with open(os.path.join(INSTALL_DIR, "files", "windows", "mast-developer.bat"), "r") as fin:
-            with open(os.path.join(prefix, "mast-developer.bat"), "w") as fout:
-                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-        with open(os.path.join(INSTALL_DIR, "files", "windows", "mast-network.bat"), "r") as fin:
-            with open(os.path.join(prefix, "mast-network.bat"), "w") as fout:
-                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-        with open(os.path.join(INSTALL_DIR, "files", "windows", "mast-web.bat"), "r") as fin:
-            with open(os.path.join(prefix, "mast-web.bat"), "w") as fout:
-                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-        with open(os.path.join(INSTALL_DIR, "files", "windows", "mastd.bat"), "r") as fin:
-            with open(os.path.join(prefix, "mastd.bat"), "w") as fout:
-                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
+        script_dir = os.path.join(INSTALL_DIR, "files", "windows")
+        files = [
+            "mast.bat",           "notebook.bat",
+            "mast-system.bat",    "mast-accounts.bat",
+            "mast-backups.bat",   "mast-deployment.bat",
+            "mast-developer.bat", "mast-network.bat",
+            "mast-web.bat",       "mastd.bat"
+        ]
+    elif "Linux" in platform.system():
+        script_dir = os.path.join(INSTALL_DIR, "files", "linux")
+        files = [
+            "mast",           "notebook",
+            "mast-system",    "mast-accounts",
+            "mast-backups",   "mast-deployment",
+            "mast-developer", "mast-network",
+            "mast-network",   "mast-web"
+        ]
+
+    for f in files:
+        dst = os.path.join(prefix, f)
+        src = os.path.join(script_dir, f)
+        content = render_template_file(src, mapping)
+        write_file(dst, content)
+        if "Linux" in platform.system():
+            os.chmod(dst, 0755)
+
+    if "Windows" in platform.system():
         # copy python27.dll to site-packages/win32 directory to get around
         # issue when starting mastd
         src = os.path.join(prefix, "anaconda", "python27.dll")
-        dst = os.path.join(prefix, "anaconda", "Lib", "site-packages", "win32", "python27.dll")
+        dst = os.path.join(
+            prefix,
+            "anaconda",
+            "Lib",
+            "site-packages",
+            "win32",
+            "python27.dll"
+        )
         shutil.copyfile(src, dst)
-    elif "Linux" in platform.system():
-        with open(os.path.join(INSTALL_DIR, "files", "linux", "mast"), "r") as fin:
-            with open(os.path.join(prefix, "mast"), "w") as fout:
-                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-        with open(os.path.join(INSTALL_DIR, "files", "linux", "notebook"), "r") as fin:
-            with open(os.path.join(prefix, "notebook"), "w") as fout:
-                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-        with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-system"), "r") as fin:
-            with open(os.path.join(prefix, "mast-system"), "w") as fout:
-                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-        with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-accounts"), "r") as fin:
-            with open(os.path.join(prefix, "mast-accounts"), "w") as fout:
-                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-        with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-backups"), "r") as fin:
-            with open(os.path.join(prefix, "mast-backups"), "w") as fout:
-                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-        with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-deployment"), "r") as fin:
-            with open(os.path.join(prefix, "mast-deployment"), "w") as fout:
-                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-        with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-developer"), "r") as fin:
-            with open(os.path.join(prefix, "mast-developer"), "w") as fout:
-                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-        with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-network"), "r") as fin:
-            with open(os.path.join(prefix, "mast-network"), "w") as fout:
-                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-        with open(os.path.join(INSTALL_DIR, "files", "linux", "mast-web"), "r") as fin:
-            with open(os.path.join(prefix, "mast-web"), "w") as fout:
-                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-        with open(os.path.join(INSTALL_DIR, "files", "linux", "mastd"), "r") as fin:
-            with open(os.path.join(prefix, "mastd"), "w") as fout:
-                fout.write(fin.read().replace("<%MAST_HOME%>", prefix))
-        os.chmod(os.path.join(prefix, "mast"), 0755)
-        os.chmod(os.path.join(prefix, "mast-system"), 0755)
-        os.chmod(os.path.join(prefix, "mast-accounts"), 0755)
-        os.chmod(os.path.join(prefix, "mast-backups"), 0755)
-        os.chmod(os.path.join(prefix, "mast-deployment"), 0755)
-        os.chmod(os.path.join(prefix, "mast-developer"), 0755)
-        os.chmod(os.path.join(prefix, "mast-network"), 0755)
-        os.chmod(os.path.join(prefix, "mast-web"), 0755)
-        os.chmod(os.path.join(prefix, "mastd"), 0755)
-        os.chmod(os.path.join(prefix, "notebook"), 0755)
 
-    shutil.copytree(os.path.join(INSTALL_DIR, "files", "bin"), os.path.join(prefix, "bin"))
-    shutil.copytree(os.path.join(INSTALL_DIR, "files", "etc"), os.path.join(prefix, "etc"))
-    shutil.copytree(os.path.join(INSTALL_DIR, "files", "var"), os.path.join(prefix, "var"))
-    shutil.copytree(os.path.join(INSTALL_DIR, "files", "usrbin"), os.path.join(prefix, "usrbin"))
-    shutil.copytree(os.path.join(INSTALL_DIR, "files", "notebooks"), os.path.join(prefix, "notebooks"))
 
-def main(prefix="."):
+    shutil.copytree(
+        os.path.join(INSTALL_DIR, "files", "bin"),
+        os.path.join(prefix, "bin"))
+    shutil.copytree(
+        os.path.join(INSTALL_DIR, "files", "etc"),
+        os.path.join(prefix, "etc"))
+    shutil.copytree(
+        os.path.join(INSTALL_DIR, "files", "var"),
+        os.path.join(prefix, "var"))
+    shutil.copytree(
+        os.path.join(INSTALL_DIR, "files", "usrbin"),
+        os.path.join(prefix, "usrbin"))
+    shutil.copytree(
+        os.path.join(INSTALL_DIR, "files", "notebooks"),
+        os.path.join(prefix, "notebooks"))
+
+
+def install_anaconda(prefix):
+    print "Installing Anaconda Python Distribution"
+    try:
+        _install_anaconda(prefix)
+    except:
+        print "An error occurred while installing Anaconda Python distribution"
+        print "See log for details."
+        logger.exception(
+            "An error occurred while installing Anaconda Python distribution")
+        sys.exit(-1)
+    print "\tDone. See log for details"
+
+
+def install_packages(prefix, net_install):
+    print "Installing Python Packages"
+    try:
+        _install_packages(prefix, net_install)
+    except:
+        print "An error occurred while installing Python Packages"
+        print "See log for details."
+        logger.exception(
+            "An error occurred while installing Python Packages")
+        sys.exit(-1)
+    print "\tDone. See log for details"
+
+
+def add_scripts(prefix):
+    print "Adding scripts"
+    try:
+        _install_packages(prefix)
+    except:
+        print "An error occurred while adding scripts"
+        print "See log for details."
+        logger.exception(
+            "An error occurred while adding scripts")
+        sys.exit(-1)
+    print "\tDone. See log for details"
+
+
+def main(prefix=".", net_install=False):
     """
     main
 
     install mast into specified directory.
     """
     prefix = os.path.realpath(prefix)
-    print install_anaconda(prefix)
-    print install_packages(prefix)
+    install_anaconda(prefix)
+    install_packages(prefix, net_install)
     add_scripts(prefix)
+
 
 if __name__ == "__main__":
     _cli = cli.Cli(main=main)
