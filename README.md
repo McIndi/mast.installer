@@ -36,12 +36,12 @@ you can provide a `-p` option and specify the desired directory. There are
 some other options to specify how you would like to install MAST.
 
 ```
--p --prefix     - The directory in which to install MAST
--d --daemon     - Install mastd as a service
+-p --prefix      - The directory in which to install MAST
+-d --daemon      - Install mastd as a service
 -n --net-install - pull the latest versions of everything instead of the bundled
-                  versions.
--a --add-to-path       - add mast directory and anaconda's executables to the path of the
-                  user executing the installer
+                   versions.
+-a --add-to-path - add mast directory and anaconda's executables to the path of the
+                   user executing the installer
 ```
 
 ## Requirements

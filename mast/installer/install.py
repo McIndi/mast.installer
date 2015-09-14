@@ -108,10 +108,11 @@ def _install_packages(prefix, net_install):
 
     if "Windows" in platform.system():
         python = os.path.join(prefix, "python")
+        pip = os.path.join(prefix, "pip")
     elif "Linux" in platform.system():
         bin_dir = os.path.join(prefix, "bin")
         lib_dir = os.path.join(prefix, "lib")
-        os.putenv('PYTHONPATH','{}:{}'.format(bin_dir, lib_dir))
+        os.putenv('PYTHONPATH', '{}:{}'.format(bin_dir, lib_dir))
 
         # Fix for the SELinux issue on the 32 bit installer
         if "32bit" in platform.architecture():
@@ -128,6 +129,7 @@ def _install_packages(prefix, net_install):
                 "Result: out: {}, err: {}".format(out, err))
 
         python = os.path.join(prefix, "bin", "python")
+        pip = os.path.join(prefix, "bin", "pip")
 
     logger.debug("PATH: {}".format(os.environ["PATH"]))
     try:
@@ -136,7 +138,40 @@ def _install_packages(prefix, net_install):
         pass
 
     if net_install:
-        print "Not Implemented!"
+        repos = [
+            "git+https://github.com/mcindi/mast.xor",
+            "git+https://github.com/mcindi/mast.timestamp",
+            "git+https://github.com/mcindi/mast.pprint",
+            "git+https://github.com/mcindi/mast.plugin_utils",
+            "git+https://github.com/mcindi/mast.plugins",
+            "git+https://github.com/mcindi/mast.logging",
+            "git+https://github.com/mcindi/mast.hashes",
+            "git+https://github.com/mcindi/mast.datapower.web",
+            "git+https://github.com/mcindi/mast.datapower.system",
+            "git+https://github.com/mcindi/mast.datapower.status",
+            "git+https://github.com/mcindi/mast.datapower.ssh",
+            "git+https://github.com/mcindi/mast.datapower.network",
+            "git+https://github.com/mcindi/mast.datapower.developer"
+            "git+https://github.com/mcindi/mast.datapower.deployment",
+            "git+https://github.com/mcindi/mast.datapower.datapower",
+            "git+https://github.com/mcindi/mast.datapower.backups",
+            "git+https://github.com/mcindi/mast.datapower.accounts",
+            "git+https://github.com/mcindi/mast.daemon",
+            "git+https://github.com/mcindi/mast.cron",
+            "git+https://github.com/mcindi/mast.config",
+            "git+https://github.com/mcindi/mast.cli",
+            "git+https://github.com/tellapart/commandr",
+            "git+https://github.com/cherrypy/cherrypy",
+            "git+https://github.com/paramiko/paramiko",
+            "git+https://github.com/waylan/Python-Markdown",
+            "git+https://github.com/warner/python-ecdsa",
+            "git+https://github.com/dlitz/pycrypto"
+        ]
+        for repo in repos:
+            print "installing", repo
+            out, err = system_call([pip, "install", repo])
+            print "Done. See logs for details"
+            logger.debug("Installing {}...result: out: {}, err:")
     else:
         # Sort the packages
         dir_list = os.listdir(directory)
@@ -147,6 +182,7 @@ def _install_packages(prefix, net_install):
         for d in dir_list:
             _dir = os.path.join(directory, d)
             if os.path.exists(_dir) and os.path.isdir(_dir):
+                print "Installing", d
                 os.chdir(_dir)
                 if "ecdsa" in d:
                     out, err = system_call([python, "setup.py", "version"])
@@ -162,6 +198,7 @@ def _install_packages(prefix, net_install):
                         fout.write(content)
 
                 out, err = system_call([python, "setup.py", "install"])
+                print "\tDone. See log for details."
                 logger.debug(
                     "Installing {}...Result: out: {}, err: {}".format(
                         d, out, err))
