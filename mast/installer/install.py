@@ -218,7 +218,7 @@ def render_template_file(fname, mappings):
 
 def write_file(dst, content):
     with open(dst, "w") as fout:
-        fout.write(dst)
+        fout.write(content)
 
 def _add_scripts(prefix):
     """
