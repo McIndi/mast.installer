@@ -315,7 +315,7 @@ def install_packages(prefix, net_install):
 def add_scripts(prefix):
     print "Adding scripts"
     try:
-        _install_packages(prefix)
+        _add_scripts(prefix)
     except:
         print "An error occurred while adding scripts"
         print "See log for details."
