@@ -1,19 +1,13 @@
-import datapower
-from datapower import Environment
+from mast.datapower import datapower
+from mast.datapower.datapower import Environment
 import os
 import openpyxl
-from time import sleep
-import logging
-from cli import Cli
-from timestamp import Timestamp
+from mast.logging import make_logger
+from mast.cli import Cli
+from mast.timestamp import Timestamp
 
 t = Timestamp()
-logging.basicConfig(
-    filename="{}-getstatus.log".format(t.timestamp),
-    filemode="w",
-    format="level=%(levelname)s; datetime=%(asctime)s; process_name=%(processName)s; pid=%(process)d; thread=%(thread)d; module=%(module)s; function=%(funcName)s; line=%(lineno)d; message=%(message)s")
-logger = logging.getLogger("DataPower")
-logger.setLevel(10)
+logger = make_logger("mast.getstatus")
 
 def recurse_status(prefix, elem, row, header_row):
     for child in elem.findall(".//*"):
@@ -86,7 +80,7 @@ def create_workbook(env, domains, providers, out_file):
     Sheet = wb.get_sheet_by_name("Sheet")
     wb.remove_sheet(Sheet)
     logger.info("Writing workbook {}".format(out_file))
-    wb.save(out_file)	
+    wb.save(out_file)
 
 
 def main(appliances=[], credentials=[], domains=["default"],

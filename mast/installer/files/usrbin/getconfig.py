@@ -1,19 +1,13 @@
 import os
-from pprint import pprint
 from openpyxl import Workbook
-import datapower
-from datapower import DataPower, CONFIG_XPATH, Environment
-import logging
-from cli import Cli
-from timestamp import Timestamp
+from mast.datapower import datapower
+from mast.datapower.datapower import CONFIG_XPATH, Environment
+from mast.logging import make_logger
+from mast.cli import Cli
+from mast.timestamp import Timestamp
 
 t = Timestamp()
-logging.basicConfig(
-    filename="{}-getconfig.log".format(t.timestamp),
-    filemode="w",
-    format="level=%(levelname)s; datetime=%(asctime)s; process_name=%(processName)s; pid=%(process)d; thread=%(thread)d; module=%(module)s; function=%(funcName)s; line=%(lineno)d; message=%(message)s")
-logger = logging.getLogger("getconfig")
-logger.setLevel(10)
+logger = make_logger("mast.getconfig")
 
 def add_to_header(column_name, header_row):
     if column_name in header_row:
@@ -99,7 +93,7 @@ def create_workbook(env, object_classes, domains, out_file,
                     print "ERROR: See log for details, skipping appliance {}".format(dp.hostname)
                     logger.exception("An unhandled exception was raised. Skipping appliance {}.".format(dp.hostname))
                     skip.append(dp)
-                    break                
+                    break
                 nodes = config.xml.findall(xpath)
                 for index, node in enumerate(nodes):
                     name = node.get("name")
@@ -122,7 +116,7 @@ def create_workbook(env, object_classes, domains, out_file,
 
 def main(appliances=[], credentials=[], object_classes=[], domains=[], timeout=120, no_check_hostname=False,
         out_file="sample.xlsx", delim=os.linesep, by_appliance=False):
-    
+
     check_hostname = not no_check_hostname
     if by_appliance:
         logger.info("Generating workbooks by appliance")
@@ -143,12 +137,12 @@ def main(appliances=[], credentials=[], object_classes=[], domains=[], timeout=1
                 [appliance.credentials],
                 timeout,
                 check_hostname)
-            create_workbook(_env, object_classes, domains, _out_file, delim)        
+            create_workbook(_env, object_classes, domains, _out_file, delim)
     else:
         logger.info("generating workbook")
         env = Environment(appliances, credentials, timeout, check_hostname=check_hostname)
         create_workbook(env, object_classes, domains, out_file, delim)
-        
+
 
 if __name__ == "__main__":
     try:

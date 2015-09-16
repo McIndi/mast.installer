@@ -1,5 +1,5 @@
-import datapower
-import cli
+from mast.datapower import datapower
+import mast.cli as cli
 import os
 
 def main(appliances=[], credentials=[], timeout=120, no_check_hostname=False, base_dir="."):

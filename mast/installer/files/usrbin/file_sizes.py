@@ -1,24 +1,18 @@
-import logging
-import datapower
-from cli import Cli
-from tstamp import Timestamp
+from mast.logging import make_logger
+from mast.datapower import datapower
+from mast.cli import Cli
+from mast.timestamp import Timestamp
 import xml.etree.cElementTree as etree
 
 t = Timestamp()
-logging.basicConfig(
-    filename="{}-file_sizes.log".format(t.timestamp),
-    filemode="w",
-    format="level=%(levelname)s; datetime=%(asctime)s; process_name=%(processName)s; pid=%(process)d; thread=%(thread)d; module=%(module)s; function=%(funcName)s; line=%(lineno)d; message=%(message)s")
-logger = logging.getLogger("file_sizes")
-logger.setLevel(10)
-
+logger = make_logger("mast.file-sizes")
 
 def main(appliances=[], credentials=[], timeout=120, no_check_hostname=False, out_file="out.csv"):
     locations = ["cert:", "chkpoints:", "config:", "export:", "image:", "local:", "logstore:", "logtemp:", "pubcert:", "sharedcert:", "store:", "tasktemplates:", "temporary:"]
     check_hostname = not no_check_hostname
     env = datapower.Environment(appliances, credentials, timeout, check_hostname=check_hostname)
     root_node = etree.fromstring("<filestores />")
-    
+
     with open(out_file, "wb") as fout:
         fout.write("appliance,domain,directory,filename,size,modified\n")
 
