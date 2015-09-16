@@ -1,7 +1,7 @@
 """
 tcp_mon.py
 
-Monitors established TCP connections to services on a DataPower 
+Monitors established TCP connections to services on a DataPower
 appliance.
 
 Options:
@@ -41,14 +41,14 @@ Options:
         clear the screen between outputs
 """
 
-from datapower import Environment, STATUS_XPATH
+from mast.datapower.datapower import Environment, STATUS_XPATH
 import re
 import os
 import sys
-import cli
+import mast.cli as cli
 import xml.etree.cElementTree as etree
 from time import sleep
-from timestamp import Timestamp
+from mast.timestamp import Timestamp
 from functools import partial
 
 clear = partial(os.system, 'cls' if os.name == 'nt' else 'clear')
@@ -94,7 +94,7 @@ def main(appliances=[], credentials=[], timeout=120,
          remote_ip_filter=".*", remote_port_filter=".*",
          local_ip_filter=".*", local_port_filter=".*",
          clear_screen=False):
-    
+
     check_hostname = not no_check_hostname
     class_filter = re.compile(class_filter)
     object_filter = re.compile(object_filter)
@@ -124,7 +124,7 @@ def main(appliances=[], credentials=[], timeout=120,
             local_ip_filter,
             local_port_filter)
         sys.exit(0)
-    
+
     while True:
         try:
             get_connections(

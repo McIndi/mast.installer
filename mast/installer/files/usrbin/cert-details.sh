@@ -11,7 +11,7 @@ do
   echo -n $x | cut -d \/ -f 4 | awk -F "_-_" '{ print $1 "," $2 }' | xargs echo -n; echo -n ,
 
   # output the common name
-  openssl x509 -noout -subject -in $x | awk -F "CN=" '{ print $2 "," }' | xargs echo -n 
+  openssl x509 -noout -subject -in $x | awk -F "CN=" '{ print $2 "," }' | xargs echo -n
 
   # output the not_before date
   openssl x509 -startdate -noout -in $x | cut -d \= -f 2 | xargs echo -n; echo -n ,

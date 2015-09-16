@@ -1,20 +1,14 @@
 import os
-import cli
-import logging
-import datapower
+import mast.cli as cli
+from mast.logging import make_logger
+import mast.datapower.datapower as datapower
 from time import sleep
 import xml.etree.cElementTree as etree
 
-from tstamp import Timestamp
+from mast.timestamp import Timestamp
 
 t = Timestamp()
-logging.basicConfig(
-    filename="{}-export-certs.log".format(t.timestamp),
-    filemode="w",
-    format="level=%(levelname)s; datetime=%(asctime)s; process_name=%(processName)s; pid=%(process)d; thread=%(thread)d; module=%(module)s; function=%(funcName)s; line=%(lineno)d; message=%(message)s")
-logger = logging.getLogger("getconfig")
-logger.setLevel(10)
-
+logger = make_logger("mast.export-certs")
 
 def insert_newlines(string, every=64):
     return '\n'.join(string[i:i+every] for i in xrange(0, len(string), every))
@@ -47,7 +41,7 @@ def main(appliances=[], credentials=[], timeout=120,
                 out_file = os.path.join(dir_name, "{}_-_{}".format(_filename, filename.split("/")[-1]))
                 export = appliance.CryptoExport(domain=domain, ObjectType="cert", ObjectName=name, OutputFilename=_filename)
                 logger.info("Finished exporting cert {}".format(cert))
-                try:                
+                try:
                     logger.info("Retrieving file {}".format("temporary:///{}".format(_filename)))
                     cert = appliance.getfile(domain, "temporary:///{}".format(_filename))
                     logger.info("Finished retrieving file {}".format("temporary:///{}".format(_filename)))
@@ -65,7 +59,7 @@ def main(appliances=[], credentials=[], timeout=120,
                 cert = etree.fromstring(cert)
                 with open(out_file, "w") as fout:
                     _contents = insert_newlines(cert.find("certificate").text)
-                    contents = "-----BEGIN CERTIFICATE-----\n" + _contents + "\n-----END CERTIFICATE-----\n"                   
+                    contents = "-----BEGIN CERTIFICATE-----\n" + _contents + "\n-----END CERTIFICATE-----\n"
                     fout.write(contents)
 
 if __name__ == "__main__":
