@@ -2,7 +2,7 @@
 
 SET MAST_HOME=<%MAST_HOME%>
 
-cd %MAST_HOME%
+cd /d %MAST_HOME%
 
-mast -m mast.datapower.backups %*
+mast.bat -m mast.datapower.backups %*
 

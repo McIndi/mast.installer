@@ -2,7 +2,7 @@
 
 SET MAST_HOME=<%MAST_HOME%>
 
-cd %MAST_HOME%
+cd /d %MAST_HOME%
 
-mast -m mast.daemon %*
+mast.bat -m mast.daemon %*
 
