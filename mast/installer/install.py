@@ -284,6 +284,9 @@ def _add_scripts(prefix):
     shutil.copytree(
         os.path.join(INSTALL_DIR, "files", "notebooks"),
         os.path.join(prefix, "notebooks"))
+    shutil.copytree(
+        os.path.join(INSTALL_DIR, "files", "tmp"),
+        os.path.join(prefix, "notebooks"))
 
 
 def install_anaconda(prefix):
@@ -332,6 +335,7 @@ def main(prefix=".", net_install=False):
     install mast into specified directory.
     """
     prefix = os.path.realpath(prefix)
+    prefix = os.path.join(prefix, "mast")
     install_anaconda(prefix)
     install_packages(prefix, net_install)
     add_scripts(prefix)
