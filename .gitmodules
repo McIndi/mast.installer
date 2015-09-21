@@ -79,9 +79,6 @@
 [submodule "mast/installer/packages/pycrypto"]
 	path = mast/installer/packages/pycrypto
 	url = https://github.com/dlitz/pycrypto
-[submodule "mast\\installer\\packages\\pycrypto"]
-	path = mast\\installer\\packages\\pycrypto
-	url = https://github.com/dlitz/pycrypto
-[submodule "mast.datapower.deploy"]
-	path = mast.datapower.deploy
+[submodule "mast/installer/packages/mast.datapower.deploy"]
+	path = mast/installer/packages/mast.datapower.deploy
 	url = https://github.com/mcindi/mast.datapower.deploy
