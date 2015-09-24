@@ -334,8 +334,11 @@ def main(prefix=".", net_install=False):
 
     install mast into specified directory.
     """
-    prefix = os.path.realpath(prefix)
-    prefix = os.path.join(prefix, "mast")
+    if prefix == ".":
+        prefix = os.path.realpath(prefix)
+        prefix = os.path.join(prefix, "mast")
+    else:
+        prefix = os.path.realpath(prefix)
     install_anaconda(prefix)
     install_packages(prefix, net_install)
     add_scripts(prefix)
