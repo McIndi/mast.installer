@@ -195,7 +195,8 @@ def _install_packages(prefix, net_install):
             "https://github.com/waylan/Python-Markdown.git",
             "https://github.com/warner/python-ecdsa.git",
             "https://github.com/jelmer/dulwich.git",
-            "https://github.com/mitsuhiko/flask.git"
+            "https://github.com/mitsuhiko/flask.git",
+            "https://github.com/mitsuhiko/werkzeug.git"
         ]
         for repo in repos:
             print "installing", repo

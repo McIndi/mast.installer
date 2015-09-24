@@ -85,3 +85,6 @@
 [submodule "mast/installer/packages/flask"]
 	path = mast/installer/packages/flask
 	url = https://github.com/mitsuhiko/flask
+[submodule "mast/installer/packages/werkzeug"]
+	path = mast/installer/packages/werkzeug
+	url = https://github.com/mitsuhiko/werkzeug
