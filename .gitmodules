@@ -82,3 +82,6 @@
 [submodule "mast/installer/packages/dulwich"]
 	path = mast/installer/packages/dulwich
 	url = https://github.com/jelmer/dulwich
+[submodule "mast/installer/packages/flask"]
+	path = mast/installer/packages/flask
+	url = https://github.com/mitsuhiko/flask
