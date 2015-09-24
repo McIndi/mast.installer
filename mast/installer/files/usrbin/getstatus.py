@@ -1,13 +1,16 @@
-from mast.datapower import datapower
-from mast.datapower.datapower import Environment
 import os
 import openpyxl
-from mast.logging import make_logger
+from time import sleep
 from mast.cli import Cli
+from mast.logging import make_logger
+from mast.datapower import datapower
 from mast.timestamp import Timestamp
+from mast.datapower.datapower import Environment
 
 t = Timestamp()
-logger = make_logger("mast.getstatus")
+
+logger = make_logger("mast.getstatus", propagate=False)
+
 
 def recurse_status(prefix, elem, row, header_row):
     for child in elem.findall(".//*"):
@@ -24,10 +27,22 @@ def recurse_status(prefix, elem, row, header_row):
             row.insert(header_row.index(child.tag), child.text)
 
 
-def create_workbook(env, domains, providers, out_file):
+def create_workbook(
+        env,       domains,
+        providers, delay,
+        out_file,  timestamp,
+        prepend_timestamp):
+
     xpath = datapower.STATUS_XPATH
     wb = openpyxl.Workbook()
     base_header_row = ["timestamp", "hostname", "domain", "provider"]
+
+    if prepend_timestamp:
+        filename = os.path.split(out_file)[-1]
+        filename = "{}-{}".format(t.timestamp, filename)
+        path = list(os.path.split(out_file)[:-1])
+        path.append(filename)
+        out_file = os.path.join(*path)
 
     logger.info("Generating Workbook - will be stored in {}".format(out_file))
     skip = []
@@ -42,30 +57,64 @@ def create_workbook(env, domains, providers, out_file):
             logger.info("Checking Status Provider {}".format(provider))
             print "\t{}".format(appliance.hostname)
             try:
-                _domains = appliance.domains if "all-domains" in domains else domains
+                if "all-domains" in domains:
+                    _domains = appliance.domains
+                else:
+                    _domains = domains
             except:
-                print "ERROR: See log for details, skipping appliance {}".format(appliance.hostname)
-                logger.exception("An unhandled exception was raised while retrieving list of domains. Skipping appliance {}.".format(appliance.hostname))
+                print " ".join((
+                    "ERROR: See log for details,",
+                    "skipping appliance {}".format(appliance.hostname)
+                ))
+                logger.exception(
+                    "An unhandled exception was raised while "
+                    "retrieving list of domains."
+                    "Skipping appliance {}.".format(appliance.hostname)
+                )
                 skip.append(appliance)
                 continue
             for domain in _domains:
                 print "\t\t{}".format(domain)
+                sleep(delay)
                 try:
-                    logger.info("Querying {} for {} in domain {}".format(appliance.hostname, provider, domain))
+                    logger.info(
+                        "Querying {} for {} in domain {}".format(
+                            appliance.hostname,
+                            provider,
+                            domain
+                        )
+                    )
                     response = appliance.get_status(provider, domain=domain)
                 except datapower.AuthenticationFailure:
-                    logger.warn("Recieved AuthenticationFailure. Retrying in 5 seconds...")
-                    print "Recieved AuthenticationFailure. Retrying in 5 seconds..."
+                    logger.warn(
+                        "Recieved AuthenticationFailure. "
+                        "Retrying in 5 seconds...")
+                    print " ".join((
+                        "Recieved AuthenticationFailure.",
+                        "Retrying in 5 seconds..."
+                    ))
+                    sleep(5)
                     try:
-                        response = appliance.get_status(provider, domain=domain)
-                    except dataPower.AuthenticationFailure:
+                        response = appliance.get_status(
+                            provider,
+                            domain=domain
+                        )
+                    except datapower.AuthenticationFailure:
                         print "Received AuthenticationFailure again. Skipping."
-                        logger.error("Received AuthenticationFailure again. Skipping.")
+                        logger.error(
+                            "Received AuthenticationFailure again. Skipping."
+                        )
                         skip.append(appliance)
                         continue
                 except:
-                    print "ERROR: See log for details, skipping appliance {}".format(appliance.hostname)
-                    logger.exception("An unhandled exception was raised. Skipping appliance {}.".format(appliance.hostname))
+                    print " ".join((
+                        "ERROR: See log for details,",
+                        "skipping appliance {}".format(appliance.hostname)
+                    ))
+                    logger.exception(
+                        "An unhandled exception was raised. "
+                        "Skipping appliance {}.".format(appliance.hostname)
+                    )
                     skip.append(appliance)
                     break
                 timestamp = response.xml.find(datapower.BASE_XPATH).text
@@ -83,17 +132,30 @@ def create_workbook(env, domains, providers, out_file):
     wb.save(out_file)
 
 
-def main(appliances=[], credentials=[], domains=["default"],
-        providers=[], timeout=120, out_file="./status.xlsx",
-        no_check_hostname=False, by_appliance=False):
+def main(
+        appliances=[], credentials=[],
+        domains=["default"],      providers=[],
+        timeout=120,              delay=0.5,
+        out_file="./status.xlsx", no_check_hostname=False,
+        by_appliance=False,       no_prepend_timestamp=False):
+
+    prepend_timestamp = not no_prepend_timestamp
+    t = Timestamp()
 
     check_hostname = not no_check_hostname
     if by_appliance:
         logger.info("Generating workbooks by appliance")
         # we make the initial Environment to correctly handle credentials
-        env = Environment(appliances, credentials, timeout, check_hostname=check_hostname)
+        env = Environment(
+            appliances,
+            credentials,
+            timeout,
+            check_hostname=check_hostname
+        )
         for appliance in env.appliances:
-            logger.info("generating workbook for {}".format(appliance.hostname))
+            logger.info(
+                "generating workbook for {}".format(appliance.hostname)
+            )
             filename = os.path.split(out_file)[-1]
             filename = "{}-{}".format(appliance.hostname, filename)
             path = list(os.path.split(out_file)[:-1])
@@ -101,17 +163,40 @@ def main(appliances=[], credentials=[], domains=["default"],
             _out_file = os.path.join(*path)
             logger.info(
                 "Workbook for {} will be stored in {}".format(
-                    appliance.hostname, _out_file))
+                    appliance.hostname, _out_file
+                )
+            )
             _env = Environment(
                 [appliance.hostname],
                 [appliance.credentials],
                 timeout,
                 check_hostname)
-            create_workbook(_env, domains, providers, _out_file)
+            create_workbook(
+                _env,
+                domains,
+                providers,
+                delay,
+                _out_file,
+                t,
+                prepend_timestamp
+            )
     else:
         logger.info("generating workbook")
-        env = Environment(appliances, credentials, timeout, check_hostname=False)
-        create_workbook(env, domains, providers, out_file)
+        env = Environment(
+            appliances,
+            credentials,
+            timeout,
+            check_hostname=False
+        )
+        create_workbook(
+            env,
+            domains,
+            providers,
+            delay,
+            out_file,
+            t,
+            prepend_timestamp
+        )
 
 
 if __name__ == "__main__":
@@ -121,4 +206,3 @@ if __name__ == "__main__":
     except:
         logger.exception("An unhandled exception occured during execution.")
         raise
-
