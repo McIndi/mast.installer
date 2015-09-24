@@ -26,11 +26,18 @@ if "Windows" in platform.system():
             "Anaconda-2.4.0-Windows-x86_64.exe")
 elif "Linux" in platform.system():
     if '32bit' in platform.architecture():
-        ANACONDA_INSTALL_SCRIPT = os.path.join(
-            cwd,
-            "scripts",
-            "anaconda",
-            "anaconda-2.4.0-linux32-install.sh")
+        if "armv7l" in platform.machine():
+            ANACONDA_INSTALL_SCRIPT = os.path.join(
+                cwd,
+                "scripts",
+                "anaconda",
+                "Miniconda-latest-Linux-armv7l.sh")
+        else:
+            ANACONDA_INSTALL_SCRIPT = os.path.join(
+                cwd,
+                "scripts",
+                "anaconda",
+                "anaconda-2.4.0-linux32-install.sh")
     elif '64bit' in platform.architecture():
         ANACONDA_INSTALL_SCRIPT = os.path.join(
             cwd,
@@ -129,7 +136,7 @@ def _install_packages(prefix, net_install):
         os.putenv('PYTHONPATH', '{}:{}'.format(bin_dir, lib_dir))
 
         # Fix for the SELinux issue on the 32 bit installer
-        if "32bit" in platform.architecture():
+        if "32bit" in platform.architecture() and "armv7l" not in platform.machine():
             out, err = system_call([
                 "execstack",
                 "-c",
@@ -144,6 +151,15 @@ def _install_packages(prefix, net_install):
 
         python = os.path.join(prefix, "bin", "python")
 
+    logger.info("Ensuring pip is installed")
+    print "Ensuring pip is installed"
+    out, err = system_call([python, "-m", "ensurepip"])
+    if err:
+        logger.error("An error occurred while ensuring pip is installed, {}".format(err))
+        print "\tERROR: See log for details"
+    else:
+        logger.debug("Output of ensurepip, {}".format(out))
+        print "\tDone, see log for details"
     logger.debug("PATH: {}".format(os.environ["PATH"]))
     try:
         logger.debug("PYTHONPATH: {}".format(os.environ["PYTHONPATH"]))
@@ -179,7 +195,7 @@ def _install_packages(prefix, net_install):
             "https://github.com/waylan/Python-Markdown.git",
             "https://github.com/warner/python-ecdsa.git",
             "https://github.com/jelmer/dulwich.git",
-            "https://github.com/ilovetux/test-me.git"
+            "https://github.com/mitsuhiko/flask.git"
         ]
         for repo in repos:
             print "installing", repo

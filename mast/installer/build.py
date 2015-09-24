@@ -47,8 +47,12 @@ if "Windows" in platform.system():
 elif "Linux" in platform.system():
     # Set Linux parameters here
     if '32bit' in platform.architecture():
-        anaconda_installer_url = "https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda2-2.4.0-Linux-x86.sh"
-        anaconda_installer = "anaconda-2.4.0-linux32-install.sh"
+        if "armv7l" in platform.machine():
+            anaconda_installer_url = "http://repo.continuum.io/miniconda/Miniconda-latest-Linux-armv7l.sh"
+            anaconda_installer = "Miniconda-latest-Linux-armv7l.sh"
+        else:            
+            anaconda_installer_url = "https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda2-2.4.0-Linux-x86.sh"
+            anaconda_installer = "anaconda-2.4.0-linux32-install.sh"
     elif '64bit' in platform.architecture():
         anaconda_installer_url = "https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda2-2.4.0-Linux-x86_64.sh"
         anaconda_installer = "anaconda-2.4.0-linux64-install.sh"

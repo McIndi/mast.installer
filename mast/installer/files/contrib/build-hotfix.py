@@ -141,7 +141,7 @@ def main():
         "Python-Markdown",
         "python-ecdsa",
         "dulwich",
-        "test-me"
+        "flask"
     ]
     dirs = [os.path.abspath(os.path.join(here, d)) for d in dirs]
 
@@ -245,7 +245,7 @@ repos = [
     "https://github.com/waylan/Python-Markdown.git",
     "https://github.com/warner/python-ecdsa.git",
     "https://github.com/jelmer/dulwich.git",
-    "https://github.com/ilovetux/test-me.git"
+    "https://github.com/mitsuhiko/flask.git"
 ]
 
 
