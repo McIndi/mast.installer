@@ -1,8 +1,7 @@
-#!/usr/bin/env sh
+@echo off
 
-export MAST_HOME=<%MAST_HOME%>
+SET MAST_HOME=<%MAST_HOME%>
 
-cd $MAST_HOME
+cd /d %MAST_HOME%
 
-./mast -m mast.datapower.ssh $@
-
+mast.bat -m mast.datapower.ssh %*
