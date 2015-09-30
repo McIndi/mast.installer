@@ -1,0 +1,445 @@
+﻿MAST for IBM DataPower™  2.0.1
+MAST CLI Reference
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAST for IBM DataPower™  2.0.1
+MAST CLI Reference
+© 2015 McIndi Solutions LLC
+All rights reserved
+
+
+
+
+________________
+
+
+Table of Contents
+
+
+Table of Contents
+Introduction
+Common Parameters
+mast
+mastd
+Windows
+Linux
+mast-accounts
+list-groups
+add-group
+del-group
+list-users
+add-user
+del-user
+change-password
+force-change-password
+list-rbm-fallback
+add-rbm-fallback
+del-rbm-fallback
+flush-aaa-cache
+flush-ldap-pool-cache
+flush-rbm-cache
+mast-backups
+restore-normal-backup
+do-normal-backup
+secure-backup
+restore-secure-backup
+list-checkpoints
+remove-checkpoint
+rollback-checkpoint
+set-checkpoint
+mast-deployment
+set-file
+get-file
+del_file
+clean-up
+predeploy
+deploy
+postdeploy
+mast-developer
+flush-document-cache
+flush-stylesheet-cache
+import
+export
+mast-network
+check-connectivity
+tcp-connection-test
+display-routing-table
+display-ethernet-interface
+list-host-aliases
+add-host-alias
+del-host-alias
+list-secondary-addresses
+add-secondary-address
+del-secondary-address
+list-static-hosts
+add-static-host
+del-static-host
+list-static-routes
+add-static-route
+del-static-route
+flush-arp-cache
+flush-dns-cache
+flush-nd-cache
+flush-pdp-cache
+mast-ssh
+mast-system
+xor
+flush-aaa-cache
+flush-arp-cache
+flush-dns-cache
+flush-document-cache
+flush-ldap-pool-cache
+flush-nd-cache
+flush-nss-cache
+flush-pdp-cache
+flush-rbm-cache
+flush-stylesheet-cache
+save
+quiesce-service
+unquiesce-service
+list-domains
+add-domain
+del-domain
+quiesce-domain
+unquiesce-domain
+disable-domain
+enable-domain
+quiesce-appliance
+unquiesce-appliance
+reboot-appliance
+shutdown-appliance
+reload-appliance
+firmware-upgrade
+get-encrypted-filesystem
+get-temporary-filesystem
+get-filestore
+copy-file
+set-file
+get-file
+del_file
+get-error-reports
+copy-directory
+fetch-logs
+get-pmr-info
+object-audit
+get-status
+get-config
+clean-up
+mast-web
+notebook
+Conclusion
+
+
+________________
+
+
+Introduction
+Welcome to the MAST CLI Reference, in this document we will cover how to use the MAST CLI as well as list all the commands that are at your disposal. 
+There are 11 main commands which come with MAST:
+1. mast
+2. mastd
+3. mast-accounts
+4. mast-backups
+5. mast-deployment
+6. mast-developer
+7. mast-network
+8. mast-ssh
+9. mast-system
+10. mast-web
+11. notebook
+It should be noted that all the commands here simply wrap certain calls to Python. In all cases except for ./mast calls are made to executable Python modules by passing the “-m” option to Python.
+Common Parameters
+There are a number of parameters which are common to all or most of MAST’s commands. Here, I will list them for you:
+-a, --appliances - This is where you list the appliances you would
+                  like to affect. You can specify multiple
+                  appliances by providing a space-separated list of
+                  hostnames or IP addresses. This will also take an
+                  environment configured in environments.conf and
+                  affect all the appliances in that environment.
+                  Also, you can use aliases defined in the
+                  hosts.conf.
+-c, --credentials - This is where you provide your credentials to
+                   authenticate to the appliances enter them in the
+                   form "<USERNAME>:<PASSWORD>" without the angle
+                    brackets. If you specify one set of credentials
+                    then they will be used to authenticate to all
+                    listed appliances, if you specify more than one
+                    set of credentials you must specify one for each
+                    appliance.
+-t, --timeout - This is where you specify the timeout (in seconds)
+                for each single request to the DataPower. The default
+                is usually 120 except on secure-backup which tends to
+                take a while so the
+               default is set to 1200.
+
+-h, --help - This will display the help message for the command
+             specified. All MAST CLI commands have helpful usage 
+             massages.
+mast
+This command is what you might call a “proxy” command which will call Python. It is most often used to launch custom scripts in the $MAST_HOME/usrbin, but can also be used to launch an interactive Python interpreter or any other way in which you may use python, the only important thing to note is that in the script the working directory is changed to $MAST_HOME, this may lead to some unexpected side-effects.
+mastd
+This command is intended to control mastd, the MAST daemon, as services differ based on the target platform, so too does this command. This is the only command which should differ in use between platforms.
+Windows
+You can install mastd as a Windows service using this command:
+C:\mast\> mastd install
+The install command can accept a number of parameters to dictate how the service should run such as the user to run as and whether to start the service on boot. Please provide a “-h” to mastd install to see a full list of options. After installing mastd as a Windows service, you can control it as any other service, but you can also use the mastd command to start, stop, restart and remove the service.
+Linux
+On linux platforms, the mastd command can be used to start, stop, restart and to query the status of the service using the following commands:
+$ mastd start
+$ mastd stop
+$ mastd restart
+$ mastd status
+Please see your Operating System’s documentation to see how to configure this as a proper service.
+mast-accounts
+This command invokes the mast.datapower.accounts Python module which contains various utilities to control user accounts, groups and RBM settings. The following subcommands are available with mast-accounts:
+list-groups
+This command will list the groups present on each appliance as well as the groups common to all appliances.
+add-group
+This command will add a user group to the appliances.
+
+
+IMPORTANT: The functionality to add access-policies to the user group being created is currently broken. It will only accept one access policy. We are working to find an acceptable solution to the problem.
+del-group
+This command will delete a user group from the appliances.
+list-users
+This command lists the local users on the appliances as well as the users common to all appliances
+add-user
+This command will add a user to the appliances.
+del-user
+This command will delete a user from the appliances.
+change-password
+This command will change a local user’s password on the appliances.
+force-change-password
+This command will force a local user to change their password during the next login on the appliances.
+list-rbm-fallback
+This command will list RBM fallback users on the appliances.
+add-rbm-fallback
+This command will add a user to the RBM fallback users of the appliances.
+del-rbm-fallback
+This command will remove a user from the RBM fallback users of the appliances.
+flush-aaa-cache
+This command will flush the AAA cache on the appliances.
+flush-ldap-pool-cache
+This command will flush the LDAP Pool cache on the appliances.
+flush-rbm-cache
+This command will flush the RBM cache on the appliances.
+
+
+Please see the help menu for each of these commands (by passing the “-h” flag on the command line) for what information needs to be provided for the subcommands.
+mast-backups
+restore-normal-backup
+This command will Restore a normal backup to the specified domains on the appliances.
+do-normal-backup
+This command performs a normal backup of the specified domain(s) on the appliances.
+secure-backup
+This command will perform a secure backup of the appliances.
+restore-secure-backup
+This command will Restore a secure backup to specified appliances.
+list-checkpoints
+This command will List the checkpoints which are currently in the specified domain on the appliances.
+remove-checkpoint
+This command will Delete a checkpoint from the specified domain on the appliances.
+rollback-checkpoint
+This command will roll back the specified domain to the named checkpoint on the appliances.
+set-checkpoint
+This command will Set a checkpoint in the given domain(s) on the appliances.
+mast-deployment
+This command is intended to assist in deploying services, configurations and migrations to your DataPower appliances. The following subcommands are provided:
+set-file
+This command will Upload a file to the specified destination on the appliances.
+get-file
+This command will download a file from the specified appliances.
+del_file
+This command will delete the specified file from the appliances.
+clean-up
+This command will clean up the specified appliances temporary filesystem.
+predeploy
+This command is used to perform routine pre-deployment actions. Everything is optional, but if you wish to perform an action, you must provide the necessary arguments.
+deploy
+This command is used to perform a deployment/migration of a service/object to an IBM DataPower appliance. This script will try to perform the deployment/migration in a manner consistent with best practices.
+postdeploy
+This command will allow you to unquiesce your domain or appliances after you quiesce them for a deployment. Also this will allow you to save the config.
+mast-developer
+Please note that release 2.1.0 will be fleshing out our development offering,  but some functionality which will ease a developer’s workload is provided here. The following subcommands are provided:
+flush-document-cache
+This command will flush the Document Cache for the specified xml_manager in the specified domain on the applianes.
+flush-stylesheet-cache
+This command will flush the Stylesheet Cache for the specified xml_manager in the specified domain on the appliances.
+import
+This command will import a service/object into the specified domain on the appliances.
+export
+This command will Export a service or object from the specified domain on the appliances.
+mast-network
+This command is used to test, configure and maintain network settings. The following subcommands are supplied:
+check-connectivity
+This command will check the connectivity of the three mgmt interfaces (xml, web and cli) on the specified appliances.
+tcp-connection-test
+This command will perform a TCP Connection Test from each appliance to each remote_host at each remote_port.
+________________
+display-routing-table
+This command will display the routing table for the specified appliances
+display-ethernet-interface
+This command will display the details of the specified ethernet interface on the specified appliances.
+list-host-aliases
+This command will list the host aliases of the specified appliances as well as the host aliases common to all specified appliances.
+add-host-alias
+This command will Add a host alias to the specified appliances.
+del-host-alias
+This command will remove a host alias from the specified appliances.
+list-secondary-addresses
+This command will list the secondary IP Addresses on the specified Ethernet Interface for the specified appliances.
+add-secondary-address
+This command will add a secondary IP address to the specified appliances on the specified ethernet interface.
+________________
+del-secondary-address
+This command will remove a secondary IP address from the specified appliances on the specified ethernet interface
+list-static-hosts
+This command will list the static hosts on the specified appliances.
+add-static-host
+This command will add a static host to  the specified appliances.
+del-static-host
+This command will remove a static host from the specified appliances.
+list-static-routes
+This command will list all of the static routes on the specified ethernet interface on the specified appliances.
+add-static-route
+This command will add a static route to the specified appliance on the specified ethernet interface.
+del-static-route
+This command will removes a static route from the specified appliance on the specified ethernet interface.
+flush-arp-cache
+This command will flush the ARP Cache on the specified appliances.
+flush-dns-cache
+This command will flush the DNS Cache for the specified appliances.
+flush-nd-cache
+This command will flush the ND cache on the specified appliances.
+flush-pdp-cache
+This command will flush the PDP cache on the specified appliances for the specified XACMLPDP.
+mast-ssh
+This is one of the most useful commands bundled with MAST for IBM DataPower. This is a multi-box ssh client. This is unique compared to most ssh clients because each command you issue will be sent to each appliance you specify in the arguments to the command. If the output of the commands is the same from all appliances, the output is only printed to the screen once and you will be presented with a familiar prompt (something like xi52# ). If the ouput differs, each appliance’s output will be prefixed with the hostname/ip/alias and printed to the screen and you will be presented with a prompt like this “> ”.
+One of the more useful features of this command is the ability to specify a file which contains commands to be executed on the appliances. This is done with the “-i” parameter.
+mast-system
+This command provides a number of subcommands useful for the system administration of your DataPower appliances. The following subcommands are provided:
+________________
+xor
+This will xor encode and base64 encode the given string suitable for use in passing credentials to MAST CLI commands. This is a useful utility for scripting multiple MAST CLI commands since your credentials will not be in plain text.
+flush-aaa-cache
+This command will flush the AAA Cache for the specified AAAPolicy in the specified Domain on the specified appliances.
+flush-arp-cache
+This command will flush the ARP cache on the specified appliances.
+flush-dns-cache
+This command will flush the DNS cache on the specified appliances.
+flush-document-cache
+This will flush the document cache for the specified xml_manager in the specified domain on the specified appliances.
+flush-ldap-pool-cache
+This command will flush the LDAP Pool Cache for the specified xml_manager in the specified domain on the specified appliances
+flush-nd-cache
+This command will flush the ND cache for the specified appliances.
+________________
+flush-nss-cache
+This will flush the NSS cache for the specified ZOSNSSClient in the specified domain for the specified appliances.
+flush-pdp-cache
+This command will flush the PDP cache for the specified XACML_PDP for the specified appliances.
+flush-rbm-cache
+This command will flush the RBM cache in the specified domain for the specified appliances.
+flush-stylesheet-cache
+This command will flush the stylesheet cache for the specified xml_manager in the specified Domain on the specified appliances.
+save
+This command will save the configuration in the given domain(s) on the appliances.
+quiesce-service
+This command will quiesce a service in the specified domain on the specified appliances.
+unquiesce-service
+This command will unquiesce a service in the specified domain on the specified appliances.
+list-domains
+This command will List the domains on the specified appliances as well as domains common to all appliances.
+add-domain
+This command will add a domain to the specified appliances.
+del-domain
+This command will remove a domain from the specified appliances
+quiesce-domain
+This command will quiesce a domain on the specified appliances
+unquiesce-domain
+This command will unquiesce a domain on the specified appliances
+disable-domain
+This command will disable a domain on the specified appliances.
+enable-domain
+This command will enable a domain on the specified appliances.
+quiesce-appliance
+This command will quiesce the specified appliances.
+unquiesce-appliance
+This command will quiesce the specified appliances.
+reboot-appliance
+This command will reboot the specified appliances
+shutdown-appliance
+This command will shutdown the specified appliances
+reload-appliance
+This command will quiesce the specified appliances.
+firmware-upgrade
+This command will attempt to upgrade the firmware of the specified appliances.
+get-encrypted-filesystem
+This command will get a directory listing of all locations within the encrypted filesystem.
+get-temporary-filesystem
+This command will get a directory listing of all locations within the temporary filesystem.
+get-filestore
+This command will get the directory listing of the specified location.
+copy-file
+This command will Copy a file from src to dst (both src and dst are on the appliance) optionally overwriting dst.
+set-file
+This command will upload a file to the specified appliances.
+________________
+get-file
+This command will upload a file to the specified appliances.
+del_file
+This command will delete a file from the appliances.
+get-error-reports
+This command will attempt to retrieve any error reports from the currently configured location on the DataPower appliances.
+copy-directory
+This command will get all of the files from a directory on the appliances in the specified domain.
+fetch-logs
+This command will fetch all log files from the specified appliances
+get-pmr-info
+This command will get all possible troubleshooting information from the specified appliances.
+object-audit
+This command will get a "diff" of the current and persisted configuration
+get-status
+This command will query the status of the specified appliances in in the specified Domain for the specified status providers.
+get-config
+This command will get the config of obj_name from the specified domain on the specified appliances.
+clean-up
+This command will clean up the specified appliances temporary filesystem.
+mast-web
+This command will launch the MAST Web GUI. Please note, however, that this command is for use when you choose not to install mastd, because mastd will host MAST Web on it’s own.
+notebook
+This command will open IPython Notebook in the $MAST_HOME/notebooks/ directory. This command is provided as a convenience for users wishing to develop add-ons or custom scripts using the MAST API.
+Conclusion
+Here, hopefully you gained a better understanding of the MAST CLI and all of the commands you have at your disposal. If you have any questions, comments or concerns please don’t hesitate to email us at support@mcindi.com.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NOTICE: IBM DataPower and the WebSphere product line is the Intellectual Property of International Business Machines Corporation.
+________________
+© 2015 McIndi Solutions LLC
+All rights reserved
