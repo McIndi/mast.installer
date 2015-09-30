@@ -229,3 +229,11 @@ textarea{
     left: 50%;
     z-index: 10;
 }
+
+a.help{
+    color: #056BB0;
+}
+
+a.toggle{
+    color: #056BB0;
+}
