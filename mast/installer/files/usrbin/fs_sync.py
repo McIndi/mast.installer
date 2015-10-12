@@ -23,6 +23,9 @@ def to_dp(appliances=[], credentials=[],
     """Syncs files from local_dir to remote_dir in the specified
     domain. If the recursive flag is specified, then local_dir
     is recursed"""
+    if remote_dir.endswith("/"):
+        remote_dir = remote_dir.rstrip("/")
+
     check_hostname = not no_check_hostname
     env = datapower.Environment(
         appliances,
@@ -81,12 +84,13 @@ def upload_file(appl, domain, f, overwrite, create_dir):
     logger = make_logger("fs_sync")
 
     dirname = "/".join(f[1].split("/")[:-1])
+
     if create_dir:
-        if not appl.directory_exists(dirname, domain):
+        if (not appl.directory_exists(dirname, domain)) and (not appl.location_exists(dirname, domain)):
             print "\t\tCreating Directory {}".format(dirname)
             appl.CreateDir(domain=domain, Dir=dirname)
     else:
-        if not appl.directory_exists(dirname, domain):
+        if (not appl.directory_exists(dirname, domain)) and (not appl.location_exists(dirname, domain)):
             logger.error(
                 "Directory {} does not exist in {} domain on {}".format(
                     dirname, domain, appl.hostname))
