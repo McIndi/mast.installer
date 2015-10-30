@@ -101,6 +101,9 @@ def create_workbook(
         path = list(os.path.split(out_file)[:-1])
         path.append(filename)
         out_file = os.path.join(*path)
+    path = os.path.join(*list(os.path.split(out_file)[:-1]))
+    if not os.path.exists(path):
+        os.makedirs(path)
 
     logger.info("Generating Workbook - will be stored in {}".format(out_file))
     skip = []
