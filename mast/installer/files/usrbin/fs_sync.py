@@ -73,7 +73,10 @@ def from_dp(appliances=[], credentials=[], timeout=120,
         check_hostname=check_hostname)
 
     for appliance in env.appliances:
+        print appliance.hostname
+        print "\t", Domain
         _out_dir = os.path.join(out_dir, appliance.hostname)
+        print "\t\t", location, "->", _out_dir
         if not os.path.exists(_out_dir) or not os.path.isdir(_out_dir):
             os.makedirs(_out_dir)
         appliance.copy_directory(
