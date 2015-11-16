@@ -90,6 +90,10 @@ def create_workbook(
         providers, object_classes, delay,
         delim, out_file,  timestamp,
         prepend_timestamp, obfuscate_password):
+    if not providers:
+        providers = []
+    if not object_classes:
+        object_classes = []
 
     xpath = datapower.STATUS_XPATH
     wb = openpyxl.Workbook()
