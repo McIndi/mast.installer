@@ -32,7 +32,7 @@ def to_dp(appliances=[], credentials=[],
         credentials,
         timeout,
         check_hostname=check_hostname)
-    logger = make_logger("fs_sync")
+    logger = make_logger("mast.datapower.fs_sync")
 
     if not os.path.exists(local_dir):
         logger.error("{} does not exist or is not a directory")
@@ -65,6 +65,7 @@ def from_dp(appliances=[], credentials=[], timeout=120,
             recursive=False, no_check_hostname=False):
     """This will get all of the files from a directory on the appliances
     in the specified domain."""
+    logger = make_logger("mast.datapower.fs_sync")
     check_hostname = not no_check_hostname
     env = datapower.Environment(
         appliances,
@@ -73,11 +74,13 @@ def from_dp(appliances=[], credentials=[], timeout=120,
         check_hostname=check_hostname)
 
     for appliance in env.appliances:
+        logger.info("Syncing with {}".format(appliance.hostname))
         print appliance.hostname
         print "\t", Domain
         _out_dir = os.path.join(out_dir, appliance.hostname)
         print "\t\t", location, "->", _out_dir
         if not os.path.exists(_out_dir) or not os.path.isdir(_out_dir):
+            logger.info("Making directory {}".format(_out_dir))
             os.makedirs(_out_dir)
         appliance.copy_directory(
             location, _out_dir, Domain, recursive=recursive)
