@@ -37,7 +37,10 @@ t = Timestamp()
 logging.basicConfig(
     filename="{}-mast-install.log".format(t.timestamp),
     filemode="w",
-    format="level=%(levelname)s; datetime=%(asctime)s; process_name=%(processName)s; pid=%(process)d; thread=%(thread)d; module=%(module)s; function=%(funcName)s; line=%(lineno)d; message=%(message)s")
+    format="level=%(levelname)s; datetime=%(asctime)s; "
+           "process_name=%(processName)s; pid=%(process)d; "
+           "thread=%(thread)d; module=%(module)s; "
+           "function=%(funcName)s; line=%(lineno)d; message=%(message)s")
 logger = logging.getLogger("mast.installer")
 logger.setLevel(10)
 
@@ -224,6 +227,7 @@ def write_file(dst, content):
     with open(dst, "w") as fout:
         fout.write(content)
 
+
 def _add_scripts(prefix):
     """
     add_scripts
@@ -273,7 +277,6 @@ def _add_scripts(prefix):
             "python27.dll"
         )
         shutil.copyfile(src, dst)
-
 
     shutil.copytree(
         os.path.join(INSTALL_DIR, "files", "bin"),
