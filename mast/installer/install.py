@@ -143,8 +143,9 @@ def _install_packages(prefix, net_install):
             "git+https://github.com/mcindi/mast.timestamp",
             "git+https://github.com/mcindi/mast.pprint",
             "git+https://github.com/mcindi/mast.plugin_utils",
-            "git+https://github.com/mcindi/mast.plugins",
             "git+https://github.com/mcindi/mast.logging",
+            "git+https://github.com/mcindi/mast.config",
+            "git+https://github.com/mcindi/mast.plugins",
             "git+https://github.com/mcindi/mast.hashes",
             "git+https://github.com/mcindi/mast.datapower.web",
             "git+https://github.com/mcindi/mast.datapower.system",
@@ -158,20 +159,24 @@ def _install_packages(prefix, net_install):
             "git+https://github.com/mcindi/mast.datapower.accounts",
             "git+https://github.com/mcindi/mast.daemon",
             "git+https://github.com/mcindi/mast.cron",
-            "git+https://github.com/mcindi/mast.config",
             "git+https://github.com/mcindi/mast.cli",
             "git+https://github.com/tellapart/commandr",
             "git+https://github.com/cherrypy/cherrypy",
+            "git+https://github.com/dlitz/pycrypto",
             "git+https://github.com/paramiko/paramiko",
             "git+https://github.com/waylan/Python-Markdown",
-            "git+https://github.com/warner/python-ecdsa",
-            "git+https://github.com/dlitz/pycrypto"
+            "git+https://github.com/warner/python-ecdsa"
         ]
         for repo in repos:
             print "installing", repo
             out, err = system_call([pip, "install", repo])
-            print "Done. See logs for details"
-            logger.debug("Installing {}...result: out: {}, err:")
+            if err:
+                print "ERROR: See log for details"
+            else:
+                print "Done. See logs for details"
+            logger.debug(
+                "Installing {}...result: out: {}, err:".format(
+                    repo, out, err))
     else:
         # Sort the packages
         dir_list = os.listdir(directory)
