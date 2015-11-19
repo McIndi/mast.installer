@@ -152,7 +152,7 @@ def _install_packages(prefix, net_install):
             "git+https://github.com/mcindi/mast.datapower.status",
             "git+https://github.com/mcindi/mast.datapower.ssh",
             "git+https://github.com/mcindi/mast.datapower.network",
-            "git+https://github.com/mcindi/mast.datapower.developer"
+            "git+https://github.com/mcindi/mast.datapower.developer",
             "git+https://github.com/mcindi/mast.datapower.deployment",
             "git+https://github.com/mcindi/mast.datapower.datapower",
             "git+https://github.com/mcindi/mast.datapower.backups",
