@@ -111,7 +111,7 @@ def _install_packages(prefix, net_install):
 
     if "Windows" in platform.system():
         python = os.path.join(prefix, "python")
-        pip = os.path.join(prefix, "pip")
+        pip = os.path.join(prefix, "Scripts", "pip")
     elif "Linux" in platform.system():
         bin_dir = os.path.join(prefix, "bin")
         lib_dir = os.path.join(prefix, "lib")
