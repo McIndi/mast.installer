@@ -15,20 +15,20 @@ if "Windows" in platform.system():
         cwd,
         "scripts",
         "anaconda",
-        "Anaconda-2.3.0-Windows-x86_64.exe")
+        "Anaconda-2.4.0-Windows-x86_64.exe")
 elif "Linux" in platform.system():
     if '32bit' in platform.architecture():
         ANACONDA_INSTALL_SCRIPT = os.path.join(
             cwd,
             "scripts",
             "anaconda",
-            "anaconda-2.3.0-linux32-install.sh")
+            "anaconda-2.4.0-linux32-install.sh")
     elif '64bit' in platform.architecture():
         ANACONDA_INSTALL_SCRIPT = os.path.join(
             cwd,
             "scripts",
             "anaconda",
-            "anaconda-2.3.0-linux64-install.sh")
+            "anaconda-2.4.0-linux64-install.sh")
 
 INSTALL_DIR = cwd
 
