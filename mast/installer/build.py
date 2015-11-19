@@ -37,17 +37,17 @@ def download_file(url, dst):
 
 if "Windows" in platform.system():
     # Set Windows parameters here
-    anaconda_installer = "Anaconda-2.3.0-Windows-x86_64.exe"
-    anaconda_installer_url = "https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda-2.3.0-Windows-x86_64.exe"
+    anaconda_installer = "Anaconda-2.4.0-Windows-x86_64.exe"
+    anaconda_installer_url = "https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda2-2.4.0-Windows-x86_64.exe"
     spec_file = "install.spec.windows"
 elif "Linux" in platform.system():
     # Set Linux parameters here
     if '32bit' in platform.architecture():
-        anaconda_installer_url = "https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda-2.3.0-Linux-x86.sh"
-        anaconda_installer = "anaconda-2.3.0-linux32-install.sh"
+        anaconda_installer_url = "https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda2-2.4.0-Linux-x86.sh"
+        anaconda_installer = "anaconda-2.4.0-linux32-install.sh"
     elif '64bit' in platform.architecture():
-        anaconda_installer_url = "https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda-2.3.0-Linux-x86_64.sh"
-        anaconda_installer = "anaconda-2.3.0-linux64-install.sh"
+        anaconda_installer_url = "https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda2-2.4.0-Linux-x86_64.sh"
+        anaconda_installer = "anaconda-2.4.0-linux64-install.sh"
     spec_file = "install.spec.linux"
 
 # Grab the Anaconda installer
