@@ -162,7 +162,6 @@ def _install_packages(prefix, net_install):
             "git+https://github.com/mcindi/mast.cli",
             "git+https://github.com/tellapart/commandr",
             "git+https://github.com/cherrypy/cherrypy",
-            "git+https://github.com/dlitz/pycrypto",
             "git+https://github.com/paramiko/paramiko",
             "git+https://github.com/waylan/Python-Markdown",
             "git+https://github.com/warner/python-ecdsa"
