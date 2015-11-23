@@ -184,8 +184,6 @@ def _install_packages(prefix, net_install):
         dir_list = os.listdir(directory)
         dir_list.sort()
         # Switch pycrypto and paramiko for dependency reasons
-        a, b = dir_list.index("paramiko"), dir_list.index("pycrypto")
-        dir_list[a], dir_list[b] = dir_list[b], dir_list[a]
         for d in dir_list:
             _dir = os.path.join(directory, d)
             if os.path.exists(_dir) and os.path.isdir(_dir):
