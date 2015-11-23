@@ -171,7 +171,7 @@ def _install_packages(prefix, net_install):
         ]
         for repo in repos:
             print "installing", repo
-            out, err = system_call([pip, "install", repo])
+            out, err = system_call([pip, "install", "-e", repo])
             if err:
                 print "ERROR: See log for details"
             else:
