@@ -190,8 +190,6 @@ def _install_packages(prefix, net_install):
                 print "Installing", d
                 os.chdir(_dir)
                 if "ecdsa" in d:
-                    out, err = system_call([python, "setup.py", "version"])
-
                     with open("setup.py", "r") as fin:
                         content = fin.read()
 
