@@ -336,13 +336,13 @@ def add_scripts(prefix):
     print "\tDone. See log for details"
 
 
-def main(prefix=".", net_install=False):
+def main(prefix="", net_install=False):
     """
     main
 
     install mast into specified directory.
     """
-    if prefix == ".":
+    if prefix == "":
         prefix = os.path.realpath(prefix)
         prefix = os.path.join(prefix, "mast")
     else:
