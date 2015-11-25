@@ -79,3 +79,6 @@
 [submodule "mast/installer/packages/mast.datapower.deploy"]
 	path = mast/installer/packages/mast.datapower.deploy
 	url = https://github.com/mcindi/mast.datapower.deploy
+[submodule "mast/installer/packages/dulwich"]
+	path = mast/installer/packages/dulwich
+	url = https://github.com/jelmer/dulwich
