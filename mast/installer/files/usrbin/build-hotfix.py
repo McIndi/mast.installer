@@ -1,42 +1,11 @@
 # -*- coding: utf-8 -*-
-"""
-(c) McIndi Solutions LLC 2015
-
-build-hotfix.py
-
-Build a hotfix containing the latest updates to MAST for IBM DataPower.
-
-After running this script, you will have a zip file (as defined by the
---out-file option which defaults to $MAST_HOME/tmp/hotfix.zip). To install
-this hotfix, perform the following steps:
-
-1. Unzip the file anywhere
-2. Navigate to the directory which was extracted from the zip file
-3. Execute the relevant command for your operating system:
-
-__Windows__
-
-`C:\path\to\hotfix> <MAST_HOME>\anaconda\python install-hotfix.py`
-
-__Linux__
-
-`$ <MAST_HOME>/anaconda/bin/python install-hotfix.py`
-
-__NOTE__: If mastd is running on your host, you must restart it
-
-# Troubleshooting
-
-This hotfix should install without incident. If there are any issues,
-please copy and paste the error you receive into an email to
-mastsupport@mcindi.com
-
-
-"""
 import os
 import sys
+import shutil
 import zipfile
 import subprocess
 from mast.cli import Cli
+from textwrap import dedent
 from dulwich import porcelain as git
 from mast.timestamp import Timestamp
 from mast.logging import make_logger
@@ -208,7 +177,49 @@ repos = [
 def main(
         output_file=default_out_file,
         build_dir=default_build_dir,
-        install=False):
+        install=False,
+        remove_build_dir=False):
+    r"""
+    Build a hotfix containing the latest updates to MAST for IBM DataPower.
+
+    After running this script, you will have a zip file (as defined by the
+    --out-file option which defaults to $MAST_HOME/tmp/hotfix.zip). To install
+    this hotfix, perform the following steps:
+
+    1. Unzip the file anywhere
+    2. Navigate to the directory which was extracted from the zip file
+    3. Execute the relevant command for your operating system:
+
+    __Windows__
+
+    `C:\path\to\hotfix> <MAST_HOME>\anaconda\python install-hotfix.py`
+
+    __Linux__
+
+    `$ <MAST_HOME>/anaconda/bin/python install-hotfix.py`
+
+    __NOTE__: If mastd is running on your host, you must restart it
+
+    # Troubleshooting
+
+    This hotfix should install without incident. If there are any issues,
+    please copy and paste the error you receive into an email to
+    mastsupport@mcindi.com
+
+    Options:
+
+    output_file - The path and name of the zip file to output
+
+    build_dir - The directory in which to build the hotfix.
+    It will be created if it doesn't exist, and it must be empty.
+
+    install - If specified, the hotfix will be installed in your
+    local MAST installation.
+
+    remove_build_dir - If specified, the build_dir will be removed
+    upon completion. WARNING: If specified along with install, your
+    install.log will be removed as well
+    """
     if not os.path.exists(build_dir):
         os.makedirs(build_dir)
     if os.listdir(build_dir):
@@ -253,11 +264,13 @@ def main(
             print "No Errors were encountered during installation"
         print "See more details in log file: {}".format(os.path.join(
             dist_dir, "install.log"))
+    if remove_build_dir:
+        shutil.rmtree(build_dir)
     print "\n\nhotfix zip can be found here: {}".format(output_file)
 
 if __name__ == "__main__":
     try:
-        cli = Cli(main=main)
+        cli = Cli(main=main, description=dedent(main.__doc__))
         cli.run()
     except SystemExit:
         pass
