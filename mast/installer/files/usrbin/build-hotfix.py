@@ -34,12 +34,35 @@ mastsupport@mcindi.com
 """
 import os
 import sys
-import shutil
 import zipfile
+import subprocess
 from mast.cli import Cli
 from dulwich import porcelain as git
 from mast.timestamp import Timestamp
 from mast.logging import make_logger
+
+
+def system_call(
+        command,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        shell=False):
+    """
+    # system_call
+
+    helper function to shell out commands. This should be platform
+    agnostic.
+    """
+    stderr = subprocess.STDOUT
+    pipe = subprocess.Popen(
+        command,
+        stdin=stdin,
+        stdout=stdout,
+        stderr=stderr,
+        shell=shell)
+    stdout, stderr = pipe.communicate()
+    return stdout, stderr
 
 
 def zipdir(path, filename):
@@ -54,6 +77,7 @@ def zipdir(path, filename):
                 )
             )
     zipf.close()
+
 
 install_script = '''
 import os
@@ -181,7 +205,10 @@ repos = [
 ]
 
 
-def main(output_file=default_out_file, build_dir=default_build_dir):
+def main(
+        output_file=default_out_file,
+        build_dir=default_build_dir,
+        install=False):
     if not os.path.exists(build_dir):
         os.makedirs(build_dir)
     if os.listdir(build_dir):
@@ -196,6 +223,7 @@ def main(output_file=default_out_file, build_dir=default_build_dir):
     with open(fname, "w") as fout:
         fout.write(install_script)
 
+    # change directory to build_dir and clone all the repos
     cwd = os.getcwd()
     os.chdir(dist_dir)
     for repo in repos:
@@ -203,8 +231,29 @@ def main(output_file=default_out_file, build_dir=default_build_dir):
         git.clone(repo, target=path)
     os.chdir(cwd)
 
+    # zip up txhe dist_dir
     zipdir(dist_dir, output_file)
 
+    # Install the hotfixes if user says so
+    if install:
+        print "\nInstalling hotfix..."
+        os.chdir(dist_dir)
+        python = sys.executable
+        out, err = system_call([python, "install-hotfix.py"])
+
+        print "Output of installation:\n"
+        for line in out.splitlines():
+            print "\t", line
+
+        if err:
+            print "Errors were encountered during installation:\n"
+            for line in err.splitlines():
+                print "\t", line
+        else:
+            print "No Errors were encountered during installation"
+        print "See more details in log file: {}".format(os.path.join(
+            dist_dir, "install.log"))
+    print "\n\nhotfix zip can be found here: {}".format(output_file)
 
 if __name__ == "__main__":
     try:
