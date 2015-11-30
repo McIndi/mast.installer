@@ -186,25 +186,25 @@ def main(
     --out-file option which defaults to $MAST_HOME/tmp/hotfix.zip). To install
     this hotfix, perform the following steps:
 
-    1. Unzip the file anywhere
-    2. Navigate to the directory which was extracted from the zip file
-    3. Execute the relevant command for your operating system:
+        1. Unzip the file anywhere
+        2. Navigate to the directory which was extracted from the zip file
+        3. Execute the relevant command for your operating system:
 
-    __Windows__
+        Windows
 
-    `C:\path\to\hotfix> <MAST_HOME>\anaconda\python install-hotfix.py`
+        `C:\path\to\hotfix> <MAST_HOME>\anaconda\python install-hotfix.py`
 
-    __Linux__
+        Linux
 
-    `$ <MAST_HOME>/anaconda/bin/python install-hotfix.py`
+        `$ <MAST_HOME>/anaconda/bin/python install-hotfix.py`
 
-    __NOTE__: If mastd is running on your host, you must restart it
+        NOTE: If mastd is running on your host, you must restart it
 
-    # Troubleshooting
+        Troubleshooting
 
-    This hotfix should install without incident. If there are any issues,
-    please copy and paste the error you receive into an email to
-    mastsupport@mcindi.com
+        This hotfix should install without incident. If there are any issues,
+        please copy and paste the error you receive into an email to
+        mastsupport@mcindi.com
 
     Options:
 
