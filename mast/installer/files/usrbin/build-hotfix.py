@@ -3,9 +3,11 @@ import os
 import sys
 import shutil
 import zipfile
+import requests
 import subprocess
 from mast.cli import Cli
 from textwrap import dedent
+from cStringIO import StringIO
 from dulwich import porcelain as git
 from mast.timestamp import Timestamp
 from mast.logging import make_logger
@@ -51,6 +53,7 @@ def zipdir(path, filename):
 install_script = '''
 import os
 import sys
+import shutil
 import logging
 import subprocess
 
@@ -86,6 +89,7 @@ def system_call(
 def main():
     here = os.getcwd()
     python = os.path.abspath(sys.executable)
+    mast_home = os.path.abspath(os.path.join(sys.prefix, os.path.pardir))
     command = [python, "setup.py", "install", "--force"]
     dirs = [
         "mast.cli",
@@ -112,6 +116,8 @@ def main():
         "mast.xor"
     ]
     dirs = [os.path.abspath(os.path.join(here, d)) for d in dirs]
+
+    # Install Python packages from directories
     for d in dirs:
         msg = "Installing {}".format(d)
         logger.info(msg)
@@ -128,6 +134,20 @@ def main():
             print
             print err
             sys.exit(-1)
+    os.chdir(here)
+    os.chdir("files")
+    for root, dirs, files in os.walk("."):
+        if root is not ".":
+            d = root.split(os.path.sep)
+            print os.path.join(*d[1:])
+            dst = os.path.join(mast_home, *d[1:])
+            for f in files:
+                fqp = os.path.join(dst, f)
+                print "Copying file {}".format(fqp)
+                print os.path.join(root, f), "->", dst
+                shutil.copy(os.path.join(root, f), dst)
+
+
     print "hotfix installed"
 
 
@@ -240,9 +260,36 @@ def main(
     for repo in repos:
         path = repo.split("/")[-1].replace(".git", "")
         git.clone(repo, target=path)
+
+    # Get all usrbin scripts
+    resp = requests.get(
+        "https://github.com/McIndi/mast.installer/archive/master.zip")
+    zf = zipfile.ZipFile(StringIO(resp.content))
+    zf.extractall()
+    shutil.rmtree(
+        os.path.join("mast.installer-master",
+                     "mast",
+                     "installer",
+                     "files",
+                     "windows"))
+    shutil.rmtree(
+        os.path.join("mast.installer-master",
+                     "mast",
+                     "installer",
+                     "files",
+                     "linux"))
+    shutil.copytree(
+        os.path.join(
+            "mast.installer-master",
+            "mast",
+            "installer",
+            "files"),
+        "files")
+    shutil.rmtree("mast.installer-master")
+
     os.chdir(cwd)
 
-    # zip up txhe dist_dir
+    # zip up the dist_dir
     zipdir(dist_dir, output_file)
 
     # Install the hotfixes if user says so
@@ -267,6 +314,7 @@ def main(
     if remove_build_dir:
         shutil.rmtree(build_dir)
     print "\n\nhotfix zip can be found here: {}".format(output_file)
+
 
 if __name__ == "__main__":
     try:
