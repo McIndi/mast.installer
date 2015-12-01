@@ -296,6 +296,9 @@ def _add_scripts(prefix):
     shutil.copytree(
         os.path.join(INSTALL_DIR, "files", "doc"),
         os.path.join(prefix, "doc"))
+    shutil.copytree(
+        os.path.join(INSTALL_DIR, "files", "contrib"),
+        os.path.join(prefix, "contrib"))
 
 
 def install_anaconda(prefix):
