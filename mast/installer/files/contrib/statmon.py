@@ -102,5 +102,14 @@ def print_table(env, provider, domains, grep):
     display_rows(header_row, rows, grep, provider)
 
 if __name__ == "__main__":
-    cli = Cli(main=main, description=__doc__)
-    cli.run()
+    try:
+        cli = Cli(main=main, description=__doc__)
+        cli.run()
+    except KeyboardInterrupt:
+        sys.exit(0)
+    except SystemExit:
+        raise
+    except:
+        make_logger("error").exception(
+            "An unhandled exception occurred during execution")
+        raise
