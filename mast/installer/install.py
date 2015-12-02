@@ -1,12 +1,13 @@
 #!/usr/bin/env python
-import cli
 import os
 import sys
-import subprocess
+import cli
 import shutil
 import logging
 import platform
+import subprocess
 from tstamp import Timestamp
+import dulwich.porcelain as git
 
 cwd = sys._MEIPASS
 
@@ -34,8 +35,9 @@ INSTALL_DIR = cwd
 
 # TODO: Move some of the logging options to the command line
 t = Timestamp()
+filename = "{}-mast-install.log".format(t.timestamp)
 logging.basicConfig(
-    filename="{}-mast-install.log".format(t.timestamp),
+    filename=filename,
     filemode="w",
     format="level=%(levelname)s; datetime=%(asctime)s; "
            "process_name=%(processName)s; pid=%(process)d; "
@@ -108,6 +110,9 @@ def _install_packages(prefix, net_install):
     """
     prefix = os.path.join(os.path.realpath(prefix), "anaconda")
     directory = os.path.join(sys._MEIPASS, "packages")
+    tmp_dir = os.path.join(sys._MEIPASS, "tmp")
+    if not os.path.exists(tmp_dir):
+        os.mkdir(tmp_dir)
 
     if "Windows" in platform.system():
         python = os.path.join(prefix, "python")
@@ -142,44 +147,59 @@ def _install_packages(prefix, net_install):
 
     if net_install:
         repos = [
-            "git+https://github.com/mcindi/mast.xor",
-            "git+https://github.com/mcindi/mast.timestamp",
-            "git+https://github.com/mcindi/mast.pprint",
-            "git+https://github.com/mcindi/mast.plugin_utils",
-            "git+https://github.com/mcindi/mast.logging",
-            "git+https://github.com/mcindi/mast.config",
-            "git+https://github.com/mcindi/mast.plugins",
-            "git+https://github.com/mcindi/mast.hashes",
-            "git+https://github.com/mcindi/mast.datapower.accounts",
-            "git+https://github.com/mcindi/mast.datapower.backups",
-            "git+https://github.com/mcindi/mast.datapower.datapower",
-            "git+https://github.com/mcindi/mast.datapower.deployment",
-            "git+https://github.com/mcindi/mast.datapower.developer",
-            "git+https://github.com/mcindi/mast.datapower.network",
-            "git+https://github.com/mcindi/mast.datapower.ssh",
-            "git+https://github.com/mcindi/mast.datapower.status",
-            "git+https://github.com/mcindi/mast.datapower.system",
-            "git+https://github.com/mcindi/mast.datapower.web",
-            "git+https://github.com/mcindi/mast.daemon",
-            "git+https://github.com/mcindi/mast.cron",
-            "git+https://github.com/mcindi/mast.cli",
-            "git+https://github.com/tellapart/commandr",
-            "git+https://github.com/cherrypy/cherrypy",
-            "git+https://github.com/paramiko/paramiko",
-            "git+https://github.com/waylan/Python-Markdown",
-            "git+https://github.com/warner/python-ecdsa",
-            "git+https://github.com/jelmer/dulwich"
+            "https://github.com/mcindi/mast.xor.git",
+            "https://github.com/mcindi/mast.timestamp.git",
+            "https://github.com/mcindi/mast.pprint.git",
+            "https://github.com/mcindi/mast.plugin_utils.git",
+            "https://github.com/mcindi/mast.logging.git",
+            "https://github.com/mcindi/mast.config.git",
+            "https://github.com/mcindi/mast.plugins.git",
+            "https://github.com/mcindi/mast.hashes.git",
+            "https://github.com/mcindi/mast.datapower.accounts.git",
+            "https://github.com/mcindi/mast.datapower.backups.git",
+            "https://github.com/mcindi/mast.datapower.datapower.git",
+            "https://github.com/mcindi/mast.datapower.deployment.git",
+            "https://github.com/mcindi/mast.datapower.developer.git",
+            "https://github.com/mcindi/mast.datapower.network.git",
+            "https://github.com/mcindi/mast.datapower.ssh.git",
+            "https://github.com/mcindi/mast.datapower.status.git",
+            "https://github.com/mcindi/mast.datapower.system.git",
+            "https://github.com/mcindi/mast.datapower.web.git",
+            "https://github.com/mcindi/mast.daemon.git",
+            "https://github.com/mcindi/mast.cron.git",
+            "https://github.com/mcindi/mast.cli.git",
+            "https://github.com/tellapart/commandr.git",
+            "https://github.com/cherrypy/cherrypy.git",
+            "https://github.com/paramiko/paramiko.git",
+            "https://github.com/waylan/Python-Markdown.git",
+            "https://github.com/warner/python-ecdsa.git",
+            "https://github.com/jelmer/dulwich.git"
         ]
         for repo in repos:
             print "installing", repo
-            out, err = system_call([pip, "install", repo])
+            # clone the repo
+            target = repo.split("/")[-1].replace(".git", "")
+            target = os.path.join(tmp_dir, target)
+            with open("git.log", "w") as fout:
+                git.clone(repo,
+                          target=target,
+                          errstream=fout)
+
+            # chdir & install
+            cwd = os.getcwd()
+            os.chdir(target)
+            out, err = system_call([python, "setup.py", "install", "--force"])
             if err:
-                print "ERROR: See log for details"
+                print "\tERROR: check the log for details"
+                logger.error(
+                    "An error was encountered: {}".format(err))
             else:
-                print "Done. See logs for details"
-            logger.debug(
-                "Installing {}...result: out: {}, err:".format(
-                    repo, out, err))
+                print "\tDONE: {} installed, check log for details".format(
+                    repo)
+                logger.debug(
+                    "installed {}. out: {}, err: {}".format(repo, out, err))
+            os.chdir(cwd)
+
     else:
         # Sort the packages
         dir_list = os.listdir(directory)
