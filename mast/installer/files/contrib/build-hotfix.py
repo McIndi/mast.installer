@@ -113,7 +113,13 @@ def main():
         "mast.plugin_utils",
         "mast.pprint",
         "mast.timestamp",
-        "mast.xor"
+        "mast.xor",
+        "commandr",
+        "cherrypy",
+        "paramiko",
+        "Python-Markdown",
+        "python-ecdsa",
+        "dulwich"
     ]
     dirs = [os.path.abspath(os.path.join(here, d)) for d in dirs]
 
@@ -190,7 +196,13 @@ repos = [
     "https://github.com/mcindi/mast.plugin_utils.git",
     "https://github.com/mcindi/mast.pprint.git",
     "https://github.com/mcindi/mast.timestamp.git",
-    "https://github.com/mcindi/mast.xor.git"
+    "https://github.com/mcindi/mast.xor.git",
+    "https://github.com/tellapart/commandr.git",
+    "https://github.com/cherrypy/cherrypy.git",
+    "https://github.com/paramiko/paramiko.git",
+    "https://github.com/waylan/Python-Markdown.git",
+    "https://github.com/warner/python-ecdsa.git",
+    "https://github.com/jelmer/dulwich.git"
 ]
 
 
@@ -259,9 +271,11 @@ def main(
     os.chdir(dist_dir)
     for repo in repos:
         path = repo.split("/")[-1].replace(".git", "")
+        fqp = os.path.abspath(os.path.join(dist_dir, path))
+        print "\nCloning {} to {}".format(repo, fqp)
         git.clone(repo, target=path)
 
-    # Get all usrbin scripts
+    # Get all files
     resp = requests.get(
         "https://github.com/McIndi/mast.installer/archive/master.zip")
     zf = zipfile.ZipFile(StringIO(resp.content))
@@ -287,6 +301,7 @@ def main(
         "files")
     shutil.rmtree("mast.installer-master")
 
+    # Get out of build_dir so we can zip it up
     os.chdir(cwd)
 
     # zip up the dist_dir
