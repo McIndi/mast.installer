@@ -188,7 +188,10 @@ def _install_packages(prefix, net_install):
             # chdir & install
             cwd = os.getcwd()
             os.chdir(target)
-            out, err = system_call([python, "setup.py", "install", "--force"])
+            if "dulwich" in repo:
+                out, err = system_call([python, "setup.py", "--pure", "install", "--force"])
+            else:
+                out, err = system_call([python, "setup.py", "install", "--force"])
             if err:
                 print "\tERROR: check the log for details"
                 logger.error(
@@ -221,7 +224,10 @@ def _install_packages(prefix, net_install):
                     with open("setup.py", "w") as fout:
                         fout.write(content)
 
-                out, err = system_call([python, "setup.py", "install"])
+                if "dulwich" in d:
+                    out, err = system_call([python, "setup.py", "--pure", "install"])
+                else:
+                    out, err = system_call([python, "setup.py", "install"])
                 print "\tDone. See log for details."
                 logger.debug(
                     "Installing {}...Result: out: {}, err: {}".format(
