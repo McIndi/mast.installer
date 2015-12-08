@@ -47,7 +47,7 @@ some other options to specify how you would like to install MAST.
 ## Requirements
 
 1. Python 2.7
-2. pyinstaller
+2. pyinstaller==2.1
 3. py.test
 
 ## Links to the dependent packages
