@@ -21,12 +21,39 @@ import mast.pprint
 import mast.timestamp
 import mast.xor
 
+import re
 import os
 import inspect
 import textwrap
 import markdown
+import platform
+import subprocess
 from collections import OrderedDict
 from markdown.extensions.toc import TocExtension
+
+
+def system_call(
+        command,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        shell=False):
+    """
+    # system_call
+
+    helper function to shell out commands. This should be platform
+    agnostic.
+    """
+    stderr = subprocess.STDOUT
+    pipe = subprocess.Popen(
+        command,
+        stdin=stdin,
+        stdout=stdout,
+        stderr=stderr,
+        shell=shell)
+    stdout, stderr = pipe.communicate()
+    return stdout, stderr
+
 
 class LastUpdatedOrderedDict(OrderedDict):
     'Store items in the order the keys were last added'
@@ -211,6 +238,45 @@ def generate_markdown(objects):
                             md += "\n\nNo documentation available for this method!\n"
     return md
 
+
+def generate_cli_reference():
+    mast_home = os.environ["MAST_HOME"]
+    scripts = os.listdir(mast_home)
+    scripts = filter(
+        lambda f: os.path.isfile(os.path.join(mast_home, f)),
+        scripts)
+    scripts = filter(
+        lambda f: f.startswith("mast-"),
+        scripts)
+    scripts = filter(lambda f: "mast-web" not in f, scripts)
+
+    ret = "<h1>MAST CLI Reference</h1>\n\n[TOC]\n\n"
+    for script in scripts:
+        _script = os.path.join(mast_home, script)
+        ret += "# {}\n\n".format(script.replace("_", "\_"))
+
+        command = [_script, "--help"]
+        print command
+        out, err = system_call(command)
+        out = out.replace("  -", "    -")
+        out = re.sub(r"^  (\w)", r"    \1", out, flags=re.MULTILINE)
+        out = re.sub(r"^(.*?Commands:)", r"\n\n\1", out, flags=re.MULTILINE)
+        out = out.replace(":", ":\n\n")
+        out = out.replace("----------------------------------------", "")
+        ret += "{}\n\n".format(out)
+        if "mast-ssh" not in _script:
+            subcommands = filter(lambda l: l.startswith(" "), out.splitlines())
+            for subcommand in subcommands:
+                command = [_script, subcommand, "--help"]
+                out, err = system_call(command)
+                out = out.replace("  -", "    -")
+                out = out.replace("Options:", "Options:\n\n")
+                out = out.replace("----------------------------------------", "")
+                ret += "## {} {}\n\n".format(script.replace("_", "\_"), subcommand.split(" - ")[0].replace("_", "\_"))
+                ret += "{}\n\n".format(out)
+    return ret
+
+
 def main(out_dir="tmp"):
     api_objects = get_objects(api_modules)
     api_md = generate_markdown(api_objects)
@@ -222,13 +288,31 @@ def main(out_dir="tmp"):
     user_md = "{}<h1>MAST Manual - User Documentation v 2.1.0</h1>\n\n[TOC]\n\n{}</body></html>".format(
         css, user_md)
 
+    cli_md = generate_cli_reference()
+
     filename = os.path.join(out_dir, "APIDocs.html")
     with open(filename, "w") as fout:
         fout.write(markdown.markdown(api_md, extensions=[TocExtension(title="Table of Contents"), "markdown.extensions.codehilite"]))
 
+    filename = os.path.join(out_dir, "APIDocs.md")
+    with open(filename, "w") as fout:
+        fout.write(api_md)
+
     filename = os.path.join(out_dir, "UserDocs.html")
     with open(filename, "w") as fout:
         fout.write(markdown.markdown(user_md, extensions=[TocExtension(title="Table of Contents"), "markdown.extensions.codehilite"]))
+
+    filename = os.path.join(out_dir, "UserDocs.md")
+    with open(filename, "w") as fout:
+        fout.write(user_md)
+
+    filename = os.path.join(out_dir, "CLIReference.md")
+    with open(filename, "w") as fout:
+        fout.write(cli_md)
+
+    filename = os.path.join(out_dir, "CLIReference.html")
+    with open(filename, "w") as fout:
+        fout.write(markdown.markdown(cli_md, extensions=[TocExtension(title="Table of Contents"), "markdown.extensions.codehilite"]))
 
 # Module level docstrings
 #   should only contain '###' and above
