@@ -72,6 +72,10 @@ css = """
                 margin-left: 10%;
                 margin-right: 10%;
             }
+            #content {
+                background-color: #f5f5f5;
+                padding: 5px 5px 5px 5px;
+            }
             .codehilite .hll { background-color: #ffffcc }
             .codehilite  { background: #f8f8f8; }
             .codehilite .c { color: #408080; font-style: italic } /* Comment */
@@ -137,6 +141,7 @@ css = """
         </style>
     </head>
     <body>
+        <div id="content">
 """
 
 api_modules = LastUpdatedOrderedDict([
@@ -284,12 +289,12 @@ def generate_cli_reference():
 def main(out_dir="tmp"):
     api_objects = get_objects(api_modules)
     api_md = generate_markdown(api_objects)
-    api_md = "{}<h1>MAST Manual - API Documentation v 2.1.0</h1>\n\n[TOC]\n\n{}</body></html>".format(
+    api_md = "{}<h1>MAST Manual - API Documentation v 2.1.0</h1>\n\n[TOC]\n\n{}</div></body></html>".format(
         css, api_md)
 
     user_objects = get_objects(user_modules)
     user_md = generate_markdown(user_objects)
-    user_md = "{}<h1>MAST Manual - User Documentation v 2.1.0</h1>\n\n[TOC]\n\n{}</body></html>".format(
+    user_md = "{}<h1>MAST Manual - User Documentation v 2.1.0</h1>\n\n[TOC]\n\n{}</div></body></html>".format(
         css, user_md)
 
     cli_md = generate_cli_reference()
