@@ -68,6 +68,10 @@ css = """
 <html>
     <head>
         <style>
+            body {
+                margin-left: 10%;
+                margin-right: 10%;
+            }
             .codehilite .hll { background-color: #ffffcc }
             .codehilite  { background: #f8f8f8; }
             .codehilite .c { color: #408080; font-style: italic } /* Comment */
@@ -209,8 +213,8 @@ def generate_markdown(objects):
         else:
             md += "\n\nNo module level documentation\n"
         for _k, _v in v.items():
-            # _k will either be functions or options
-            md += "\n### {}\n".format(_k)
+            # _k will either be functions or classes
+            # md += "\n### {}\n".format(_k)
             if _k == "functions":
                 for item in _v:
                     # Functions
