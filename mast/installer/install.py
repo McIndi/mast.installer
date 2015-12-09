@@ -281,8 +281,8 @@ def _add_scripts(prefix):
             "mast-system",    "mast-accounts",
             "mast-backups",   "mast-deployment",
             "mast-developer", "mast-network",
-            "mast-network",   "mast-web",
-            "mast-ssh"
+            "mast-web",       "mast-ssh",
+            "mastd"
         ]
 
     for f in files:
