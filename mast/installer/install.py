@@ -12,11 +12,18 @@ import dulwich.porcelain as git
 cwd = sys._MEIPASS
 
 if "Windows" in platform.system():
-    ANACONDA_INSTALL_SCRIPT = os.path.join(
-        cwd,
-        "scripts",
-        "anaconda",
-        "Anaconda-2.4.0-Windows-x86_64.exe")
+    if "32bit" in platform.architecture():
+        ANACONDA_INSTALL_SCRIPT = os.path.join(
+            cwd,
+            "scripts",
+            "anaconda",
+            "Anaconda-2.4.0-Windows-x86.exe")
+    elif "64bit" in platform.architecture():
+        ANACONDA_INSTALL_SCRIPT = os.path.join(
+            cwd,
+            "scripts",
+            "anaconda",
+            "Anaconda-2.4.0-Windows-x86_64.exe")
 elif "Linux" in platform.system():
     if '32bit' in platform.architecture():
         ANACONDA_INSTALL_SCRIPT = os.path.join(
@@ -85,7 +92,6 @@ def _install_anaconda(prefix):
             "/S",
             "/AddToPath=0",
             "/D={}".format(prefix)]
-        print command
     elif "" in platform.system():
         command = [
             ANACONDA_INSTALL_SCRIPT,

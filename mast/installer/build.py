@@ -37,8 +37,12 @@ def download_file(url, dst):
 
 if "Windows" in platform.system():
     # Set Windows parameters here
-    anaconda_installer = "Anaconda-2.4.0-Windows-x86_64.exe"
-    anaconda_installer_url = "https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda2-2.4.0-Windows-x86_64.exe"
+    if "32bit" in platform.architecture():
+        anaconda_installer = "Anaconda-2.4.0-Windows-x86.exe"
+        anaconda_installer_url = "https://repo.continuum.io/archive/Anaconda2-2.4.0-Windows-x86.exe"
+    elif "64bit" in platform.architecture():
+        anaconda_installer = "Anaconda-2.4.0-Windows-x86_64.exe"
+        anaconda_installer_url = "https://repo.continuum.io/archive/Anaconda2-2.4.0-Windows-x86_64.exe"
     spec_file = "install.spec.windows"
 elif "Linux" in platform.system():
     # Set Linux parameters here
