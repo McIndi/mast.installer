@@ -30,6 +30,7 @@ import platform
 import subprocess
 from collections import OrderedDict
 from markdown.extensions.toc import TocExtension
+from markdown.extensions.codehilite import CodeHiliteExtension
 
 
 def system_call(
@@ -75,6 +76,9 @@ css = """
             #content {
                 background-color: #f5f5f5;
                 padding: 5px 5px 5px 5px;
+            }
+            pre {
+                overflow: auto;
             }
             .codehilite .hll { background-color: #ffffcc }
             .codehilite  { background: #f8f8f8; }
@@ -272,7 +276,7 @@ def generate_cli_reference():
         out = re.sub(r"^(.*?Commands:)", r"\n\n\1", out, flags=re.MULTILINE)
         out = out.replace(":", ":\n\n")
         out = out.replace("----------------------------------------", "")
-        ret += "{}\n\n".format(out)
+        ret += "{}\n\n".format(textwrap.dedent(out))
         if "mast-ssh" not in _script:
             subcommands = filter(lambda l: l.startswith(" "), out.splitlines())
             for subcommand in subcommands:
@@ -282,7 +286,7 @@ def generate_cli_reference():
                 out = out.replace("Options:", "Options:\n\n")
                 out = out.replace("----------------------------------------", "")
                 ret += "## {} {}\n\n".format(script.replace("_", "\_"), subcommand.split(" - ")[0].replace("_", "\_"))
-                ret += "{}\n\n".format(out)
+                ret += "{}\n\n".format(textwrap.dedent(out))
     return ret
 
 
@@ -297,11 +301,12 @@ def main(out_dir="tmp"):
     user_md = "{}<h1>MAST Manual - User Documentation v 2.1.0</h1>\n\n[TOC]\n\n{}</div></body></html>".format(
         css, user_md)
 
-    cli_md = generate_cli_reference()
+    cli_md = "{}\n\n{}\n\n</div></body></html>".format(
+        css, generate_cli_reference())
 
     filename = os.path.join(out_dir, "APIDocs.html")
     with open(filename, "w") as fout:
-        fout.write(markdown.markdown(api_md, extensions=[TocExtension(title="Table of Contents"), "markdown.extensions.codehilite"]))
+        fout.write(markdown.markdown(api_md, extensions=[TocExtension(title="Table of Contents"), CodeHiliteExtension(guess_lang=False)]))
 
     filename = os.path.join(out_dir, "APIDocs.md")
     with open(filename, "w") as fout:
@@ -309,7 +314,7 @@ def main(out_dir="tmp"):
 
     filename = os.path.join(out_dir, "UserDocs.html")
     with open(filename, "w") as fout:
-        fout.write(markdown.markdown(user_md, extensions=[TocExtension(title="Table of Contents"), "markdown.extensions.codehilite"]))
+        fout.write(markdown.markdown(user_md, extensions=[TocExtension(title="Table of Contents"), CodeHiliteExtension(guess_lang=False)]))
 
     filename = os.path.join(out_dir, "UserDocs.md")
     with open(filename, "w") as fout:
@@ -321,7 +326,7 @@ def main(out_dir="tmp"):
 
     filename = os.path.join(out_dir, "CLIReference.html")
     with open(filename, "w") as fout:
-        fout.write(markdown.markdown(cli_md, extensions=[TocExtension(title="Table of Contents"), "markdown.extensions.codehilite"]))
+        fout.write(markdown.markdown(cli_md, extensions=[TocExtension(title="Table of Contents"), CodeHiliteExtension(guess_lang=False)]))
 
 # Module level docstrings
 #   should only contain '###' and above
