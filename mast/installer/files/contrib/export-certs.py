@@ -65,4 +65,3 @@ def main(appliances=[], credentials=[], timeout=120,
 if __name__ == "__main__":
     _cli = cli.Cli(main=main)
     _cli.run()
-
