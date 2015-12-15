@@ -78,7 +78,7 @@ def system_call(
 
 
 # TODO: Move some options to the command line.
-def _install_anaconda(prefix, anaconda_wizzard):
+def _install_anaconda(prefix):
     """
     install_anaconda
 
@@ -87,17 +87,12 @@ def _install_anaconda(prefix, anaconda_wizzard):
     """
     prefix = os.path.join(os.path.realpath(prefix), "anaconda")
     if "Windows" in platform.system():
-        if anaconda_wizzard:
-            command = [
-                ANACONDA_INSTALL_SCRIPT,
-                "/AddToPath=0",
-                "/D={}".format(prefix)]
-        else:
-            command = [
-                ANACONDA_INSTALL_SCRIPT,
-                "/S",
-                "/AddToPath=0",
-                "/D={}".format(prefix)]
+        command = [
+            ANACONDA_INSTALL_SCRIPT,
+            "/S",
+            "/AddToPath=0",
+            "/RegisterPython=0",
+            "/D={}".format(prefix)]
     elif "Linux" in platform.system():
         command = [
             ANACONDA_INSTALL_SCRIPT,
@@ -128,7 +123,6 @@ def _install_packages(prefix, net_install):
 
     if "Windows" in platform.system():
         python = os.path.join(prefix, "python")
-        pip = os.path.join(prefix, "Scripts", "pip")
     elif "Linux" in platform.system():
         bin_dir = os.path.join(prefix, "bin")
         lib_dir = os.path.join(prefix, "lib")
@@ -149,7 +143,6 @@ def _install_packages(prefix, net_install):
                 "Result: out: {}, err: {}".format(out, err))
 
         python = os.path.join(prefix, "bin", "python")
-        pip = os.path.join(prefix, "bin", "pip")
 
     logger.debug("PATH: {}".format(os.environ["PATH"]))
     try:
@@ -339,10 +332,10 @@ def _add_scripts(prefix):
         os.path.join(prefix, "contrib"))
 
 
-def install_anaconda(prefix, anaconda_wizzard):
+def install_anaconda(prefix):
     print "Installing Anaconda Python Distribution"
     try:
-        _install_anaconda(prefix, anaconda_wizzard)
+        _install_anaconda(prefix)
     except:
         print "An error occurred while installing Anaconda Python distribution"
         print "See log for details."
@@ -378,7 +371,7 @@ def add_scripts(prefix):
     print "\tDone. See log for details"
 
 
-def main(prefix="", net_install=False, anaconda_wizzard=False):
+def main(prefix="", net_install=False):
     """
     install mast into specified directory. Defaults to `$PWD/mast`.
     
@@ -391,16 +384,13 @@ def main(prefix="", net_install=False, anaconda_wizzard=False):
     * net_install: If specified, the latest versions of all modules will
     be downloaded from the internet and installed as opposed to just the
     versions shipped with the installer
-    * anaconda_wizzard: (Windows only) If specified, The anaconda
-    installer will not berun in silent mode, but the wizzard will be
-    run so you can customize your anaconda installation.
     """
     if prefix == "":
         prefix = os.path.realpath(prefix)
         prefix = os.path.join(prefix, "mast")
     else:
         prefix = os.path.realpath(prefix)
-    install_anaconda(prefix, anaconda_wizzard)
+    install_anaconda(prefix)
     install_packages(prefix, net_install)
     add_scripts(prefix)
 
