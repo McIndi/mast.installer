@@ -78,7 +78,7 @@ def system_call(
 
 
 # TODO: Move some options to the command line.
-def _install_anaconda(prefix):
+def _install_anaconda(prefix, anaconda_wizzard):
     """
     install_anaconda
 
@@ -87,12 +87,19 @@ def _install_anaconda(prefix):
     """
     prefix = os.path.join(os.path.realpath(prefix), "anaconda")
     if "Windows" in platform.system():
-        command = [
-            ANACONDA_INSTALL_SCRIPT,
-            "/S",
-            "/AddToPath=0",
-            "/D={}".format(prefix)]
-    elif "" in platform.system():
+        if anaconda_wizzard:
+            command = [
+                ANACONDA_INSTALL_SCRIPT,
+                "/S",
+                "/AddToPath=0",
+                "/D={}".format(prefix)]
+        else:
+            command = [
+                ANACONDA_INSTALL_SCRIPT,
+                "/S",
+                "/AddToPath=0",
+                "/D={}".format(prefix)]
+    elif "Linux" in platform.system():
         command = [
             ANACONDA_INSTALL_SCRIPT,
             "-b",
@@ -333,10 +340,10 @@ def _add_scripts(prefix):
         os.path.join(prefix, "contrib"))
 
 
-def install_anaconda(prefix):
+def install_anaconda(prefix, anaconda_wizzard):
     print "Installing Anaconda Python Distribution"
     try:
-        _install_anaconda(prefix)
+        _install_anaconda(prefix, anaconda_wizzard)
     except:
         print "An error occurred while installing Anaconda Python distribution"
         print "See log for details."
@@ -372,18 +379,29 @@ def add_scripts(prefix):
     print "\tDone. See log for details"
 
 
-def main(prefix="", net_install=False):
+def main(prefix="", net_install=False, anaconda_wizzard=False):
     """
-    main
+    install mast into specified directory. Defaults to `$PWD/mast`.
+    
+    Parameters:
 
-    install mast into specified directory.
+    * prefix: The location to which to install mast. If not provided,
+    it will install mast to a "mast" subdirectory of the location of
+    the installer. If you want it installed anywhere specific provide
+    that (either full or relative) to this parameter
+    * net_install: If specified, the latest versions of all modules will
+    be downloaded from the internet and installed as opposed to just the
+    versions shipped with the installer
+    * anaconda_wizzard: (Windows only) If specified, The anaconda
+    installer will not berun in silent mode, but the wizzard will be
+    run so you can customize your anaconda installation.
     """
     if prefix == "":
         prefix = os.path.realpath(prefix)
         prefix = os.path.join(prefix, "mast")
     else:
         prefix = os.path.realpath(prefix)
-    install_anaconda(prefix)
+    install_anaconda(prefix, anaconda_wizzard)
     install_packages(prefix, net_install)
     add_scripts(prefix)
 
