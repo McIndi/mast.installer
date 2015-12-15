@@ -1,4 +1,5 @@
 import os
+import re
 import mast.cli as cli
 from mast.logging import make_logger
 import mast.datapower.datapower as datapower
@@ -56,7 +57,7 @@ def main(appliances=[],
 
                 # Get filename as it will appear locally
                 filename = cert.find("Filename").text
-                out_file = filename.replace(":///", "/")
+                out_file = re.sub(r":[/]*", "/", filename)
                 out_file = out_file.split("/")
                 out_file = os.path.join(dir_name, *out_file)
 
