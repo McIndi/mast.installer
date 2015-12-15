@@ -90,7 +90,6 @@ def _install_anaconda(prefix, anaconda_wizzard):
         if anaconda_wizzard:
             command = [
                 ANACONDA_INSTALL_SCRIPT,
-                "/S",
                 "/AddToPath=0",
                 "/D={}".format(prefix)]
         else:
