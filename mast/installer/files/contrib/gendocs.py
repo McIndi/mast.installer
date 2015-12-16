@@ -70,18 +70,27 @@ css = """
     <head>
         <style>
             body {
+                background-color: #f5f5f5;
                 margin-left: 10%;
                 margin-right: 10%;
+                font-family: Sans-Serif;
             }
             #content {
-                background-color: #f5f5f5;
+                background-color: #ffffff;
                 padding: 5px 5px 5px 5px;
+                box-shadow: 10px 10px 5px #888888;
+            }
+            #inner-content{
+                width: 75%;
+                margin-left: auto;
+                margin-right: auto;
             }
             pre {
                 overflow: auto;
+                padding: 5px 5px 5px 5px;
             }
             .codehilite .hll { background-color: #ffffcc }
-            .codehilite  { background: #f8f8f8; }
+            .codehilite  { background: #f0f0f0;}
             .codehilite .c { color: #408080; font-style: italic } /* Comment */
             .codehilite .err { border: 1px solid #FF0000 } /* Error */
             .codehilite .k { color: #008000; font-weight: bold } /* Keyword */
@@ -146,6 +155,7 @@ css = """
     </head>
     <body>
         <div id="content">
+            <div id="inner-content">
 """
 
 api_modules = LastUpdatedOrderedDict([
@@ -298,20 +308,24 @@ def generate_cli_reference():
 def main(out_dir="tmp"):
     api_objects = get_objects(api_modules)
     api_md = generate_markdown(api_objects)
-    api_md = "{}<h1>MAST Manual - API Documentation v 2.1.0</h1>\n\n[TOC]\n\n{}</div></body></html>".format(
+    api_md = "{}<h1>MAST Manual - API Documentation v 2.1.0</h1>\n\n[TOC]\n\n{}</div></div></body></html>".format(
         css, api_md)
 
     user_objects = get_objects(user_modules)
     user_md = generate_markdown(user_objects)
-    user_md = "{}<h1>MAST Manual - User Documentation v 2.1.0</h1>\n\n[TOC]\n\n{}</div></body></html>".format(
+    user_md = "{}<h1>MAST Manual - User Documentation v 2.1.0</h1>\n\n[TOC]\n\n{}</div></div></body></html>".format(
         css, user_md)
 
-    cli_md = "{}\n\n{}\n\n</div></body></html>".format(
+    cli_md = "{}\n\n{}\n\n</div></div></body></html>".format(
         css, generate_cli_reference())
 
     filename = os.path.join(out_dir, "APIDocs.html")
     with open(filename, "w") as fout:
-        fout.write(markdown.markdown(api_md, extensions=[TocExtension(title="Table of Contents"), CodeHiliteExtension(guess_lang=False)]))
+        fout.write(markdown.markdown(
+            api_md,
+            extensions=[
+                TocExtension(title="Table of Contents"),
+                CodeHiliteExtension(guess_lang=False)]))
 
     filename = os.path.join(out_dir, "APIDocs.md")
     with open(filename, "w") as fout:
@@ -319,7 +333,11 @@ def main(out_dir="tmp"):
 
     filename = os.path.join(out_dir, "UserDocs.html")
     with open(filename, "w") as fout:
-        fout.write(markdown.markdown(user_md, extensions=[TocExtension(title="Table of Contents"), CodeHiliteExtension(guess_lang=False)]))
+        fout.write(markdown.markdown(
+            user_md,
+            extensions=[
+                TocExtension(title="Table of Contents"),
+                CodeHiliteExtension(guess_lang=False)]))
 
     filename = os.path.join(out_dir, "UserDocs.md")
     with open(filename, "w") as fout:
@@ -331,7 +349,11 @@ def main(out_dir="tmp"):
 
     filename = os.path.join(out_dir, "CLIReference.html")
     with open(filename, "w") as fout:
-        fout.write(markdown.markdown(cli_md, extensions=[TocExtension(title="Table of Contents"), CodeHiliteExtension(guess_lang=False)]))
+        fout.write(markdown.markdown(
+            cli_md,
+            extensions=[
+                TocExtension(title="Table of Contents"),
+                CodeHiliteExtension(guess_lang=False)]))
 
 # Module level docstrings
 #   should only contain '###' and above
