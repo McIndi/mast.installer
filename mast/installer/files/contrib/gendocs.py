@@ -237,7 +237,7 @@ def generate_markdown(objects):
             if _k == "functions":
                 for item in _v:
                     # Functions
-                    md += "\n#### {}\n".format(escape(item[0]))
+                    md += "\n#### {}{}\n".format(escape(item[0]), inspect.formatargspec(inspect.getargspec(item[1])[0]))
                     if item[1].__doc__:
                         md += "\n\n{}\n".format(
                             textwrap.dedent(item[1].__doc__))
@@ -283,7 +283,10 @@ def generate_cli_reference():
         out = out.replace("  -", "    -")
         out = re.sub(r"^  (\w)", r"    \1", out, flags=re.MULTILINE)
         out = re.sub(r"^(.*?Commands:)", r"\n\n\1", out, flags=re.MULTILINE)
-        out = out.replace(":", ":\n\n")
+        if "mast-ssh" not in _script:
+            out = out.replace(":", ":\n\n")
+        else:
+            out = out.replace("arguments:", "arguments:\n\n")
         out = out.replace("----------------------------------------", "")
         ret += "{}\n\n".format(textwrap.dedent(out))
         if "mast-ssh" not in _script:
