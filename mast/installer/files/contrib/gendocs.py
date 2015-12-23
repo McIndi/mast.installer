@@ -171,10 +171,7 @@ api_modules = LastUpdatedOrderedDict([
     (mast.plugin_utils, LastUpdatedOrderedDict()),
     (mast.pprint, LastUpdatedOrderedDict()),
     (mast.timestamp, LastUpdatedOrderedDict()),
-    (mast.xor, LastUpdatedOrderedDict())
-])
-
-user_modules = OrderedDict([
+    (mast.xor, LastUpdatedOrderedDict()),
     (mast.datapower.accounts, LastUpdatedOrderedDict()),
     (mast.datapower.backups, LastUpdatedOrderedDict()),
     (mast.datapower.deploy, LastUpdatedOrderedDict()),
@@ -184,7 +181,8 @@ user_modules = OrderedDict([
     (mast.datapower.ssh, LastUpdatedOrderedDict()),
     (mast.datapower.status, LastUpdatedOrderedDict()),
     (mast.datapower.system, LastUpdatedOrderedDict())
- ])
+])
+
 
 def get_objects(modules):
     for module in dict(modules):
@@ -237,7 +235,7 @@ def generate_markdown(objects):
             if _k == "functions":
                 for item in _v:
                     # Functions
-                    md += "\n#### {}{}\n".format(escape(item[0]), inspect.formatargspec(inspect.getargspec(item[1])[0]))
+                    md += "\n#### {}\n".format(escape(item[0]))
                     if item[1].__doc__:
                         md += "\n\n{}\n".format(
                             textwrap.dedent(item[1].__doc__))
@@ -314,11 +312,6 @@ def main(out_dir="tmp"):
     api_md = "{}<h1>MAST Manual - API Documentation v 2.1.0</h1>\n\n[TOC]\n\n{}</div></div></body></html>".format(
         css, api_md)
 
-    user_objects = get_objects(user_modules)
-    user_md = generate_markdown(user_objects)
-    user_md = "{}<h1>MAST Manual - User Documentation v 2.1.0</h1>\n\n[TOC]\n\n{}</div></div></body></html>".format(
-        css, user_md)
-
     cli_md = "{}\n\n{}\n\n</div></div></body></html>".format(
         css, generate_cli_reference())
 
@@ -333,18 +326,6 @@ def main(out_dir="tmp"):
     filename = os.path.join(out_dir, "APIDocs.md")
     with open(filename, "w") as fout:
         fout.write(api_md)
-
-    filename = os.path.join(out_dir, "UserDocs.html")
-    with open(filename, "w") as fout:
-        fout.write(markdown.markdown(
-            user_md,
-            extensions=[
-                TocExtension(title="Table of Contents"),
-                CodeHiliteExtension(guess_lang=False)]))
-
-    filename = os.path.join(out_dir, "UserDocs.md")
-    with open(filename, "w") as fout:
-        fout.write(user_md)
 
     filename = os.path.join(out_dir, "CLIReference.md")
     with open(filename, "w") as fout:
