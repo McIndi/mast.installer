@@ -237,8 +237,12 @@ def generate_markdown(objects):
                     # Functions
                     md += "\n#### {}\n".format(escape(item[0]))
                     if item[1].__doc__:
+                        regex = re.compile(r"\*\s`.*?--(.*?)`")
+                        doc = item[1].__doc__
+                        for match in regex.finditer(item[1].__doc__):
+                            doc = doc.replace(match[0], match[1].replace("-", "_"))
                         md += "\n\n{}\n".format(
-                            textwrap.dedent(item[1].__doc__))
+                            textwrap.dedent(doc))
                     else:
                         md += "\n\nNo documentation available for this function!\n"
             elif _k == "classes":
