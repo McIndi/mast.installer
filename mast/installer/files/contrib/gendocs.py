@@ -205,7 +205,9 @@ def get_objects(modules):
         if classes:
             modules[module]["classes"] = LastUpdatedOrderedDict()
         for cls in classes:
-            methods = inspect.getmembers(cls[1], inspect.ismethod)
+            methods = inspect.getmembers(
+                cls[1],
+                lambda x: inspect.ismethod(x) or isinstance(x, property))
             methods = filter(
                 lambda x: module.__name__ in x[1].__module__,
                 methods)
@@ -224,7 +226,7 @@ def generate_markdown(objects):
     md = ""
     for k, v in objects.items():
         # Module names
-        md += "\n## {}\n".format(escape(k.__name__))
+        md += "\n# {}\n".format(escape(k.__name__))
         if k.__doc__:
             md += "\n\n{}\n".format(textwrap.dedent(k.__doc__))
         else:
@@ -235,12 +237,13 @@ def generate_markdown(objects):
             if _k == "functions":
                 for item in _v:
                     # Functions
-                    md += "\n#### {}\n".format(escape(item[0]))
+                    md += "\n## {}\n".format(escape(item[0]))
                     if item[1].__doc__:
-                        regex = re.compile(r"\*\s`.*?--(.*?)`")
+                        regex = re.compile(r"(\*\s`.*?--(.*?)`)")
                         doc = item[1].__doc__
-                        for match in regex.finditer(item[1].__doc__):
-                            doc = doc.replace(match[0], match[1].replace("-", "_"))
+                        for match in regex.findall(item[1].__doc__):
+                            print match
+                            doc = doc.replace(match[0], "* `{}`".format(match[1].replace("-", "_")))
                         md += "\n\n{}\n".format(
                             textwrap.dedent(doc))
                     else:
@@ -248,7 +251,7 @@ def generate_markdown(objects):
             elif _k == "classes":
                 for __k, __v in _v.items():
                     # class name
-                    md += "\n#### {}\n".format(escape(__k[0]))
+                    md += "\n## {}\n".format(escape(__k[0]))
                     if __k[1].__doc__:
                         # Class level docstrings
                         md += "\n\n{}\n".format(textwrap.dedent(__k[1].__doc__))
@@ -256,7 +259,7 @@ def generate_markdown(objects):
                         md += "\n\nNo documentation available for this class!\n"
                     for method in __v:
                         # Method names and docstrings
-                        md += "\n##### {}\n".format(escape(method[0]))
+                        md += "\n### {}\n".format(escape(method[0]))
                         if method[1].__doc__:
                             md += "\n\n{}\n".format(textwrap.dedent(method[1].__doc__))
                         else:
