@@ -26,7 +26,6 @@ import os
 import inspect
 import textwrap
 import markdown
-import platform
 import subprocess
 from collections import OrderedDict
 from markdown.extensions.toc import TocExtension
@@ -209,7 +208,7 @@ def get_objects(modules):
                 cls[1],
                 lambda x: inspect.ismethod(x) or isinstance(x, property))
             methods = filter(
-                lambda x: module.__name__ in x[1].__module__,
+                lambda x: isinstance(x[1    ], property) or module.__name__ in x[1].__module__,
                 methods)
             methods = filter(
                 lambda x: hasattr(x[1], "__doc__") or x[0].startswith("_"),
@@ -346,17 +345,6 @@ def main(out_dir="tmp"):
                 TocExtension(title="Table of Contents"),
                 CodeHiliteExtension(guess_lang=False)]))
 
-# Module level docstrings
-#   should only contain '###' and above
-# Function level docstrings
-#   should only contain '#####' and above
-# Class level docstrings
-#   should only contain '#####' and above
-# Method level docstrings
-#   should only contain '######' and above
-#
-# Headings (ie "#" * n) should only be used for sections
-# not for comments within docstrings
 
 if __name__ == "__main__":
     cli = mast.cli.Cli(main=main)
