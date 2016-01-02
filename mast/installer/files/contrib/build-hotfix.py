@@ -129,7 +129,10 @@ def main():
         logger.info(msg)
         print msg
         os.chdir(d)
-        out, err = system_call(command)
+        if d == "dulwich":
+            out, err = system_call([python, "setup.py", "--pure", "install", "--force"])
+        else:
+            out, err = system_call(command)
         logger.debug("out: \\n{}".format(out))
         logger.debug("error: \\n{}".format(err))
         if err:
