@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from dulwich.repo import NotGitRepository
-from mast.pprint import page
+import mast.pprint as pprint
 from dulwich import porcelain as git
 from mast.timestamp import Timestamp
 from mast.datapower import datapower
@@ -8,7 +8,6 @@ from mast.logging import make_logger
 from cStringIO import StringIO
 from mast.cli import Cli
 import colorama
-import pydoc
 import os
 
 colorama.init()
@@ -89,7 +88,8 @@ def main(appliances=[],
          timeout=120,
          no_check_hostname=False,
          base_dir=default_base_dir,
-         comment=default_comment):
+         comment=default_comment,
+         page=False):
     """
     track_autoconfig.py
 
@@ -123,30 +123,28 @@ def main(appliances=[],
     halt if a timeout is reached.
     * `-n, --no-check-hostname`: If specified SSL verification will be turned
     off when sending commands to the appliances.
-    * `base_dir`: The base directory where to store the downloaded
+    * `-b, --base-dir`: The base directory where to store the downloaded
     files. Files will actually be stored in a subdirectory of `base_dir`
     named after the hostname in the form of `base_dir/<hostname>`    
+    * `-p, --page`: If specified, page the output when too long to display
+    at once
     """
     base_dir = os.path.abspath(base_dir)
     if not os.path.exists(base_dir):
         os.makedirs(base_dir)
     try:
-        print git.status(base_dir)
         repo = git.Repo(base_dir)
         first_sha1 = repo.head()
         print first_sha1
     except NotGitRepository:
         print "Initializing git repository"
         git.init(base_dir)
-        print "DONE Initializing git repository"
         git.add(base_dir)
-        print "DONE ADDING"
         first_sha1 = git.commit(base_dir, message="Initial Commit")
-        print "Initial commit ", first_sha1
+        print first_sha1
     except KeyError:
         git.add(base_dir)
         git.commit(base_dir, message="Initial Commit")
-        print git.status(base_dir)
     print
     pull_autoconfig(appliances=appliances,
                     credentials=credentials,
@@ -165,13 +163,16 @@ def main(appliances=[],
     string = []
     for line in tmp:
         if line.startswith("+") and not line.startswith("+++"):
-            string.append(colorama.Fore.GREEN + line + colorama.Style.RESET_ALL)
-        elif line.startswith("-") and not line.startswith("---"):
-            string.append(colorama.Fore.RED + line + colorama.Style.RESET_ALL)
+            string.append(colorama.Fore.GREEN + line.strip() + colorama.Style.RESET_ALL)
+        elif line.startswith("-") and not line.startswith("--"):
+            string.append(colorama.Fore.RED + line.strip() + colorama.Style.RESET_ALL)
         else:
             string.append(line)
-    string = "".join(string)
-    page(string)
+    string = "\n".join(string)
+    if page:
+        pprint.page(string)
+    else:
+        print string
 
 if __name__ == "__main__":
     cli = Cli(main=main, description=main.__doc__)
