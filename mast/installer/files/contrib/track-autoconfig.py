@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 from dulwich.repo import NotGitRepository
+from pygments import highlight
+from pygments.lexers import DiffLexer
+from pygments.formatters import TerminalFormatter
 import mast.pprint as pprint
 from dulwich import porcelain as git
 from mast.timestamp import Timestamp
@@ -89,7 +92,8 @@ def main(appliances=[],
          no_check_hostname=False,
          base_dir=default_base_dir,
          comment=default_comment,
-         page=False):
+         page=False,
+         no_highlight_diff=False):
     """
     track_autoconfig.py
 
@@ -128,6 +132,8 @@ def main(appliances=[],
     named after the hostname in the form of `base_dir/<hostname>`    
     * `-p, --page`: If specified, page the output when too long to display
     at once
+    * `-N, --no-highlight-diff`: If specified, the output of the diff will
+    be syntax-highlighted
     """
     base_dir = os.path.abspath(base_dir)
     if not os.path.exists(base_dir):
@@ -160,19 +166,16 @@ def main(appliances=[],
     tmp = StringIO()
     git.show(base_dir, outstream=tmp)
     tmp.seek(0)
-    string = []
-    for line in tmp:
-        if line.startswith("+") and not line.startswith("+++"):
-            string.append(colorama.Fore.GREEN + line.strip() + colorama.Style.RESET_ALL)
-        elif line.startswith("-") and not line.startswith("--"):
-            string.append(colorama.Fore.RED + line.strip() + colorama.Style.RESET_ALL)
-        else:
-            string.append(line)
-    string = "\n".join(string)
-    if page:
-        pprint.page(string)
+
+    if no_highlight_diff:
+        out = tmp.read()
     else:
-        print string
+        out = highlight(tmp.read(), DiffLexer(), TerminalFormatter())
+
+    if page:
+        pprint.page(out)
+    else:
+        print out
 
 if __name__ == "__main__":
     cli = Cli(main=main, description=main.__doc__)
