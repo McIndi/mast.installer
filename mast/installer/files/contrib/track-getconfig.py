@@ -100,28 +100,27 @@ def main(appliances=[],
                                 check_hostname=check_hostname)
 
     for appliance in env.appliances:
-        try:
-            config = appliance.get_config(_class="all-classes",
-                                          name="all-objects",                                      
+        appliance_directory = os.path.join(base_dir, appliance.hostname)
+        if not os.path.exists(appliance_directory):
+            os.mkdir(appliance_directory)
+        for domain in appliance.domains:
+            config = appliance.get_config(domain=domain,
                                           recursive=recursive,
                                           persisted=persisted)
-        except urllib2.HTTPError:
-            config = appliance.get_config(recursive=recursive,
-                                          persisted=persisted)
-            
-        config = config.pretty
-        if no_strip_timestamp:
-            pass
-        else:
-            config = re.sub(r"^.*?<dp:timestamp>.*?</dp:timestamp>.*?$",
-                            r"",
-                            config,
-                            flags=re.MULTILINE)
 
-        filename = os.path.join(base_dir,
-                                "{}.xml".format(appliance.hostname))  
-        with open(filename, "wb") as fout:
-            fout.write(config)
+            config = config.pretty
+            if no_strip_timestamp:
+                pass
+            else:
+                config = re.sub(r"^.*?<dp:timestamp>.*?</dp:timestamp>.*?$",
+                                r"",
+                                config,
+                                flags=re.MULTILINE)
+
+            filename = os.path.join(appliance_directory,
+                                    "{}.xml".format(domain))
+            with open(filename, "wb") as fout:
+                fout.write(config)
 
     git.add(base_dir)
     print git.status(base_dir)
