@@ -237,3 +237,10 @@ a.help{
 a.toggle{
     color: #056BB0;
 }
+
+a{
+    background-color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    padding: 1px 2px 1px 2px;
+}

@@ -87,12 +87,19 @@ def get_connections(env, clear_screen, class_filter, object_filter,
 
 
 
-def main(appliances=[], credentials=[], timeout=120,
-         no_check_hostname=False, interval=0,
-         domain_filter=".*", class_filter=".*",
-         object_filter=".*", state_filter=".*",
-         remote_ip_filter=".*", remote_port_filter=".*",
-         local_ip_filter=".*", local_port_filter=".*",
+def main(appliances=[],
+         credentials=[],
+         timeout=120,
+         no_check_hostname=False,
+         interval=0,
+         domain_filter=".*",
+         class_filter=".*",
+         object_filter=".*",
+         state_filter=".*",
+         remote_ip_filter=".*",
+         remote_port_filter=".*",
+         local_ip_filter=".*",
+         local_port_filter=".*",
          clear_screen=False):
 
     check_hostname = not no_check_hostname
