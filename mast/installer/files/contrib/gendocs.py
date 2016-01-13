@@ -285,7 +285,10 @@ def generate_cli_reference():
         command = [_script, "--help"]
         out, err = system_call(command)
         out = out.replace("  -", "    -")
-        out = re.sub(r"^  (\w)", r"    \1", out, flags=re.MULTILINE)
+        out = re.sub(r"^  (\w)", r"* \1", out, flags=re.MULTILINE)
+        print out
+        out = re.sub(r"^\* (.*?)\s-\s", r"* `\1` - ", out, flags=re.MULTILINE)
+        print "\n\n", out
         out = re.sub(r"^(.*?Commands:)", r"\n\n\1", out, flags=re.MULTILINE)
         if "mast-ssh" not in _script:
             out = out.replace(":", ":\n\n")
@@ -294,8 +297,8 @@ def generate_cli_reference():
         out = out.replace("----------------------------------------", "")
         ret += "{}\n\n".format(textwrap.dedent(out))
         if "mast-ssh" not in _script:
-            subcommands = filter(lambda l: l.startswith(" "), out.splitlines())
-            subcommands = [x.split(" - ")[0].strip() for x in subcommands]
+            subcommands = filter(lambda l: l.startswith("* "), out.splitlines())
+            subcommands = [x.split(" - ")[0].strip().replace("* ", "").replace("`", "") for x in subcommands]
             for subcommand in subcommands:
                 if subcommand == "help":
                     continue
