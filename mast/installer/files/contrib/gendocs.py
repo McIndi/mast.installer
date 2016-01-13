@@ -63,7 +63,7 @@ class LastUpdatedOrderedDict(OrderedDict):
             del self[key]
         OrderedDict.__setitem__(self, key, value)
 
-css = """
+tpl = r"""
 <!DOCTYPE html>
 <html>
     <head>
@@ -155,6 +155,11 @@ css = """
     <body>
         <div id="content">
             <div id="inner-content">
+                <%content%>
+            </div>
+        </div>
+    </body>
+</html>
 """
 
 api_modules = LastUpdatedOrderedDict([
@@ -277,7 +282,7 @@ def generate_cli_reference():
         scripts)
     scripts = filter(lambda f: "mast-web" not in f, scripts)
 
-    ret = "<h1>MAST CLI Reference</h1>\n\n[TOC]\n\n"
+    ret = "<h1>MAST for IBM DataPower Version 2.1.0</h1><h2>CLI Reference</h2>\n\n[TOC]\n\n"
     for script in scripts:
         _script = os.path.join(mast_home, script)
         ret += "# {}\n\n".format(script.replace("_", "\_"))
@@ -316,25 +321,61 @@ def generate_cli_reference():
 
 
 def main(out_dir="tmp"):
+    global tpl
+    template_dir = os.path.join(os.environ["MAST_HOME"],
+                                "contrib",
+                                "templates")
+
+    for filename in os.listdir(template_dir):
+        if filename.endswith(".md"):
+            print filename
+            in_file = os.path.join(template_dir, filename)
+            html_file = filename.replace(".md", ".html")
+            html_file = os.path.join(out_dir, html_file)
+            md_file = os.path.join(out_dir, filename)
+
+            with open(in_file, "rb") as fin:
+                md = unicode(fin.read())
+
+            html = markdown.markdown(
+                unicode(md),
+                extensions=[
+                    TocExtension(title="Table of Contents"),
+                    CodeHiliteExtension(guess_lang=False)])
+            html = tpl.replace("<%content%>", html)
+
+            with open(html_file, "wb") as fout:
+                fout.write(html)
+
+            with open(md_file, "wb") as fout:
+                fout.write(md)
+
     api_objects = get_objects(api_modules)
     api_md = generate_markdown(api_objects)
-    api_md = "{}<h1>MAST Manual - API Documentation v 2.1.0</h1>\n\n[TOC]\n\n{}</div></div></body></html>".format(
-        css, api_md)
+    api_md = "[Back to index](./index.html)\n\n<h1>MAST for IBM DataPower Version 2.1.0</h1><h2>API Documentation v 2.1.0</h2>\n\n[TOC]\n\n{}".format(api_md)
 
-    cli_md = "{}\n\n{}\n\n</div></div></body></html>".format(
-        css, generate_cli_reference())
+    api_html = markdown.markdown(
+        api_md,
+        extensions=[
+            TocExtension(title="Table of Contents"),
+            CodeHiliteExtension(guess_lang=False)])
+    api_html = tpl.replace("<%content%>", api_html)
 
-    filename = os.path.join(out_dir, "APIDocs.html")
+    filename = os.path.join(out_dir, "APIReference.html")
     with open(filename, "w") as fout:
-        fout.write(markdown.markdown(
-            api_md,
-            extensions=[
-                TocExtension(title="Table of Contents"),
-                CodeHiliteExtension(guess_lang=False)]))
+        fout.write(api_html)
 
-    filename = os.path.join(out_dir, "APIDocs.md")
+    filename = os.path.join(out_dir, "APIReference.md")
     with open(filename, "w") as fout:
         fout.write(api_md)
+
+    cli_md = "{}\n\n".format(generate_cli_reference())
+    cli_html = markdown.markdown(
+        cli_md,
+        extensions=[
+            TocExtension(title="Table of Contents"),
+            CodeHiliteExtension(guess_lang=False)])
+    cli_html = tpl.replace("<%content%>", cli_html)
 
     filename = os.path.join(out_dir, "CLIReference.md")
     with open(filename, "w") as fout:
@@ -342,11 +383,7 @@ def main(out_dir="tmp"):
 
     filename = os.path.join(out_dir, "CLIReference.html")
     with open(filename, "w") as fout:
-        fout.write(markdown.markdown(
-            cli_md,
-            extensions=[
-                TocExtension(title="Table of Contents"),
-                CodeHiliteExtension(guess_lang=False)]))
+        fout.write(cli_html)
 
 
 if __name__ == "__main__":
