@@ -220,7 +220,7 @@ ensure that our new user needs to change their password on the next login. We
 can do that with the following command:
 
     :::bash
-    $ ./mast-accounts force-change-password -a dev -c cliffPriv:Shoes_13 -U new_user
+    $ ./mast-accounts force-change-password -a dev -c username:password -U new_user
 
 Now when the new user goes to log onto the appliance, they will be forced to
 change their password. That concludes our first use case, now we will look at
@@ -315,8 +315,7 @@ that's done, you can save the configuration with the following command:
     $ ./mast-system save -a dev -c username:password -D new_domain
 
 That's it, simple really, but this is all in dev. There are a lot more
-restrictions about making changes in our qa and prod environments. Next
-we will do a full-fledged deployment to our qa environment.
+restrictions about making changes in our qa and prod environments.
 
 # Conclusion
 

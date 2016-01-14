@@ -320,7 +320,7 @@ def generate_cli_reference():
     return ret
 
 
-def main(out_dir="tmp"):
+def main(out_dir="doc"):
     global tpl
     template_dir = os.path.join(os.environ["MAST_HOME"],
                                 "contrib",
