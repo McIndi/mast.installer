@@ -10,7 +10,7 @@ MAST for IBM DataPower version 2.1.0 has quite a few improvements and
 bugfixes. In this release we focused on stability and enduser experience
 rather than new features, however, we do have a few new features which we
 believe will help tremendously with maximizing your return on investment in
-IBM DataPower.
+IBM DataPower. 
 
 # Important Changes
 
