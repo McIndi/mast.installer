@@ -246,7 +246,6 @@ def generate_markdown(objects):
                         regex = re.compile(r"(\*\s`.*?--(.*?)`)")
                         doc = item[1].__doc__
                         for match in regex.findall(item[1].__doc__):
-                            print match
                             doc = doc.replace(match[0], "* `{}`".format(match[1].replace("-", "_")))
                         md += "\n\n{}\n".format(
                             textwrap.dedent(doc))
@@ -282,7 +281,7 @@ def generate_cli_reference():
         scripts)
     scripts = filter(lambda f: "mast-web" not in f, scripts)
 
-    ret = "<h1>MAST for IBM DataPower Version 2.1.0</h1><h2>CLI Reference</h2>\n\n[TOC]\n\n"
+    ret = ""
     for script in scripts:
         _script = os.path.join(mast_home, script)
         ret += "# {}\n\n".format(script.replace("_", "\_"))
@@ -291,9 +290,7 @@ def generate_cli_reference():
         out, err = system_call(command)
         out = out.replace("  -", "    -")
         out = re.sub(r"^  (\w)", r"* \1", out, flags=re.MULTILINE)
-        print out
         out = re.sub(r"^\* (.*?)\s-\s", r"* `\1` - ", out, flags=re.MULTILINE)
-        print "\n\n", out
         out = re.sub(r"^(.*?Commands:)", r"\n\n\1", out, flags=re.MULTILINE)
         if "mast-ssh" not in _script:
             out = out.replace(":", ":\n\n")
@@ -308,7 +305,6 @@ def generate_cli_reference():
                 if subcommand == "help":
                     continue
                 command = [_script, subcommand, "--help"]
-                print command
                 out, err = system_call(command)
                 out = out.replace("  -", "    -")
                 out = out.replace("Options:", "Options:\n\n")
@@ -328,7 +324,6 @@ def main(out_dir="doc"):
 
     for filename in os.listdir(template_dir):
         if filename.endswith(".md"):
-            print filename
             in_file = os.path.join(template_dir, filename)
             html_file = filename.replace(".md", ".html")
             html_file = os.path.join(out_dir, html_file)
@@ -344,9 +339,11 @@ def main(out_dir="doc"):
                     CodeHiliteExtension(guess_lang=False)])
             html = tpl.replace("<%content%>", html)
 
+            print "Ouput: {}".format(html_file)
             with open(html_file, "wb") as fout:
                 fout.write(html)
 
+            print "Ouput: {}".format(md_file)
             with open(md_file, "wb") as fout:
                 fout.write(md)
 
@@ -362,14 +359,17 @@ def main(out_dir="doc"):
     api_html = tpl.replace("<%content%>", api_html)
 
     filename = os.path.join(out_dir, "APIReference.html")
+    print "Ouput: {}".format(filename)
     with open(filename, "w") as fout:
         fout.write(api_html)
 
     filename = os.path.join(out_dir, "APIReference.md")
+    print "Ouput: {}".format(filename)
     with open(filename, "w") as fout:
         fout.write(api_md)
 
-    cli_md = "{}\n\n".format(generate_cli_reference())
+    cli_md = generate_cli_reference()
+    cli_md = "[Back to index](./index.html)\n\n<h1>MAST for IBM DataPower Version 2.1.0</h1><h2>CLI Reference v 2.1.0</h2>\n\n[TOC]\n\n{}".format(cli_md)
     cli_html = markdown.markdown(
         cli_md,
         extensions=[
@@ -378,10 +378,12 @@ def main(out_dir="doc"):
     cli_html = tpl.replace("<%content%>", cli_html)
 
     filename = os.path.join(out_dir, "CLIReference.md")
+    print "Ouput: {}".format(filename)
     with open(filename, "w") as fout:
         fout.write(cli_md)
 
     filename = os.path.join(out_dir, "CLIReference.html")
+    print "Ouput: {}".format(filename)
     with open(filename, "w") as fout:
         fout.write(cli_html)
 
