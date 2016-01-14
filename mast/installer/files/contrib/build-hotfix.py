@@ -150,6 +150,10 @@ def main():
             d = root.split(os.path.sep)
             print os.path.join(*d[1:])
             dst = os.path.join(mast_home, *d[1:])
+            for directory in dirs:
+                dst_dir = os.path.join(dst, directory)
+                if not os.path.exists(dst_dir):
+                    os.mkdir(dst_dir)
             for f in files:
                 fqp = os.path.join(dst, f)
                 print "Copying file {}".format(fqp)
