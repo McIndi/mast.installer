@@ -50,7 +50,7 @@ def zipdir(path, filename):
     zipf.close()
 
 
-install_script = '''
+install_script = r'''
 import os
 import sys
 import shutil
@@ -151,8 +151,8 @@ def main():
             out, err = system_call([python, "setup.py", "--pure", "install", "--force"])
         else:
             out, err = system_call(command)
-        logger.debug("out: \\n{}".format(out))
-        logger.debug("error: \\n{}".format(err))
+        logger.debug("out: {}".format(out))
+        logger.debug("error: {}".format(err))
         if err:
             print
             print "An Error occurred while installing hotfix"
@@ -190,6 +190,17 @@ def main():
                 for f in files:
                     print os.path.join(root, f), "->", dst
                     shutil.copy(os.path.join(root, f), dst)
+
+    if "Windows" in platform.system():
+        mast = os.path.join(mast_home, "mast.bat")
+    if "Linux" in platform.system():
+        mast = os.path.join(mast_home, "mast")
+    command = [mast, "contrib/gendocs.py"]
+    print "Generating Documentation"
+    out, err = system_call(command)
+    print out
+    if err:
+        print "ERROR:\n\n{}".format(err)
     print "hotfix installed"
 
 

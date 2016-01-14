@@ -345,6 +345,17 @@ def install_anaconda(prefix):
     print "\tDone. See log for details"
 
 
+def _generate_docs(prefix):
+    if "Windows" in platform.system():
+        mast = os.path.join(prefix, "mast.bat")
+    if "Linux" in platform.system():
+        mast = os.path.join(prefix, "mast")
+    out, err = system_call([mast, "contrib/gendocs.py"])
+    print out
+    if err:
+        print "\n\nERROR:\n\n{}".format(err)
+
+
 def install_packages(prefix, net_install):
     print "Installing Python Packages"
     try:
@@ -371,6 +382,18 @@ def add_scripts(prefix):
     print "\tDone. See log for details"
 
 
+def generate_docs(prefix):
+    print "Generating Documentation"
+    try:
+        _generate_docs(prefix)
+    except:
+        print "An error occurred generating documentation"
+        print "See log for details"
+        logger.exception(
+            "An error occurred generating documentation")
+        raise
+    print "\tDone. See log for details."
+
 def main(prefix="", net_install=False):
     """
     install mast into specified directory. Defaults to `$PWD/mast`.
@@ -393,7 +416,7 @@ def main(prefix="", net_install=False):
     install_anaconda(prefix)
     install_packages(prefix, net_install)
     add_scripts(prefix)
-
+    generate_docs(prefix)
 
 if __name__ == "__main__":
     _cli = cli.Cli(main=main)
