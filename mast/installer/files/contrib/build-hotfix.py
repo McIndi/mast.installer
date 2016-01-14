@@ -55,12 +55,30 @@ import os
 import sys
 import shutil
 import logging
+import platform
 import subprocess
 
 logger = logging.getLogger("hotfix-installation")
 handler = logging.FileHandler("install.log")
 logger.setLevel(logging.DEBUG)
 logger.addHandler(handler)
+
+
+def render_template(string, mappings):
+    for k, v in mappings.items():
+        string = string.replace("<%{}%>".format(k), v)
+    return string
+
+
+def render_template_file(fname, mappings):
+    with open(fname, "r") as fin:
+        ret = render_template(fin.read(), mappings)
+    return ret
+
+
+def write_file(dst, content):
+    with open(dst, "w") as fout:
+        fout.write(content)
 
 
 def system_call(
@@ -148,19 +166,30 @@ def main():
     for root, dirs, files in os.walk("."):
         if root is not ".":
             d = root.split(os.path.sep)
-            print os.path.join(*d[1:])
-            dst = os.path.join(mast_home, *d[1:])
-            for directory in dirs:
-                dst_dir = os.path.join(dst, directory)
-                if not os.path.exists(dst_dir):
-                    os.mkdir(dst_dir)
-            for f in files:
-                fqp = os.path.join(dst, f)
-                print "Copying file {}".format(fqp)
-                print os.path.join(root, f), "->", dst
-                shutil.copy(os.path.join(root, f), dst)
-
-
+            if d[-1] == "windows":
+                if "Windows" in platform.system():
+                    for f in files:
+                        dst = os.path.join(mast_home, f)
+                        src = os.path.join(root, f)
+                        content = render_template_file(src, {"MAST_HOME": mast_home})
+                        write_file(dst, content)
+            elif d[-1] == "linux":
+                if "Linux" in platform.system():
+                    for f in files:
+                        dst = os.path.join(mast_home, f)
+                        src = os.path.join(root, f)
+                        content = render_template_file(src, {"MAST_HOME": mast_home})
+                        write_file(dst, content)
+                        os.chmod(dst, 0755)
+            else:
+                dst = os.path.join(mast_home, *d[1:])
+                for directory in dirs:
+                    dst_dir = os.path.join(dst, directory)
+                    if not os.path.exists(dst_dir):
+                        os.mkdir(dst_dir)
+                for f in files:
+                    print os.path.join(root, f), "->", dst
+                    shutil.copy(os.path.join(root, f), dst)
     print "hotfix installed"
 
 
@@ -287,18 +316,18 @@ def main(
         "https://github.com/McIndi/mast.installer/archive/master.zip")
     zf = zipfile.ZipFile(StringIO(resp.content))
     zf.extractall()
-    shutil.rmtree(
-        os.path.join("mast.installer-master",
-                     "mast",
-                     "installer",
-                     "files",
-                     "windows"))
-    shutil.rmtree(
-        os.path.join("mast.installer-master",
-                     "mast",
-                     "installer",
-                     "files",
-                     "linux"))
+    # shutil.rmtree(
+        # os.path.join("mast.installer-master",
+                     # "mast",
+                     # "installer",
+                     # "files",
+                     # "windows"))
+    # shutil.rmtree(
+        # os.path.join("mast.installer-master",
+                     # "mast",
+                     # "installer",
+                     # "files",
+                     # "linux"))
     shutil.copytree(
         os.path.join(
             "mast.installer-master",
