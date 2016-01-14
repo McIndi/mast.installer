@@ -14,6 +14,9 @@ If you are a new user, you can head over to the [Installation Guide](./installat
 or the [Getting Started Guide](./getting-started.html) for instructions on getting
 set-up with MAST for IBM DataPower Version 2.1.0.
 
+You may also be interested in our [Road Map](./roadmap.html) for future versions
+which also contains the list of known issues.
+
 # References
 
 For the convenience of users familiar with our product, we have a few references
@@ -53,3 +56,4 @@ For your convenience, all links in the document above are all listed here:
 * [The API Reference](./APIReference.html)
 * [GitHub repository for the installer](https://github.com/mcindi/mast.installer)
 * [support@mcindi.com](mailto://support@mcindi.com)
+* [Road Map](./roadmap.html)
