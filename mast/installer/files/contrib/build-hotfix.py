@@ -16,8 +16,6 @@ from mast.timestamp import Timestamp
 from mast.logging import make_logger
 
 
-socket.setdefaulttimeout(60)
-
 def system_call(
         command,
         stdin=subprocess.PIPE,
@@ -196,15 +194,9 @@ def main():
                     print os.path.join(root, f), "->", dst
                     shutil.copy(os.path.join(root, f), dst)
 
-    print "Generating Documentation"
-    os.chdir("contrib")
-    print os.getcwd()
-    print os.listdir(os.getcwd())
-    from gendocs import main as gendocs
-    out_dir = os.path.join(mast_home, "doc")
-    gendocs(out_dir=out_dir)
     print "\n\nhotfix installed"
-
+    print "\nTo re-generate the latest documentation, please run"
+    print "\tmast contrib/gendocs.py"
 
 if __name__ == "__main__":
     main()
@@ -259,7 +251,8 @@ def main(
         output_file=default_out_file,
         build_dir=default_build_dir,
         install=False,
-        remove_build_dir=False):
+        remove_build_dir=False,
+        timeout=60):
     r"""
     Build a hotfix containing the latest updates to MAST for IBM DataPower.
 
@@ -300,7 +293,11 @@ def main(
     remove_build_dir - If specified, the build_dir will be removed
     upon completion. WARNING: If specified along with install, your
     install.log will be removed as well
+    
+    timeout - The number of seconds to wait for the server to respond
     """
+    socket.setdefaulttimeout(timeout)
+
     if not os.path.exists(build_dir):
         os.makedirs(build_dir)
     if os.listdir(build_dir):
