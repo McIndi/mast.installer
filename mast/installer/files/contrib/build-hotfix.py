@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import socket
 import shutil
 import zipfile
+import urllib2
 import requests
 import subprocess
+from time import sleep
 from mast.cli import Cli
 from textwrap import dedent
 from cStringIO import StringIO
@@ -12,6 +15,8 @@ from dulwich import porcelain as git
 from mast.timestamp import Timestamp
 from mast.logging import make_logger
 
+
+socket.setdefaulttimeout(60)
 
 def system_call(
         command,
@@ -191,17 +196,14 @@ def main():
                     print os.path.join(root, f), "->", dst
                     shutil.copy(os.path.join(root, f), dst)
 
-    if "Windows" in platform.system():
-        mast = os.path.join(mast_home, "mast.bat")
-    if "Linux" in platform.system():
-        mast = os.path.join(mast_home, "mast")
-    command = [mast, "contrib/gendocs.py"]
     print "Generating Documentation"
-    out, err = system_call(command)
-    print out
-    if err:
-        print "ERROR:\n\n{}".format(err)
-    print "hotfix installed"
+    os.chdir("contrib")
+    print os.getcwd()
+    print os.listdir(os.getcwd())
+    from gendocs import main as gendocs
+    out_dir = os.path.join(mast_home, "doc")
+    gendocs(out_dir=out_dir)
+    print "\n\nhotfix installed"
 
 
 if __name__ == "__main__":
@@ -320,7 +322,17 @@ def main(
         path = repo.split("/")[-1].replace(".git", "")
         fqp = os.path.abspath(os.path.join(dist_dir, path))
         print "\nCloning {} to {}".format(repo, fqp)
-        git.clone(repo, target=path)
+        try:
+            git.clone(repo, target=path)
+        except urllib2.URLError:
+            print "\tConnection timed out, retrying in 3 seconds..."
+            shutil.rmtree(path)
+            sleep(3)
+            try:
+                git.clone(repo, target=path)
+            except urllib2.URLError:
+                print "\tConnection timed out, (Please check your internet connection) exiting"
+                sys.exit(-2)
 
     # Get all files
     resp = requests.get(
