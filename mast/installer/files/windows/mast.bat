@@ -9,4 +9,3 @@ if "%~1"=="" (
 ) else (
   %MAST_HOME%\anaconda\python %*
 )
-
