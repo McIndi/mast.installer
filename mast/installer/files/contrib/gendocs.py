@@ -339,11 +339,11 @@ def main(out_dir="doc"):
                     CodeHiliteExtension(guess_lang=False)])
             html = tpl.replace("<%content%>", html)
 
-            print "Ouput: {}".format(html_file)
+            print "Output: {}".format(html_file)
             with open(html_file, "wb") as fout:
                 fout.write(html)
 
-            print "Ouput: {}".format(md_file)
+            print "Output: {}".format(md_file)
             with open(md_file, "wb") as fout:
                 fout.write(md)
 
@@ -359,12 +359,12 @@ def main(out_dir="doc"):
     api_html = tpl.replace("<%content%>", api_html)
 
     filename = os.path.join(out_dir, "APIReference.html")
-    print "Ouput: {}".format(filename)
+    print "Output: {}".format(filename)
     with open(filename, "w") as fout:
         fout.write(api_html)
 
     filename = os.path.join(out_dir, "APIReference.md")
-    print "Ouput: {}".format(filename)
+    print "Output: {}".format(filename)
     with open(filename, "w") as fout:
         fout.write(api_md)
 
@@ -378,12 +378,12 @@ def main(out_dir="doc"):
     cli_html = tpl.replace("<%content%>", cli_html)
 
     filename = os.path.join(out_dir, "CLIReference.md")
-    print "Ouput: {}".format(filename)
+    print "Output: {}".format(filename)
     with open(filename, "w") as fout:
         fout.write(cli_md)
 
     filename = os.path.join(out_dir, "CLIReference.html")
-    print "Ouput: {}".format(filename)
+    print "Output: {}".format(filename)
     with open(filename, "w") as fout:
         fout.write(cli_html)
 
