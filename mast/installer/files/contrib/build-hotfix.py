@@ -383,6 +383,8 @@ def main(
         print "See more details in log file: {}".format(os.path.join(
             dist_dir, "install.log"))
     if remove_build_dir:
+        # Get out of build_dir so we can zip it up
+        os.chdir(cwd)
         shutil.rmtree(build_dir)
     print "\n\nhotfix zip can be found here: {}".format(output_file)
 
