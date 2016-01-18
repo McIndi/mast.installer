@@ -66,7 +66,7 @@ of your appliances over time.
 9. A thorough-cert-audit script was added to the contrib directory which
 pulls together tons of information from the filestore, CryptoExports, and
 various object configurations and correlates all the information in an
-excel spreadsheet, This really deserves a look, but it can take a while
+Excel spreadsheet, This really deserves a look, but it can take a while
 to run.
 10. MAST now includes the dulwich (under a dual Apache v2 and GPL v2 license)
 Python package allowing us to natively interact with git repositories without
@@ -75,8 +75,8 @@ requiring an installation of git.
 ## Bugs
 
 1. We have fixed inconsistencies between dashes and underscores in CLI commands.
-2. We have fixed an issue where dp-query needed both a status provider and an
-object class to be provided, now you can specify one or both.
+2. We have fixed an issue where dp-query needed both a StatusPprovider and an
+ObjectClass to be provided, now you can specify one or both.
 3. A better error message is now provided by mast-developer export when an
 ObjectClass or an object name is not specified.
 4. A better error message is now provided when no appliances are selected (by
@@ -120,7 +120,7 @@ listing once. This provides a huge performance gain.
 3. We have added output to fs-sync from-dp when invoked through the CLI.
 4. We changed mast-system set-file to infer the filename from it's name on the
 local filesystem if a target filename is not specified.
-5. We changed mast-system reboot-appliance to reboot the appliances serially
+5. We changed `mast-system reboot-appliance` to reboot the appliances serially
 avoiding unplanned outages.
 6. The installer now has a way to install into the current directory without
 creating a mast subdirectory

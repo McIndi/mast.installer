@@ -115,7 +115,7 @@ provide `prod` as the hostname
 
 Since the MAST Web GUI is a hosted web app, it is possible to configure
 certain options related to the server. The available options are well
-documented within the file $MAST_HOME/etc/default/server.conf but some
+documented within the file `$MAST_HOME/etc/default/server.conf` but some
 of the most important ones are under the [server] stanza. Here you can set
 the listening host and port as well as the private key and public certificate
 also in this stanza you can specify secure which is corresponds to whether or
@@ -184,14 +184,14 @@ this is irrelevant. We need to add the new user to the dev appliances. We can
 do that with the following command:
 
     :::bash
-    $ ./mast-accounts add-user -a dev -c username:password -u new_user -p pa55word -g developer -s
+    `$ ./mast-accounts add-user -a dev -c username:password -u new_user -p pa55word -g developer -s`
 
 This will add a user to both dev appliances and associate them with the
 developer group. We can then verify that it was added by listing the users
 just as we did above: 
 
     :::bash
-    $ ./mast-accounts list-users -a all -c username:password
+    `$ ./mast-accounts list-users -a all -c username:password`
     dev_dp_1
     ========
     user_1
@@ -220,7 +220,7 @@ ensure that our new user needs to change their password on the next login. We
 can do that with the following command:
 
     :::bash
-    $ ./mast-accounts force-change-password -a dev -c username:password -U new_user
+    `$ ./mast-accounts force-change-password -a dev -c username:password -U new_user`
 
 Now when the new user goes to log onto the appliance, they will be forced to
 change their password. That concludes our first use case, now we will look at
@@ -263,14 +263,14 @@ but that's not our concern right now. We need to add a domain named new_domain
 to both boxes. We can do that with the following command:
 
     :::bash
-    $ ./mast-system add-domain -a dev -c username:password -d new_domain -s
+    `$ ./mast-system add-domain -a dev -c username:password -d new_domain -s`
 
 This will add our domain and the "-s" flag will cause MAST to save the
 configuration. Now all that is left to do is to list all the domains again,
 just to be sure that it was added.
 
     :::bash
-    $ ./mast-system show-domains -a dev -c username:password
+    `$ ./mast-system show-domains -a dev -c username:password`
     dev_dp_1
     ========
     default
@@ -305,14 +305,14 @@ task to import the configuration into our dev environment. We can do that with
 this command:
 
     :::bash
-    $ ./mast-developer import -a dev -c username:password -D new_domain -f ~/Downloads/export.zip
+    `$ ./mast-developer import -a dev -c username:password -D new_domain -f ~/Downloads/export.zip`
 
 Now, there is a reason that this command does not persist the changes and that
 is to give the interested parties a chance to "check-out" the results. Once
 that's done, you can save the configuration with the following command:
 
     :::bash
-    $ ./mast-system save -a dev -c username:password -D new_domain
+    `$ ./mast-system save -a dev -c username:password -D new_domain`
 
 That's it, simple really, but this is all in dev. There are a lot more
 restrictions about making changes in our qa and prod environments.
