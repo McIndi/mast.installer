@@ -298,7 +298,7 @@ import a configuration ZIP file into our new domain.
 
 ## Importing Configuration
 
-So, we have our new developer and we created a new application domain for his
+So, we have our new developer and we created a new application domain for her
 new project. Now our new developer is so eager to begin that she has already
 created her first new service in preparation of her new application. It is our
 task to import the configuration into our dev environment. We can do that with
