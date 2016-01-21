@@ -88,3 +88,6 @@
 [submodule "mast/installer/packages/werkzeug"]
 	path = mast/installer/packages/werkzeug
 	url = https://github.com/mitsuhiko/werkzeug
+[submodule "mast\\installer\\packages\\mast.test"]
+	path = mast\\installer\\packages\\mast.test
+	url = https://github.com/mcindi/mast.test
