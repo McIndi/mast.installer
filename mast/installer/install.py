@@ -168,6 +168,8 @@ def _install_packages(prefix, net_install):
 
     if net_install:
         repos = [
+            "https://github.com/mcindi/mast.cli.git",
+            "https://github.com/mcindi/mast.daemon.git",
             "https://github.com/mcindi/mast.xor.git",
             "https://github.com/mcindi/mast.timestamp.git",
             "https://github.com/mcindi/mast.pprint.git",
@@ -186,9 +188,7 @@ def _install_packages(prefix, net_install):
             "https://github.com/mcindi/mast.datapower.status.git",
             "https://github.com/mcindi/mast.datapower.system.git",
             "https://github.com/mcindi/mast.datapower.web.git",
-            "https://github.com/mcindi/mast.daemon.git",
             "https://github.com/mcindi/mast.cron.git",
-            "https://github.com/mcindi/mast.cli.git",
             "https://github.com/mcindi/mast.test.git",
             "https://github.com/tellapart/commandr.git",
             "https://github.com/cherrypy/cherrypy.git",
@@ -231,7 +231,7 @@ def _install_packages(prefix, net_install):
         # Sort the packages
         dir_list = os.listdir(directory)
         dir_list.sort()
-        # Switch pycrypto and paramiko for dependency reasons
+        print dir_list
         for d in dir_list:
             _dir = os.path.join(directory, d)
             if os.path.exists(_dir) and os.path.isdir(_dir):
