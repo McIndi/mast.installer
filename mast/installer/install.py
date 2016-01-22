@@ -152,14 +152,14 @@ def _install_packages(prefix, net_install):
         python = os.path.join(prefix, "bin", "python")
 
     logger.info("Ensuring pip is installed")
-    print "Ensuring pip is installed"
+    print "\tEnsuring pip is installed"
     out, err = system_call([python, "-m", "ensurepip"])
     if err:
         logger.error("An error occurred while ensuring pip is installed, {}".format(err))
-        print "\tERROR: See log for details"
+        print "\t\tERROR: See log for details"
     else:
         logger.debug("Output of ensurepip, {}".format(out))
-        print "\tDone, see log for details"
+        print "\t\tDone, see log for details"
     logger.debug("PATH: {}".format(os.environ["PATH"]))
     try:
         logger.debug("PYTHONPATH: {}".format(os.environ["PYTHONPATH"]))
@@ -199,13 +199,13 @@ def _install_packages(prefix, net_install):
             "https://github.com/jelmer/dulwich/archive/master.zip"
         ]
         for repo in repos:
-            print "installing", repo
+            print "\tinstalling", repo
 
             resp = requests.get(repo)
             zf = zipfile.ZipFile(StringIO(resp.content))
             zf.extractall()
             for item in zf.infolist():
-                print "\t", item.filename
+                print "\t\t", item.filename
             dirname = zf.infolist()[0].replace("/", "")
             # chdir & install
 
@@ -216,11 +216,11 @@ def _install_packages(prefix, net_install):
             else:
                 out, err = system_call([python, "setup.py", "install", "--force"])
             if err:
-                print "\tERROR: check the log for details"
+                print "\t\tERROR: check the log for details"
                 logger.error(
                     "An error was encountered: {}".format(err))
             else:
-                print "\tDONE: {} installed, check log for details".format(
+                print "\t\tDONE: {} installed, check log for details".format(
                     repo)
                 logger.debug(
                     "installed {}. out: {}, err: {}".format(repo, out, err))
@@ -234,7 +234,7 @@ def _install_packages(prefix, net_install):
         for d in dir_list:
             _dir = os.path.join(directory, d)
             if os.path.exists(_dir) and os.path.isdir(_dir):
-                print "Installing", d
+                print "\tInstalling", d
                 os.chdir(_dir)
                 if "ecdsa" in d:
                     with open("setup.py", "r") as fin:
@@ -251,7 +251,8 @@ def _install_packages(prefix, net_install):
                     out, err = system_call([python, "setup.py", "--pure", "install"])
                 else:
                     out, err = system_call([python, "setup.py", "install"])
-                print "\tDone. See log for details."
+                # TODO: Handle errors
+                print "\t\tDone. See log for details."
                 logger.debug(
                     "Installing {}...Result: out: {}, err: {}".format(
                         d, out, err))
