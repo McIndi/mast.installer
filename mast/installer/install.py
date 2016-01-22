@@ -5,8 +5,11 @@ import cli
 import shutil
 import logging
 import platform
+import urllib2
+import zipfile
 import subprocess
 from tstamp import Timestamp
+from cStringIO import StringIO
 import dulwich.porcelain as git
 
 cwd = sys._MEIPASS
@@ -201,12 +204,12 @@ def _install_packages(prefix, net_install):
         for repo in repos:
             print "\tinstalling", repo
 
-            resp = requests.get(repo)
-            zf = zipfile.ZipFile(StringIO(resp.content))
+            resp = urllib2.urlopen(repo)
+            zf = zipfile.ZipFile(StringIO(resp.read()))
             zf.extractall()
             for item in zf.infolist():
                 print "\t\t", item.filename
-            dirname = zf.infolist()[0].replace("/", "")
+            dirname = zf.infolist()[0].filename.replace("/", "")
             # chdir & install
 
             cwd = os.getcwd()
