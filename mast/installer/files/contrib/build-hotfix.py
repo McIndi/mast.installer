@@ -217,35 +217,35 @@ default_build_dir = os.path.join(
     "{}-hotfix-build".format(now))
 
 repos = [
-    "https://github.com/mcindi/mast.cli.git",
-    "https://github.com/mcindi/mast.config.git",
-    "https://github.com/mcindi/mast.cron.git",
-    "https://github.com/mcindi/mast.daemon.git",
-    "https://github.com/mcindi/mast.datapower.accounts.git",
-    "https://github.com/mcindi/mast.datapower.backups.git",
-    "https://github.com/mcindi/mast.datapower.datapower.git",
-    "https://github.com/mcindi/mast.datapower.deploy.git",
-    "https://github.com/mcindi/mast.datapower.deployment.git",
-    "https://github.com/mcindi/mast.datapower.developer.git",
-    "https://github.com/mcindi/mast.datapower.network.git",
-    "https://github.com/mcindi/mast.datapower.ssh.git",
-    "https://github.com/mcindi/mast.datapower.status.git",
-    "https://github.com/mcindi/mast.datapower.system.git",
-    "https://github.com/mcindi/mast.datapower.web.git",
-    "https://github.com/mcindi/mast.hashes.git",
-    "https://github.com/mcindi/mast.logging.git",
-    "https://github.com/mcindi/mast.plugins.git",
-    "https://github.com/mcindi/mast.plugin_utils.git",
-    "https://github.com/mcindi/mast.pprint.git",
-    "https://github.com/mcindi/mast.test.git",
-    "https://github.com/mcindi/mast.timestamp.git",
-    "https://github.com/mcindi/mast.xor.git",
-    "https://github.com/tellapart/commandr.git",
-    "https://github.com/cherrypy/cherrypy.git",
-    "https://github.com/paramiko/paramiko.git",
-    "https://github.com/waylan/Python-Markdown.git",
-    "https://github.com/warner/python-ecdsa.git",
-    "https://github.com/jelmer/dulwich.git"
+    "https://github.com/McIndi/mast.cli/archive/master.zip",
+    "https://github.com/McIndi/mast.config/archive/master.zip",
+    "https://github.com/McIndi/mast.cron/archive/master.zip",
+    "https://github.com/McIndi/mast.daemon/archive/master.zip",
+    "https://github.com/McIndi/mast.datapower.accounts/archive/master.zip",
+    "https://github.com/McIndi/mast.datapower.backups/archive/master.zip",
+    "https://github.com/McIndi/mast.datapower.datapower/archive/master.zip",
+    "https://github.com/McIndi/mast.datapower.deploy/archive/master.zip",
+    "https://github.com/McIndi/mast.datapower.deployment/archive/master.zip",
+    "https://github.com/McIndi/mast.datapower.developer/archive/master.zip",
+    "https://github.com/McIndi/mast.datapower.network/archive/master.zip",
+    "https://github.com/McIndi/mast.datapower.ssh/archive/master.zip",
+    "https://github.com/McIndi/mast.datapower.status/archive/master.zip",
+    "https://github.com/mcindi/mast.datapower.system/archive/master.zip",
+    "https://github.com/mcindi/mast.datapower.web/archive/master.zip",
+    "https://github.com/mcindi/mast.hashes/archive/master.zip",
+    "https://github.com/mcindi/mast.logging/archive/master.zip",
+    "https://github.com/mcindi/mast.plugins/archive/master.zip",
+    "https://github.com/mcindi/mast.plugin_utils/archive/master.zip",
+    "https://github.com/mcindi/mast.pprint/archive/master.zip",
+    "https://github.com/McIndi/mast.test/archive/master.zip",
+    "https://github.com/mcindi/mast.timestamp/archive/master.zip",
+    "https://github.com/mcindi/mast.xor/archive/master.zip",
+    "https://github.com/tellapart/commandr/archive/master.zip",
+    "https://github.com/cherrypy/cherrypy/archive/master.zip",
+    "https://github.com/paramiko/paramiko/archive/master.zip",
+    "https://github.com/waylan/Python-Markdown/archive/master.zip",
+    "https://github.com/warner/python-ecdsa/archive/master.zip",
+    "https://github.com/jelmer/dulwich/archive/master.zip"
 ]
 
 
@@ -318,38 +318,25 @@ def main(
     cwd = os.getcwd()
     os.chdir(dist_dir)
     for repo in repos:
-        path = repo.split("/")[-1].replace(".git", "")
-        fqp = os.path.abspath(os.path.join(dist_dir, path))
-        print "\nCloning {} to {}".format(repo, fqp)
-        try:
-            git.clone(repo, target=path)
-        except urllib2.URLError:
-            print "\tConnection timed out, retrying in 3 seconds..."
-            shutil.rmtree(path)
-            sleep(3)
-            try:
-                git.clone(repo, target=path)
-            except urllib2.URLError:
-                print "\tConnection timed out, (Please check your internet connection) exiting"
-                sys.exit(-2)
+        print repo
+        resp = requests.get(repo)
+        zf = zipfile.ZipFile(StringIO(resp.content))
+        zf.extractall()
+        for item in zf.infolist():
+            print "\t", item.filename
+
+    # Rename directories
+    _dirs = os.listdir(".")
+    _dirs = filter(lambda x: "-master" in x, _dirs)
+    for directory in _dirs:
+        os.rename(directory, directory.replace("-master", ""))
 
     # Get all files
     resp = requests.get(
         "https://github.com/McIndi/mast.installer/archive/master.zip")
     zf = zipfile.ZipFile(StringIO(resp.content))
     zf.extractall()
-    # shutil.rmtree(
-        # os.path.join("mast.installer-master",
-                     # "mast",
-                     # "installer",
-                     # "files",
-                     # "windows"))
-    # shutil.rmtree(
-        # os.path.join("mast.installer-master",
-                     # "mast",
-                     # "installer",
-                     # "files",
-                     # "linux"))
+
     shutil.copytree(
         os.path.join(
             "mast.installer-master",
