@@ -85,11 +85,17 @@ def recurse_status(prefix, elem, row, header_row):
             row.insert(header_row.index(child.tag), child.text)
 
 
-def create_workbook(
-        env,       domains,
-        providers, object_classes, delay,
-        delim, out_file,  timestamp,
-        prepend_timestamp, obfuscate_password):
+def create_workbook(env,
+                    domains,
+                    providers,
+                    object_classes,
+                    delay,
+                    delim,
+                    out_file,
+                    timestamp,
+                    prepend_timestamp,
+                    obfuscate_password,
+                    persisted):
     if not providers:
         providers = []
     if not object_classes:
@@ -232,7 +238,7 @@ def create_workbook(
                             domain
                         )
                     )
-                    config = dp.get_config(_class=object_class, domain=domain)
+                    config = dp.get_config(_class=object_class, domain=domain, persisted=persisted)
                 except datapower.AuthenticationFailure:
                     logger.warn(
                         "Recieved AuthenticationFailure."
@@ -297,13 +303,20 @@ def create_workbook(
 
 
 def main(
-        appliances=[], credentials=[],
-        domains=["default"],      providers=[],
-        object_classes=[],        delim=",",
-        timeout=120,              delay=0.5,
-        out_file="./status.xlsx", no_check_hostname=False,
-        by_appliance=False,       no_prepend_timestamp=False,
-        obfuscate_password=False):
+        appliances=[],
+        credentials=[],
+        timeout=120,
+        no_check_hostname=False,
+        domains=["default"],
+        providers=[],
+        object_classes=[],
+        delim=os.linesep,
+        delay=0.5,
+        out_file="./status.xlsx",
+        by_appliance=False,
+        no_prepend_timestamp=False,
+        obfuscate_password=False,
+        persisted=False):
 
     prepend_timestamp = not no_prepend_timestamp
     t = Timestamp()
@@ -348,7 +361,8 @@ def main(
                 _out_file,
                 t,
                 prepend_timestamp,
-                obfuscate_password
+                obfuscate_password,
+                persisted
             )
     else:
         logger.info("generating workbook")
@@ -368,7 +382,8 @@ def main(
             out_file,
             t,
             prepend_timestamp,
-            obfuscate_password
+            obfuscate_password,
+            persisted
         )
 
 
