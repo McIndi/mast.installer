@@ -8,14 +8,26 @@ def main(appliances=[],
          credentials=[],
          timeout=120,
          EthernetInterface="",
-         Destination="",
-         Gateway="",
-         Metric="0",
+         add_static_routes=[],
+         del_static_routes=[],
          save_config=False):
     """
-    _Script_: `contrib/ssh-del-static-route.py`
+    _Script_: `contrib/ssh-add-static-route.py`
 
-    Removes a static route from the specified interface.
+    DESCRIPTION:
+
+    Adds or removes multiple static routes to an EthernetInterface.
+
+    USAGE:
+
+    To add two static routes and remove two static routes from two appliances,
+    this is the form you should use:
+
+    ```
+    $ mast contrib/ssh-routes.py --appliances APPL_1 --appliances APPL_2 --credentials user:pass --EthernetInterface INT_NAME --add-static-routes xxx.xxx.xxx.xxx/xx xxx.xxx.xxx.xxx x --add-static-routes xxx.xxx.xxx.xxx/xx xxx.xxx.xxx.xxx x --del-static-routes xxx.xxx.xxx.xxx/xx xxx.xxx.xxx.xxx x --del-static-routes xxx.xxx.xxx.xxx/xx xxx.xxx.xxx.xxx x
+    ```
+
+    RETURNS
 
     PARAMETERS:
 
@@ -39,13 +51,28 @@ def main(appliances=[],
     * `-t, --timeout`: The timeout in seconds to wait for a response from
     an appliance for any single request. __NOTE__ Program execution may
     halt if a timeout is reached.
-    * `-E, --EthernetInterface`: The name of the EthernetInterface from which
-    to remove the static route.
-    * `-D, --Destination`: The destination for the static route to remove
-    * `-G, --Gateway`: The gateway for the static route to remove
-    * `-M, --Metric`: The metric (weighting) for the static route to remove
+    * `-E, --EthernetInterface`: The name of the EthernetInterface to which
+    to add the static route.
+    * `-A, --add-static-routes`: The static route(s) to add, should be in
+    the form of "ip/cidr gateway metric" Where ip/cidr is the destination
+    IP address and CIDR mask, gateway is the next-hop router's IP Address
+    and metric is the numerical weighting of the static route. Multiple
+    static routes can be added by specifying `--add-static-routes` with proper
+    arguments multiple times.
+    * `-d, --del-static-routes`: The static route(s) to remove, should be in
+    the form of "ip/cidr gateway metric" Where ip/cidr is the destination
+    IP address and CIDR mask, gateway is the next-hop router's IP Address
+    and metric is the numerical weighting of the static route. Multiple
+    static routes can be removed by specifying `--del-static-routes` with
+    proper arguments multiple times.
     * `-s, --save-config`: If specified, the configuration will be saved.
+
+    **NOTE** static routes specified in `--del-static-routes` and
+    `--add-static-routes` must contain spaces and so must be quoted
     """
+    del_static_routes = [] if del_static_routes is None else del_static_routes
+    add_static_routes = [] if add_static_routes is None else add_static_routes
+
     env = datapower.Environment(appliances,
                                 credentials,
                                 timeout=timeout)
@@ -56,13 +83,16 @@ def main(appliances=[],
         print appliance.hostname, "\n"
         print issue_command("config")
         print issue_command("interface {}".format(EthernetInterface))
-        print issue_command("no ip-route {} {} {}".format(Destination,
-                                                          Gateway,
-                                                          Metric))
+        print issue_command("show route")
+        for static_route in add_static_routes:
+            print issue_command("ip-route {}".format(static_route))
+        for static_route in del_static_routes:
+            print issue_command("no ip-route {}".format(static_route))
         print issue_command("exit")
         if save_config:
             print issue_command("write mem")
             print issue_command("y")
+        print issue_command("show route")
         print issue_command("exit")
 
 
