@@ -84,10 +84,10 @@ def main(appliances=[],
         print issue_command("config")
         print issue_command("interface {}".format(EthernetInterface))
         print issue_command("show route")
-        for static_route in add_static_routes:
-            print issue_command("ip-route {}".format(static_route))
         for static_route in del_static_routes:
-            print issue_command("no ip-route {}".format(static_route))
+            print issue_command("no ip route {}".format(static_route))
+        for static_route in add_static_routes:
+            print issue_command("ip route {}".format(static_route))
         print issue_command("exit")
         if save_config:
             print issue_command("write mem")
