@@ -228,7 +228,7 @@ def _install_packages(prefix, net_install):
                 logger.debug(
                     "installed {}. out: {}, err: {}".format(repo, out, err))
             os.chdir(cwd)
-
+            shutil.rmtree(dirname)
     else:
         # Sort the packages
         dir_list = os.listdir(directory)
@@ -419,7 +419,7 @@ def generate_docs(prefix):
 def main(prefix="", net_install=False):
     """
     install mast into specified directory. Defaults to `$PWD/mast`.
-    
+
     Parameters:
 
     * prefix: The location to which to install mast. If not provided,
