@@ -228,6 +228,7 @@ def create_workbook(env,
                     continue
             for domain in _domains:
                 print "\t\t{}".format(domain)
+                sleep(delay)
                 logger.info("Looking in domain {}".format(domain))
                 xpath = datapower.CONFIG_XPATH + object_class
                 try:
@@ -317,6 +318,82 @@ def main(
         no_prepend_timestamp=False,
         obfuscate_password=False,
         persisted=False):
+    r"""
+    _Script_: `contrib/dp-query.py`
+
+    DESCRIPTION:
+
+    This script will create an excel workbook generated from the output
+    from the specified appliances for arbitrary status providers and/or
+    object configuration. Each status provider and object class configuration
+    will be contained in a seperate worksheet
+
+    RETURNS:
+
+    An Excel workbook
+
+    USAGE:
+
+    ```bash
+    $ mast contrib/dp-query --help
+    $ mast contrib/dp-query --appliances APPLIANCE --credentials CREDS --domains all-domains --providers ServicesStatusPlus --object-classes MultiProtocolGateway HTTPFrontSideHandler
+    ```
+
+    PARAMETERS:
+
+    * `-a, --appliances`: The hostname(s), ip address(es), environment name(s)
+    or alias(es) of the appliances you would like to affect. For details
+    on configuring environments please see the comments in
+    `environments.conf` located in `$MAST_HOME/etc/default`. For details
+    on configuring aliases, please see the comments in `hosts.conf` located in
+    `$MAST_HOME/etc/default`. To pass multiple arguments to this parameter,
+    use multiple entries of the form `[-a appliance1 [-a appliance2...]]`
+    * `-c, --credentials`: The credentials to use for authenticating to the
+    appliances. Should be either one set to use for all appliances
+    or one set for each appliance. Credentials should be in the form
+    `username:password`. To pass multiple credentials to this parameter, use
+    multiple entries of the form `[-c credential1 [-c credential2...]]`.
+    When referencing multiple appliances with multiple credentials,
+    there must be a one-to-one correspondence of credentials to appliances:
+    `[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]`
+    If you would prefer to not use plain-text passwords,
+    you can use the output of `$ mast-system xor <username:password>`.
+    * `-t, --timeout`: The timeout in seconds to wait for a response from
+    an appliance for any single request. __NOTE__ Program execution may
+    halt if a timeout is reached.
+    * `-n, --no-check-hostname`: If specified SSL verification will be turned
+    off when sending commands to the appliances.
+    * `-d, --domains`: The domains to query.  To pass multiple arguments
+    to this parameter, use multiple entries of the form
+    `[-d domain1 [-d domain2...]]`. If `all-domains` is passed to this
+    parameter, all domains will be queried.
+    * `-p, --providers`: The status providers to query. To pass multiple
+    arguments to this parameter, use multiple entries of the form
+    `[-p provider1 [-p provider2...]]`.
+    * `-o, --object-classes`: The object classes to pull the configuration
+    of. To pass multiple arguments to this parameter, use multiple entries
+    of the form `[-o objectclass1 [-o objectclass2...]]`.
+    * `-D, --delim`: The delimeter to use when multiple values will end up in
+    the same cell. Defaults to your system's default line termination
+    character (`\r\n` on windows or `\n` on Linux)
+    * `--delay`: The amount of time (in seconds) to wait between requests
+    to the appliances. This can be extremely useful if you need to avoid
+    over-working the appliance for example if you need to gather information
+    during peak periods you would probably want to set this to one or more
+    seconds. Defaults to `0.5`.
+    * `-O, --out-file`: The path and filename of the output file. This will
+    be an excel workbook, so it should have the extention `.xlsx`
+    * `-b, --by-appliance`: If specified, a seperate excel workbook will
+    be generated for each appliance.
+    * `-N, --no-prepend-timestamp`: If specified, this script will not
+    prepend a timestamp to the output filename
+    * `--obfuscate-password`: If specified, any object configurations which
+    contain a password will have its value replaced with "********",
+    that's eight asterics.
+    * `-P, --persisted`: If specified, the persisted configuration of any
+    specified object classes will be retrieved instead of the running
+    configuration
+    """
 
     prepend_timestamp = not no_prepend_timestamp
     t = Timestamp()
@@ -388,9 +465,11 @@ def main(
 
 
 if __name__ == "__main__":
+    cli = Cli(main=main, description=main.__doc__)
     try:
-        cli = Cli(main=main)
         cli.run()
+    except SystemExit:
+        pass
     except:
         logger.exception("An unhandled exception occured during execution.")
         raise
