@@ -197,7 +197,7 @@ def main():
 
     print "\n\nhotfix installed"
     print "\nTo re-generate the latest documentation, please run"
-    print "\tmast contrib/gendocs.py"
+    print "\t{}mast contrib/gendocs.py".format(mast_home + os.path.sep)
 
 if __name__ == "__main__":
     main()
@@ -295,7 +295,7 @@ def main(
     remove_build_dir - If specified, the build_dir will be removed
     upon completion. WARNING: If specified along with install, your
     install.log will be removed as well
-    
+
     timeout - The number of seconds to wait for the server to respond
     """
     socket.setdefaulttimeout(timeout)
