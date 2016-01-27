@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-log_user_out.py
+session-mon.py
 
 This is a special-case script written for an as-of-yet undiagnosed
 problem where one user account is building up a tremendous number

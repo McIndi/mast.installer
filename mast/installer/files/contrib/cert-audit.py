@@ -17,9 +17,12 @@ def insert_newlines(string, every=64):
 
 
 def main(
-        appliances=[], credentials=[],
-        timeout=120,   no_check_hostname=False,
-        domains=[],    out_file="tmp/cert-audit.xlsx",
+        appliances=[],
+        credentials=[],
+        timeout=120,
+        no_check_hostname=False,
+        domains=[],
+        out_file="tmp/cert-audit.xlsx",
         delay=0.5):
 
     check_hostname = not no_check_hostname
