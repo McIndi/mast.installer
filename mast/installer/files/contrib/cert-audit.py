@@ -5,7 +5,7 @@ from time import sleep
 from mast.logging import make_logger
 import xml.etree.cElementTree as etree
 import mast.datapower.datapower as datapower
-
+from dateutil import parser, tz
 from mast.timestamp import Timestamp
 
 t = Timestamp()
@@ -42,7 +42,8 @@ def main(
         "subject",
         "not_before",
         "not_after",
-        "issuer"]
+        "issuer",
+        "is-expired"]
     ws.append(header_row)
 
     for appliance in env.appliances:
@@ -122,11 +123,21 @@ def main(
                     ";".join(
                         ["=".join(x)
                          for x in _cert.get_issuer().get_components()]))
+                local_tz = tz.tzlocal()
+                notBefore_utc = parser.parse(_cert.get_notBefore())
+                notBefore_local = notBefore_utc.astimezone(local_tz)
+                notBefore = notBefore_local.strftime('%A, %B %d, %Y, %X')
+
+                notAfter_utc = parser.parse(_cert.get_notAfter())
+                notAfter_local = notAfter_utc.astimezone(local_tz)
+                notAfter = notAfter_local.strftime('%A, %B %d, %Y, %X')
+
                 row.extend(
                     [subject,
-                     _cert.get_notBefore(),
-                     _cert.get_notAfter(),
-                     issuer])
+                     notBefore,
+                     notAfter,
+                     issuer,
+                     str(_cert.has_expired())])
                 ws.append(row)
                 sleep(delay)
     wb.save(out_file)
