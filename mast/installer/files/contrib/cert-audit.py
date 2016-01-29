@@ -23,7 +23,8 @@ def main(
         no_check_hostname=False,
         domains=[],
         out_file="tmp/cert-audit.xlsx",
-        delay=0.5):
+        delay=0.5,
+        date_time_format="%A, %B %d, %Y, %X"):
 
     check_hostname = not no_check_hostname
     env = datapower.Environment(
@@ -126,11 +127,11 @@ def main(
                 local_tz = tz.tzlocal()
                 notBefore_utc = parser.parse(_cert.get_notBefore())
                 notBefore_local = notBefore_utc.astimezone(local_tz)
-                notBefore = notBefore_local.strftime('%A, %B %d, %Y, %X')
+                notBefore = notBefore_local.strftime(date_time_format)
 
                 notAfter_utc = parser.parse(_cert.get_notAfter())
                 notAfter_local = notAfter_utc.astimezone(local_tz)
-                notAfter = notAfter_local.strftime('%A, %B %d, %Y, %X')
+                notAfter = notAfter_local.strftime(date_time_format)
 
                 row.extend(
                     [subject,
