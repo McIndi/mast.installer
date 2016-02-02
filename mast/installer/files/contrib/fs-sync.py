@@ -19,7 +19,8 @@ def to_dp(appliances=[], credentials=[],
           timeout=120, local_dir="",
           remote_dir="", domain="default",
           recursive=False, no_check_hostname=False,
-          overwrite=False, create_dir=False):
+          overwrite=False, create_dir=False,
+		  followlinks=False):
     """Syncs files from local_dir to remote_dir in the specified
     domain. If the recursive flag is specified, then local_dir
     is recursed"""
@@ -43,7 +44,7 @@ def to_dp(appliances=[], credentials=[],
         print "\t{}".format(domain)
         files = []
         if recursive:
-            for root, dirs, _files in os.walk(local_dir):
+            for root, dirs, _files in os.walk(local_dir, followlinks=followlinks):
                 __files = [os.path.join(root, f) for f in _files]
                 files.extend(__files)
         else:
