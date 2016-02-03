@@ -5,10 +5,12 @@ from mast.cli import Cli
 from time import sleep, time
 
 
-def main(
-        appliances=[],           credentials=[],
-        timeout=120,             delay=10,
-        no_check_hostname=False, wait=1200):
+def main(appliances=[],
+         credentials=[],
+         timeout=120,
+         no_check_hostname=False,
+         delay=10,
+         wait=1200):
     """Reboot appliances one-by-one waiting for the previous appliance to
     come back up before moving on to the next one.
 

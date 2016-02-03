@@ -7,7 +7,11 @@ import xml.etree.cElementTree as etree
 t = Timestamp()
 logger = make_logger("mast.file-sizes")
 
-def main(appliances=[], credentials=[], timeout=120, no_check_hostname=False, out_file="out.csv"):
+def main(appliances=[],
+         credentials=[],
+         timeout=120,
+         no_check_hostname=False,
+         out_file="out.csv"):
     locations = ["cert:", "chkpoints:", "config:", "export:", "image:", "local:", "logstore:", "logtemp:", "pubcert:", "sharedcert:", "store:", "tasktemplates:", "temporary:"]
     check_hostname = not no_check_hostname
     env = datapower.Environment(appliances, credentials, timeout, check_hostname=check_hostname)

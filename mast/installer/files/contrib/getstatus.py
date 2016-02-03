@@ -132,12 +132,16 @@ def create_workbook(
     wb.save(out_file)
 
 
-def main(
-        appliances=[], credentials=[],
-        domains=["default"],      providers=[],
-        timeout=120,              delay=0.5,
-        out_file="./status.xlsx", no_check_hostname=False,
-        by_appliance=False,       no_prepend_timestamp=False):
+def main(appliances=[],
+         credentials=[],
+         timeout=120,
+         no_check_hostname=False,
+         domains=["default"],
+         providers=[],
+         delay=0.5,
+         out_file="./status.xlsx",
+         by_appliance=False,
+         no_prepend_timestamp=False):
 
     prepend_timestamp = not no_prepend_timestamp
     t = Timestamp()

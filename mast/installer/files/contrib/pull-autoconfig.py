@@ -2,7 +2,11 @@ from mast.datapower import datapower
 import mast.cli as cli
 import os
 
-def main(appliances=[], credentials=[], timeout=120, no_check_hostname=False, base_dir="."):
+def main(appliances=[],
+         credentials=[],
+         timeout=120,
+         no_check_hostname=False,
+         base_dir="."):
     check_hostname = not no_check_hostname
     env = datapower.Environment(
         hostnames=appliances,
@@ -31,4 +35,3 @@ def main(appliances=[], credentials=[], timeout=120, no_check_hostname=False, ba
 if __name__ == "__main__":
     interface = cli.Cli(main=main)
     interface.run()
-

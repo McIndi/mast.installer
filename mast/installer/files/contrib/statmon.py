@@ -61,8 +61,14 @@ def display_rows(header_row, rows, grep, provider):
             print _format_string.format(*row)
 
 
-def main(appliances=[], credentials=[], timeout=120, no_check_hostname=False,
-         provider="", domains=[], interval=0, grep=""):
+def main(appliances=[],
+         credentials=[],
+         timeout=120,
+         no_check_hostname=False,
+         provider="",
+         domains=[],
+         interval=0,
+         grep=""):
 
     if not provider:
         msg = "provider must be provided"

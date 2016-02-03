@@ -15,11 +15,16 @@ cli = Cli()
 
 
 @cli.command()
-def to_dp(appliances=[], credentials=[],
-          timeout=120, local_dir="",
-          remote_dir="", domain="default",
-          recursive=False, no_check_hostname=False,
-          overwrite=False, create_dir=False,
+def to_dp(appliances=[],
+          credentials=[],
+          timeout=120,
+          no_check_hostname=False,
+          local_dir="",
+          remote_dir="",
+          domain="default",
+          recursive=False,
+          overwrite=False,
+          create_dir=False,
 		  followlinks=False):
     """Syncs files from local_dir to remote_dir in the specified
     domain. If the recursive flag is specified, then local_dir
@@ -61,9 +66,14 @@ def to_dp(appliances=[], credentials=[],
 
 
 @cli.command()
-def from_dp(appliances=[], credentials=[], timeout=120,
-            location="", out_dir="tmp", Domain="",
-            recursive=False, no_check_hostname=False):
+def from_dp(appliances=[],
+            credentials=[],
+            timeout=120,
+            no_check_hostname=False,
+            location="",
+            out_dir="tmp",
+            Domain="",
+            recursive=False):
     """This will get all of the files from a directory on the appliances
     in the specified domain."""
     logger = make_logger("mast.datapower.fs_sync")

@@ -17,10 +17,10 @@ from getconfig import main as getconfig
 logger = make_logger("mast.crypto-audit")
 
 def cert_file_audit(appliances=[],
-         credentials=[],
-         timeout=120,
-         no_check_hostname=False,
-         out_file=os.path.join("tmp", "cert-file-audit.xlsx")):
+                    credentials=[],
+                    timeout=120,
+                    no_check_hostname=False,
+                    out_file=os.path.join("tmp", "cert-file-audit.xlsx")):
     locations = ["cert:", "pubcert:", "sharedcert:"]
     check_hostname = not no_check_hostname
     env = datapower.Environment(appliances,
@@ -98,11 +98,13 @@ def insert_newlines(string, every=64):
     return '\n'.join(string[i:i+every] for i in xrange(0, len(string), every))
 
 
-def cert_audit(
-        appliances=[], credentials=[],
-        timeout=120,   no_check_hostname=False,
-        domains=[],    out_file="tmp/cert-audit.xlsx",
-        delay=0.5):
+def cert_audit(appliances=[],
+               credentials=[],
+               timeout=120,
+               no_check_hostname=False,
+               domains=[],
+               out_file="tmp/cert-audit.xlsx",
+               delay=0.5):
 
     check_hostname = not no_check_hostname
     env = datapower.Environment(

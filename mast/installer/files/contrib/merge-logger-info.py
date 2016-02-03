@@ -21,7 +21,9 @@ from mast.logging import make_logger
 import pandas as pd
 
 
-def main(config_xlsx="", status_xlsx="", out_file=""):
+def main(config_xlsx="",
+         status_xlsx="",
+         out_file=""):
     config = pd.read_excel(config_xlsx)
     status = pd.read_excel(status_xlsx)
     status.rename(
