@@ -186,13 +186,17 @@ def create_workbook(env, object_classes, domains, out_file,
     wb.save(out_file)
 
 
-def main(
-        appliances=[],          credentials=[],
-        object_classes=[],      domains=[],
-        timeout=120,            no_check_hostname=False,
-        out_file="sample.xlsx", delim=os.linesep,
-        by_appliance=False,     no_prepend_timestamp=False,
-        obfuscate_password=False):
+def main(appliances=[],
+         credentials=[],
+         object_classes=[],
+         domains=[],
+         timeout=120,
+         no_check_hostname=False,
+         out_file="sample.xlsx",
+         delim=os.linesep,
+         by_appliance=False,
+         no_prepend_timestamp=False,
+         obfuscate_password=False):
 
     prepend_timestamp = not no_prepend_timestamp
     t = Timestamp()

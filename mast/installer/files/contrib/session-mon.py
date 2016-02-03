@@ -69,10 +69,11 @@ def disconnect_all(appliance, user, ids):
             )
 
 
-def main(
-        appliances=[],   credentials=[],
-        max_sessions=20, timeout=120,
-        no_check_hostname=False):
+def main(appliances=[],
+         credentials=[],
+         no_check_hostname=False,
+         max_sessions=20,
+         timeout=120):
     logger = make_logger("session_mon")
     check_hostname = not no_check_hostname
 
