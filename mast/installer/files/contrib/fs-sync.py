@@ -58,9 +58,11 @@ def to_dp(appliances=[],
             files = [os.path.join(local_dir, f)
                      for f in os.listdir(local_dir)
                      if os.path.isfile(os.path.join(local_dir, f))]
-        targets = ["/".join([remote_dir, f.replace(local_dir, "").replace(os.path.sep, "/")])
+        targets = ["/".join([remote_dir, f.replace(local_dir, "")])
                    for f in files]
-        targets = [re.sub(r"\b//\b", r"/", x) for x in targets]
+        targets = [x.replace(os.path.sep, "/") for x in targets]
+        targets = [x.replace("//", "/") for x in targets]
+        targets = [re.sub(r":[/]*", r":///", x) for x in targets]
         files = zip(files, targets)
 
         for f in files:
