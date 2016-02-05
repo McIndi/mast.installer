@@ -33,6 +33,7 @@ def to_dp(appliances=[],
     is recursed"""
     if remote_dir.endswith("/"):
         remote_dir = remote_dir.rstrip("/")
+    location = remote_dir.split(":")[0] + ":"
 
     check_hostname = not no_check_hostname
     env = datapower.Environment(
@@ -47,6 +48,8 @@ def to_dp(appliances=[],
         _exit()
 
     for appl in env.appliances:
+        filestore = appl.get_filestore(domain=domain,
+                                       location=location)
         print appl.hostname
         print "\t{}".format(domain)
         files = []
@@ -68,7 +71,7 @@ def to_dp(appliances=[],
         for f in files:
             print "\t\t{}  ->  {}".format(f[0], f[1])
             if not dry_run:
-                upload_file(appl, domain, f, overwrite, create_dir)
+                filestore = upload_file(appl, domain, f, overwrite, create_dir, filestore)
 
 
 @cli.command()
@@ -103,29 +106,36 @@ def from_dp(appliances=[],
             location, _out_dir, Domain, recursive=recursive)
 
 
-def upload_file(appl, domain, f, overwrite, create_dir):
+def upload_file(appl, domain, f, overwrite, create_dir, filestore=None):
     logger = make_logger("fs_sync")
 
     dirname = "/".join(f[1].split("/")[:-1])
+    location = dirname.split(":")[0] + ":"
+    if filestore is None:
+        filestore = appl.get_filestore(domain=domain,
+                                       location=location)
 
     if create_dir:
-        if (not appl.directory_exists(dirname, domain)) and (not appl.location_exists(dirname, domain)):
-            print "\t\tCreating Directory {}".format(dirname)
+        if (not appl.directory_exists(dirname, domain, filestore)) and (not appl.location_exists(dirname, domain, filestore)):
+            print "\t\t\tCreating Directory {}".format(dirname)
             appl.CreateDir(domain=domain, Dir=dirname)
+            filestore = appl.get_filestore(domain=domain,
+                                           location=location)
     else:
-        if (not appl.directory_exists(dirname, domain)) and (not appl.location_exists(dirname, domain)):
+        if (not appl.directory_exists(dirname, domain, filestore)) and (not appl.location_exists(dirname, domain, filestore)):
             logger.error(
                 "Directory {} does not exist in {} domain on {}".format(
                     dirname, domain, appl.hostname))
             _exit()
     try:
-        resp = appl.set_file(f[0], f[1], domain, overwrite)
+        resp = appl.set_file(f[0], f[1], domain, overwrite, filestore)
         if not resp:
             print "\t\t\tNot overwriting {}".format(f[1])
     except:
         logger.exception("An unhandled exception occurred.")
         print "Uable to upload file {} to {} - {} - {}".format(
             f[0], f[1], domain, appl.hostname)
+    return filestore
 
 
 if __name__ == "__main__":
