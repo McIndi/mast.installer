@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 import os
 import sys
 from mast.cli import Cli
@@ -25,7 +26,8 @@ def to_dp(appliances=[],
           recursive=False,
           overwrite=False,
           create_dir=False,
-		  followlinks=False):
+		  followlinks=False,
+          dry_run=False):
     """Syncs files from local_dir to remote_dir in the specified
     domain. If the recursive flag is specified, then local_dir
     is recursed"""
@@ -56,13 +58,15 @@ def to_dp(appliances=[],
             files = [os.path.join(local_dir, f)
                      for f in os.listdir(local_dir)
                      if os.path.isfile(os.path.join(local_dir, f))]
-        targets = ["/".join([remote_dir, f.replace(local_dir, "")])
+        targets = ["/".join([remote_dir, f.replace(local_dir, "").replace(os.path.sep, "/")])
                    for f in files]
+        targets = [re.sub(r"\b//\b", r"/", x) for x in targets]
         files = zip(files, targets)
 
         for f in files:
-            print "\t\t{} -> {}".format(f[0], f[1])
-            upload_file(appl, domain, f, overwrite, create_dir)
+            print "\t\t{}  ->  {}".format(f[0], f[1])
+            if not dry_run:
+                upload_file(appl, domain, f, overwrite, create_dir)
 
 
 @cli.command()
