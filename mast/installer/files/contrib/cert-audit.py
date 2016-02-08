@@ -17,16 +17,15 @@ def insert_newlines(string, every=64):
     return '\n'.join(string[i:i+every] for i in xrange(0, len(string), every))
 
 
-def main(
-        appliances=[],
-        credentials=[],
-        timeout=120,
-        no_check_hostname=False,
-        domains=[],
-        out_file="tmp/cert-audit.xlsx",
-        delay=0.5,
-        date_time_format="%A, %B %d, %Y, %X",
-        localtime=False):
+def main(appliances=[],
+         credentials=[],
+         timeout=120,
+         no_check_hostname=False,
+         domains=[],
+         out_file="tmp/cert-audit.xlsx",
+         delay=0.5,
+         date_time_format="%A, %B %d, %Y, %X",
+         localtime=False):
 
     check_hostname = not no_check_hostname
     env = datapower.Environment(

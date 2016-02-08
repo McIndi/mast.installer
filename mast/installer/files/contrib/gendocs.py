@@ -4,6 +4,7 @@ import mast.cron
 import mast.daemon
 import mast.datapower.accounts
 import mast.datapower.backups
+import mast.datapower.crypto
 import mast.datapower.datapower
 import mast.datapower.deploy
 import mast.datapower.deployment
@@ -178,6 +179,7 @@ api_modules = LastUpdatedOrderedDict([
     (mast.xor, LastUpdatedOrderedDict()),
     (mast.datapower.accounts, LastUpdatedOrderedDict()),
     (mast.datapower.backups, LastUpdatedOrderedDict()),
+    (mast.datapower.crypto, LastUpdatedOrderedDict()),
     (mast.datapower.deploy, LastUpdatedOrderedDict()),
     (mast.datapower.deployment, LastUpdatedOrderedDict()),
     (mast.datapower.developer, LastUpdatedOrderedDict()),

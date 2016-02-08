@@ -177,6 +177,7 @@ def _install_packages(prefix, net_install):
             "https://github.com/McIndi/mast.daemon/archive/master.zip",
             "https://github.com/McIndi/mast.datapower.accounts/archive/master.zip",
             "https://github.com/McIndi/mast.datapower.backups/archive/master.zip",
+            "https://github.com/McIndi/mast.datapower.crypto/archive/master.zip",
             "https://github.com/McIndi/mast.datapower.datapower/archive/master.zip",
             "https://github.com/McIndi/mast.datapower.deploy/archive/master.zip",
             "https://github.com/McIndi/mast.datapower.deployment/archive/master.zip",
@@ -215,9 +216,16 @@ def _install_packages(prefix, net_install):
             cwd = os.getcwd()
             os.chdir(dirname)
             if "dulwich" in repo:
-                out, err = system_call([python, "setup.py", "--pure", "install", "--force"])
+                out, err = system_call([python,
+                                        "setup.py",
+                                        "--pure",
+                                        "install",
+                                        "--force"])
             else:
-                out, err = system_call([python, "setup.py", "install", "--force"])
+                out, err = system_call([python,
+                                        "setup.py",
+                                        "install",
+                                        "--force"])
             if err:
                 print "\t\tERROR: check the log for details"
                 logger.error(
@@ -288,21 +296,33 @@ def _add_scripts(prefix):
     if "Windows" in platform.system():
         script_dir = os.path.join(INSTALL_DIR, "files", "windows")
         files = [
-            "mast.bat",           "notebook.bat",
-            "mast-system.bat",    "mast-accounts.bat",
-            "mast-backups.bat",   "mast-deployment.bat",
-            "mast-developer.bat", "mast-network.bat",
-            "mast-web.bat",       "mastd.bat",
+            "mast.bat",
+            "notebook.bat",
+            "mast-system.bat",
+            "mast-accounts.bat",
+            "mast-backups.bat",
+            "mast-crypto.bat",
+            "mast-deployment.bat",
+            "mast-developer.bat",
+            "mast-network.bat",
+            "mast-web.bat",
+            "mastd.bat",
             "mast-ssh.bat"
         ]
     elif "Linux" in platform.system():
         script_dir = os.path.join(INSTALL_DIR, "files", "linux")
         files = [
-            "mast",           "notebook",
-            "mast-system",    "mast-accounts",
-            "mast-backups",   "mast-deployment",
-            "mast-developer", "mast-network",
-            "mast-web",       "mast-ssh",
+            "mast",
+            "notebook",
+            "mast-system",
+            "mast-accounts",
+            "mast-backups",
+            "mast-crypto",
+            "mast-deployment",
+            "mast-developer",
+            "mast-network",
+            "mast-web",
+            "mast-ssh",
             "mastd"
         ]
 
