@@ -17,6 +17,8 @@ set-up with MAST for IBM DataPower Version 2.1.0.
 You may also be interested in our [Road Map](./roadmap.html) for future versions
 which also contains the list of known issues.
 
+For an overview of the current features and capabilities of MAST for DataPower, see the [Product Sheet](./product-sheet.html)
+
 # References
 
 For the convenience of users familiar with our product, we have a few references
@@ -24,6 +26,8 @@ which can help when you just need to perform a quick search.
 
 * [The CLI Reference](./CLIReference.html)
 * [The API Reference](./APIReference.html)
+
+Additional reference information for the IBM DataPower can be found at the [IBM Knowledge Center](http://www-01.ibm.com/software/integration/datapower/library/documentation/).
 
 # Contributing
 
