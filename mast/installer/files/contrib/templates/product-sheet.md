@@ -6,7 +6,7 @@
 
 ### Description
 
-* McIndi’s Automated Solutions Tool (MAST) for IBM DataPower is a comprehensive
+* McIndi's Automated Solutions Tool (MAST) for IBM DataPower is a comprehensive
 Dev/Ops solution (administration, management, operations, monitoring,
 automation and deployment) designed specifically for the IBM DataPower
 product line.
@@ -60,9 +60,9 @@ version inclusion.
         * Filesystem cleanup
         * Error report and PMR information collection
 * Three access points:
-    * Web GUI – common parameters (such as the hostnames of the appliances) appear in a common area of the screen which always visible and affects any task you might perform.
-    * CLI client – each CLI command accepts a standard set of arguments which all behave the same way.
-    * Simple API – all of MAST’s CLI commands are dynamically generated from functions based on their signature. These functions are also importable, so you can use them from our API without spawning a separate process.
+    * Web GUI - common parameters (such as the hostnames of the appliances) appear in a common area of the screen which always visible and affects any task you might perform.
+    * CLI client - each CLI command accepts a standard set of arguments which all behave the same way.
+    * Simple API - all of MAST's CLI commands are dynamically generated from functions based on their signature. These functions are also importable, so you can use them from our API without spawning a separate process.
 
 ### Support
 
@@ -71,7 +71,7 @@ version inclusion.
     * Hotfixes are available immediately after release from the Git Hub repository.
 * Documentation is regenerated with every hotfix and MAST version change and resides in the local installation.
 * Contract Services
-    * Service level options …
+    * Service level options
         * 24x7x4h
         * 24x7x1d
         * 8x5x1d
@@ -85,7 +85,7 @@ version inclusion.
 
 ### Conclusion
 
-* Regardless of the DataPower use case, (Protocol Mediation, Application Security, Message Security, Data/Message Transformation, Enterprise Service Bus, API Management, iSAM Enforcement, etc.) McIndi’s MAST for DataPower is the most powerful solution available.
+* Regardless of the DataPower use case, (Protocol Mediation, Application Security, Message Security, Data/Message Transformation, Enterprise Service Bus, API Management, iSAM Enforcement, etc.) McIndi's MAST for DataPower is the most powerful solution available.
 
 ### Contact information
 
