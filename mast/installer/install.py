@@ -307,7 +307,8 @@ def _add_scripts(prefix):
             "mast-network.bat",
             "mast-web.bat",
             "mastd.bat",
-            "mast-ssh.bat"
+            "mast-ssh.bat",
+            "set-env.bat"
         ]
     elif "Linux" in platform.system():
         script_dir = os.path.join(INSTALL_DIR, "files", "linux")
@@ -323,7 +324,8 @@ def _add_scripts(prefix):
             "mast-network",
             "mast-web",
             "mast-ssh",
-            "mastd"
+            "mastd",
+            "set-env"
         ]
 
     for f in files:
