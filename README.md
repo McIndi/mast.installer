@@ -79,3 +79,31 @@ some other options to specify how you would like to install MAST.
 * [markdown](https://github.com/waylan/Python-Markdown)
 * [ecdsa](https://github.com/warner/python-ecdsa)
 * [pycrypto](https://github.com/dlitz/pycrypto)
+
+
+__NOTE__ If building your own installation of MAST (not building an installer),
+these are the dependencies you will need to have installed:
+
+BASE
+====
+import cherrypy
+import colorama
+import commandr
+import Crypto
+import dulwich
+import ecdsa
+import flask
+import lxml
+import markdown
+import openpyxl
+import OpenSSL
+import pandas
+import paramiko
+import pygments
+import requests
+
+Windows Only
+============
+import msvcrt
+import pywin32
+import pyreadline
