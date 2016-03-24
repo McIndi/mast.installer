@@ -26,8 +26,9 @@ def to_dp(appliances=[],
           recursive=False,
           overwrite=False,
           create_dir=False,
-		  followlinks=False,
-          dry_run=False):
+          followlinks=False,
+          dry_run=False,
+          ignore_errors=False):
     """Syncs files from local_dir to remote_dir in the specified
     domain. If the recursive flag is specified, then local_dir
     is recursed"""
@@ -71,7 +72,19 @@ def to_dp(appliances=[],
         for f in files:
             print "\t\t{}  ->  {}".format(f[0], f[1])
             if not dry_run:
-                filestore = upload_file(appl, domain, f, overwrite, create_dir, filestore)
+                try:
+                    filestore = upload_file(appl, domain, f, overwrite, create_dir, filestore)
+                except:
+                    logger.exception("An error has occurred uploading "
+                                     "{} to {} on {}:{}".format(f[0],
+                                                                f[1],
+                                                                appl.hostname,
+                                                                domain))
+                    print "\t\t\tERROR uploading above file, stacktrace below:"
+                    if ignore_errors:
+                        pass
+                    else:
+                        raise
 
 
 @cli.command()
@@ -82,7 +95,8 @@ def from_dp(appliances=[],
             location="",
             out_dir="tmp",
             Domain="",
-            recursive=False):
+            recursive=False,
+            ignore_errors=False):
     """This will get all of the files from a directory on the appliances
     in the specified domain."""
     logger = make_logger("mast.datapower.fs_sync")
@@ -102,9 +116,22 @@ def from_dp(appliances=[],
         if not os.path.exists(_out_dir) or not os.path.isdir(_out_dir):
             logger.info("Making directory {}".format(_out_dir))
             os.makedirs(_out_dir)
-        appliance.copy_directory(
-            location, _out_dir, Domain, recursive=recursive)
-
+        try:
+            appliance.copy_directory(location,
+                                     _out_dir,
+                                     Domain,
+                                     recursive=recursive)
+        except:
+            logger.exception("An error occurred during download of "
+                             "{} to {} from {}:{}".format(location,
+                                                          _out_dir,
+                                                          appliance.hostname,
+                                                          Domain))
+            print "\t\t\tERROR downloading above directory, stacktrace below"
+            if ignore_errors:
+                pass
+            else:
+                raise
 
 def upload_file(appl, domain, f, overwrite, create_dir, filestore=None):
     logger = make_logger("fs_sync")
