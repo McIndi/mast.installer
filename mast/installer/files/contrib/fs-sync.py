@@ -73,14 +73,14 @@ def to_dp(appliances=[],
             print "\t\t{}  ->  {}".format(f[0], f[1])
             if not dry_run:
                 try:
-                    filestore = upload_file(appl, domain, f, overwrite, create_dir, filestore)
+                    filestore = upload_file(appl, domain, f, overwrite, create_dir, ignore_errors, filestore)
                 except:
                     logger.exception("An error has occurred uploading "
                                      "{} to {} on {}:{}".format(f[0],
                                                                 f[1],
                                                                 appl.hostname,
                                                                 domain))
-                    print "\t\t\tERROR uploading above file, stacktrace below:"
+                    print "\t\t\tERROR uploading above file stacktrace is in the logs:"
                     if ignore_errors:
                         pass
                     else:
@@ -127,13 +127,13 @@ def from_dp(appliances=[],
                                                           _out_dir,
                                                           appliance.hostname,
                                                           Domain))
-            print "\t\t\tERROR downloading above directory, stacktrace below"
+            print "\t\t\tERROR downloading above directory stacktrace can be found in the logs"
             if ignore_errors:
                 pass
             else:
                 raise
 
-def upload_file(appl, domain, f, overwrite, create_dir, filestore=None):
+def upload_file(appl, domain, f, overwrite, create_dir, ignore_errors, filestore=None):
     logger = make_logger("fs_sync")
 
     dirname = "/".join(f[1].split("/")[:-1])
@@ -145,7 +145,12 @@ def upload_file(appl, domain, f, overwrite, create_dir, filestore=None):
     if create_dir:
         if (not appl.directory_exists(dirname, domain, filestore)) and (not appl.location_exists(dirname, domain, filestore)):
             print "\t\t\tCreating Directory {}".format(dirname)
-            appl.CreateDir(domain=domain, Dir=dirname)
+            resp = appl.CreateDir(domain=domain, Dir=dirname)
+            if "<error-log>" in resp.text:
+                logger.error("An error occurred creating directory {} on {}:{}".format(dirname, appl.hostname, domain))
+                print "\t\t\t\tERROR Creating directory, stack trace can be found in the logs"
+                if not ignore_errors:
+                    raise datapower.AuthenticationFailure
             filestore = appl.get_filestore(domain=domain,
                                            location=location)
     else:
@@ -154,14 +159,9 @@ def upload_file(appl, domain, f, overwrite, create_dir, filestore=None):
                 "Directory {} does not exist in {} domain on {}".format(
                     dirname, domain, appl.hostname))
             _exit()
-    try:
-        resp = appl.set_file(f[0], f[1], domain, overwrite, filestore)
-        if not resp:
-            print "\t\t\tNot overwriting {}".format(f[1])
-    except:
-        logger.exception("An unhandled exception occurred.")
-        print "Uable to upload file {} to {} - {} - {}".format(
-            f[0], f[1], domain, appl.hostname)
+    resp = appl.set_file(f[0], f[1], domain, overwrite, filestore)
+    if not resp:
+        print "\t\t\tNot overwriting {}".format(f[1])
     return filestore
 
 
