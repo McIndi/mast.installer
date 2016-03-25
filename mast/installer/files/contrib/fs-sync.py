@@ -184,7 +184,7 @@ def download_directory(appl,
 
         :::python
         >>> dp = DataPower("localhost", "user:pass")
-        >>> dp.copy_directory(dp, "local:", "/tmp", "default", True)
+        >>> download_directory(dp, "local:", "/tmp", "default", True)
 
     Parameters:
 
@@ -245,7 +245,8 @@ def download_directory(appl,
                                file,
                                _local_path,
                                domain=domain,
-                               filestore=filestore)
+                               filestore=filestore,
+                               ignore_errors=ignore_errors)
             continue
         filename = os.path.join(local_path, file.split('/')[-1])
         with open(filename, 'wb') as fout:
