@@ -11,7 +11,6 @@ from time import sleep
 from mast.cli import Cli
 from textwrap import dedent
 from cStringIO import StringIO
-from dulwich import porcelain as git
 from mast.timestamp import Timestamp
 from mast.logging import make_logger
 
