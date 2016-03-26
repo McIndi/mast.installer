@@ -10,7 +10,6 @@ import zipfile
 import subprocess
 from tstamp import Timestamp
 from cStringIO import StringIO
-import dulwich.porcelain as git
 
 cwd = sys._MEIPASS
 
