@@ -293,10 +293,8 @@ def generate_cli_reference():
         out = out.replace("  -", "    -")
         out = re.sub(r"^  (\w)", r"* \1", out, flags=re.MULTILINE)
         out = re.sub(r"^\* (.*?)\s-\s", r"* `\1` - ", out, flags=re.MULTILINE)
-        out = re.sub(r"^(.*?Commands:)", r"\n\n\1", out, flags=re.MULTILINE)
-        if "mast-ssh" not in _script:
-            out = out.replace(":", ":\n\n")
-        else:
+        out = re.sub(r"^(.*?Commands:)", r"\n\n\1\n\n", out, flags=re.MULTILINE)
+        if "mast-ssh" in _script:
             out = out.replace("arguments:", "arguments:\n\n")
         out = out.replace("----------------------------------------", "")
         ret += "{}\n\n".format(textwrap.dedent(out))
