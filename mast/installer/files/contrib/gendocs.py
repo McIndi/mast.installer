@@ -295,7 +295,7 @@ def generate_cli_reference():
         out = re.sub(r"^  (\w)", r"* \1", out, flags=re.MULTILINE)
         # Put subcommand name in backticks
         out = re.sub(r"^\* (.*?)\s-\s", r"* `\1` - ", out, flags=re.MULTILINE)
-        # isolate section headers
+        # isolate sub-command categories into section headers
         out = re.sub(r"^(.*?Commands:)", r"\n\n\1\n\n", out, flags=re.MULTILINE)
         # Special case mast-ssh because it has no subcommands
         if "mast-ssh" in _script:
