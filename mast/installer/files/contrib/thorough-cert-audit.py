@@ -181,10 +181,10 @@ def cert_audit(appliances=[],
                 except UnboundLocalError:
                     # This most likely means the file did not exist for
                     # some reason (skip)
+                    print "SKIPPING CERT"
                     continue
                 except:
                     logger.exception("An unhandled exception has occurred")
-                    print appliance.history
                     print "SKIPPING CERT"
                     continue
                 cert = etree.fromstring(cert)
