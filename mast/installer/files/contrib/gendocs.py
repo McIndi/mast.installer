@@ -291,12 +291,14 @@ def generate_cli_reference():
         command = [_script, "--help"]
         out, err = system_call(command)
         out = out.replace("  -", "    -")
+        # Put all subcommand into an unordered list 
         out = re.sub(r"^  (\w)", r"* \1", out, flags=re.MULTILINE)
+        # Put subcommand name in backticks
         out = re.sub(r"^\* (.*?)\s-\s", r"* `\1` - ", out, flags=re.MULTILINE)
-        out = re.sub(r"^(.*?Commands:)", r"\n\n\1", out, flags=re.MULTILINE)
-        if "mast-ssh" not in _script:
-            out = out.replace(":", ":\n\n")
-        else:
+        # isolate sub-command categories into section headers
+        out = re.sub(r"^(.*?Commands:)", r"\n\n\1\n\n", out, flags=re.MULTILINE)
+        # Special case mast-ssh because it has no subcommands
+        if "mast-ssh" in _script:
             out = out.replace("arguments:", "arguments:\n\n")
         out = out.replace("----------------------------------------", "")
         ret += "{}\n\n".format(textwrap.dedent(out))
