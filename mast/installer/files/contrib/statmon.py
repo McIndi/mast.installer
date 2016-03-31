@@ -56,8 +56,7 @@ def display_rows(header_row, rows, grep, provider):
     print '-' * len(_format_string.format(*header_row))
     for row in rows:
         for pattern in grep:
-            if pattern.search(_format_string.format(*row)):
-                print _format_string.format(*row)
+            if not pattern.search(_format_string.format(*row)):
                 break
         else:
             print _format_string.format(*row)
@@ -96,7 +95,7 @@ def main(appliances=[],
 
 
 def print_table(env, provider, domains, grep):
-    header_row = ["hostname"]
+    header_row = ["hostname", "domain"]
 
     rows = []
     for appliance in env.appliances:
@@ -107,7 +106,7 @@ def print_table(env, provider, domains, grep):
         for domain in _domains:
             status = appliance.get_status(provider, domain=domain)
             for node in status.xml.findall(datapower.STATUS_XPATH):
-                row = [appliance.hostname]
+                row = [appliance.hostname, domain]
                 recurse_status("", node, row, header_row)
                 rows.append(row)
     display_rows(header_row, rows, grep, provider)
