@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-from mast.datapower import datapower
+import re
 import os
-from time import sleep
-from functools import partial
-from mast.datapower.datapower import Environment
 import sys
-from mast.logging import make_logger
+from time import sleep
 from mast.cli import Cli
+from functools import partial
+from mast.datapower import datapower
+from mast.logging import make_logger
 from mast.timestamp import Timestamp
+from mast.datapower.datapower import Environment
 
 # #########################
 # TODO:
@@ -54,9 +55,10 @@ def display_rows(header_row, rows, grep, provider):
     print "\n", _format_string.format(*header_row)
     print '-' * len(_format_string.format(*header_row))
     for row in rows:
-        if grep:
-            if grep in _format_string.format(*row):
+        for pattern in grep:
+            if pattern.search(_format_string.format(*row)):
                 print _format_string.format(*row)
+                break
         else:
             print _format_string.format(*row)
 
@@ -68,8 +70,11 @@ def main(appliances=[],
          provider="",
          domains=[],
          interval=0,
-         grep=""):
+         grep=[],
+         ignore_case=False):
 
+    flags = re.IGNORECASE if ignore_case else 0
+    grep = [re.compile(x, flags) for x in grep]
     if not provider:
         msg = "provider must be provided"
         logger.error(msg)
