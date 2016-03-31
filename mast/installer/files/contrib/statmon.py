@@ -74,7 +74,8 @@ def main(appliances=[],
          ignore_case=False):
 
     flags = re.IGNORECASE if ignore_case else 0
-    grep = [re.compile(x, flags) for x in grep]
+    if grep:
+        grep = [re.compile(x, flags) for x in grep]
     if not provider:
         msg = "provider must be provided"
         logger.error(msg)
