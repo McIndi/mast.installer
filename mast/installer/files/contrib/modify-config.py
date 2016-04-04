@@ -52,7 +52,6 @@ address to an EthernetInterface, you would have pass in something like:
 If the vector-add is nested, you will need to add the "(vector-add)"
 directive to the actual element being modified like this:
 `--mods "parent/(vector-add)child=value"`   
-
 """
 from collections import defaultdict
 from itertools import groupby
@@ -60,7 +59,9 @@ from mast.datapower import datapower
 from mast.logging import make_logger
 from mast.cli import Cli
 from mast.pprint import pprint_xml_str
+import os
 
+__version__ = "{}-0".format(os.environ["MAST_VERSION"])
 
 def tree():
     return defaultdict(tree)
