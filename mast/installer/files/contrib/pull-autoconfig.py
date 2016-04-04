@@ -2,6 +2,8 @@ from mast.datapower import datapower
 import mast.cli as cli
 import os
 
+__version__ = "{}-0".format(os.environ["MAST_VERSION"])
+
 def main(appliances=[],
          credentials=[],
          timeout=120,
