@@ -51,6 +51,8 @@ from time import sleep
 from mast.timestamp import Timestamp
 from functools import partial
 
+__version__ = "{}-0".format(os.environ["MAST_VERSION"])
+
 clear = partial(os.system, 'cls' if os.name == 'nt' else 'clear')
 
 def get_connections(env, clear_screen, class_filter, object_filter,
