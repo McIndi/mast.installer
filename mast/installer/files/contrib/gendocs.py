@@ -32,6 +32,7 @@ from collections import OrderedDict
 from markdown.extensions.toc import TocExtension
 from markdown.extensions.codehilite import CodeHiliteExtension
 
+__version__ = "{}-0".format(os.environ["MAST_VERSION"])
 
 def system_call(
         command,
