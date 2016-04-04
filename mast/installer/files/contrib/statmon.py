@@ -9,6 +9,8 @@ from mast.logging import make_logger
 from mast.cli import Cli
 from mast.timestamp import Timestamp
 
+__version__ = "{}-0".format(os.environ["MAST_VERSION"])
+
 # #########################
 # TODO:
 #
