@@ -13,6 +13,7 @@ import xml.etree.cElementTree as etree
 import mast.datapower.datapower as datapower
 from getconfig import main as getconfig
 
+__version__ = "{}-0".format(os.environ["MAST_VERSION"])
 
 logger = make_logger("mast.crypto-audit")
 
