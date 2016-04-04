@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
 export MAST_HOME=<%MAST_HOME%>
+export MAST_VERSION=2.1.0
 export PYTHONPATH=<%MAST_HOME%>/anaconda/lib/python2.7:<%MAST_HOME%>/anaconda/lib/python2.7/site-packages:<%MAST_HOME%>/anaconda/lib:<%MAST_HOME%>/bin:<%MAST_HOME%>/var:<%MAST_HOME%>:$PATH
 
 cd $MAST_HOME
