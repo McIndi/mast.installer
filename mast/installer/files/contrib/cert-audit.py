@@ -1,3 +1,4 @@
+import os
 import OpenSSL
 import openpyxl
 import mast.cli as cli
@@ -8,6 +9,8 @@ import mast.datapower.datapower as datapower
 from dateutil import parser, tz, relativedelta
 from datetime import datetime
 from mast.timestamp import Timestamp
+
+__version__ = "{}-0".format(os.environ["MAST_VERSION"])
 
 t = Timestamp()
 logger = make_logger("mast.export-certs")
