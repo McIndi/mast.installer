@@ -1,4 +1,4 @@
-export MAST_HOME=<$MAST_HOME>
+export MAST_HOME=<%MAST_HOME%>
 export PATH=$MAST_HOME:$PATH
 export PATH=$MAST_HOME/bin:$PATH
 export PATH=$MAST_HOME/usrbin:$PATH
