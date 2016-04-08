@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-from mast.datapower import datapower
+import re
 import os
-from time import sleep
-from functools import partial
-from mast.datapower.datapower import Environment
 import sys
-from mast.logging import make_logger
+from time import sleep
 from mast.cli import Cli
+from functools import partial
+from mast.datapower import datapower
+from mast.logging import make_logger
 from mast.timestamp import Timestamp
+from mast.datapower.datapower import Environment
 
 # #########################
 # TODO:
@@ -54,9 +55,9 @@ def display_rows(header_row, rows, grep, provider):
     print "\n", _format_string.format(*header_row)
     print '-' * len(_format_string.format(*header_row))
     for row in rows:
-        if grep:
-            if grep in _format_string.format(*row):
-                print _format_string.format(*row)
+        for pattern in grep:
+            if not pattern.search(_format_string.format(*row)):
+                break
         else:
             print _format_string.format(*row)
 
@@ -68,8 +69,11 @@ def main(appliances=[],
          provider="",
          domains=[],
          interval=0,
-         grep=""):
+         grep=[],
+         ignore_case=False):
 
+    flags = re.IGNORECASE if ignore_case else 0
+    grep = [re.compile(x, flags) for x in grep] if grep else []
     if not provider:
         msg = "provider must be provided"
         logger.error(msg)
@@ -91,7 +95,7 @@ def main(appliances=[],
 
 
 def print_table(env, provider, domains, grep):
-    header_row = ["hostname"]
+    header_row = ["hostname", "domain"]
 
     rows = []
     for appliance in env.appliances:
@@ -102,7 +106,7 @@ def print_table(env, provider, domains, grep):
         for domain in _domains:
             status = appliance.get_status(provider, domain=domain)
             for node in status.xml.findall(datapower.STATUS_XPATH):
-                row = [appliance.hostname]
+                row = [appliance.hostname, domain]
                 recurse_status("", node, row, header_row)
                 rows.append(row)
     display_rows(header_row, rows, grep, provider)
