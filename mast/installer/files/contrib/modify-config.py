@@ -23,8 +23,9 @@ domains by passing multiple arguments in the form of
 `-d domain-1 -d domain-2` 
 * `-o, --obj-class`: The class of objects to affect. Only one object
 class is permitted.
-* `-O, --obj-name`: The name of the object to affect, if not provided,
-affects all objects of class `obj-class`
+* `-O, --obj-name-filter`: A regular expression to filter affected objects
+by name. Only objects with names matching the regular expression will be
+affected.
 * `-D, --dry-run`: If specified, no requests will be sent to the
 appliances, instead the request that would've been sent to the
 appliances is printed to stdout
@@ -60,6 +61,7 @@ from mast.logging import make_logger
 from mast.cli import Cli
 from mast.pprint import pprint_xml_str
 import os
+import re
 
 __version__ = "{}-0".format(os.environ["MAST_VERSION"])
 
@@ -73,16 +75,19 @@ def main(appliances=[],
          no_check_hostname=False,
          domains=[],
          obj_class="",
-         obj_name="",
+         obj_name_filter="",
          mods=[],
          dry_run=False,
          save_config=False):
     check_hostname = not no_check_hostname
-    obj_name = None if not obj_name else obj_name    
     env = datapower.Environment(appliances,
                                 credentials,
                                 timeout=timeout,
                                 check_hostname=check_hostname)
+    if obj_name_filter    
+        obj_name_filter = re.compile(obj_name_filter)
+    else
+        obj_name_filter = re.compile(".*")
     for appliance in env.appliances: 
         print appliance.hostname
         if "all-domains" in domains:
@@ -91,9 +96,10 @@ def main(appliances=[],
             print "\t", domain
             print "\t\t", obj_class
             config = appliance.get_config(_class=obj_class,
-                                          name=obj_name,
                                           domain=domain)
             objs = config.xml.findall(datapower.CONFIG_XPATH)
+            objs = filter(lambda x: obj_name_filter.search(x.get("name")),
+                          objs)
             for obj in objs:
                 name = obj.get("name")
                 print "\t\t\t{}".format(name)
