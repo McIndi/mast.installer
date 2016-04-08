@@ -15,11 +15,13 @@ script to perform the equivalent of a LEFT JOIN on the two worksheets
 thereby generating an excel workbook with one worksheet containing the
 combined output from the two previous commands.
 """
+import os
 import sys
 from mast.cli import Cli
 from mast.logging import make_logger
 import pandas as pd
 
+__version__ = "{}-0".format(os.environ["MAST_VERSION"])
 
 def main(config_xlsx="",
          status_xlsx="",

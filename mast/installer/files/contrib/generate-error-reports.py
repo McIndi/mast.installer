@@ -1,7 +1,9 @@
+import os
 from mast.cli import Cli
 from mast.logging import make_logger
 from mast.datapower import datapower
 
+__version__ = "{}-0".format(os.environ["MAST_VERSION"])
 
 def main(appliances=[],
          credentials=[],

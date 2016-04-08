@@ -13,6 +13,8 @@ from mast.cli import Cli
 import colorama
 import os
 
+__version__ = "{}-0".format(os.environ["MAST_VERSION"])
+
 colorama.init()
 
 def pull_autoconfig(appliances=[],

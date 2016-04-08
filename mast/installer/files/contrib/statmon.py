@@ -10,6 +10,8 @@ from mast.logging import make_logger
 from mast.timestamp import Timestamp
 from mast.datapower.datapower import Environment
 
+__version__ = "{}-0".format(os.environ["MAST_VERSION"])
+
 # #########################
 # TODO:
 #

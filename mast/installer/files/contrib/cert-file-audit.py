@@ -7,6 +7,8 @@ from mast.datapower import datapower
 from mast.timestamp import Timestamp
 import xml.etree.cElementTree as etree
 
+__version__ = "{}-0".format(os.environ["MAST_VERSION"])
+
 logger = make_logger("mast.cert-file-audit")
 
 default_out_file = os.path.join("tmp", "cert-file-audit.xlsx")

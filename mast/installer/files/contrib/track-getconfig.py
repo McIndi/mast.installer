@@ -14,6 +14,8 @@ import urllib2
 import os
 import re
 
+__version__ = "{}-0".format(os.environ["MAST_VERSION"])
+
 colorama.init()
 
 

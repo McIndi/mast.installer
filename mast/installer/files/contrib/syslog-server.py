@@ -1,6 +1,9 @@
 #!/usr/bin/env python
+import os
 import logging
 import SocketServer
+
+__version__ = "{}-0".format(os.environ["MAST_VERSION"])
 
 LOG_FILE = 'datapower_syslog.log'
 HOST, PORT = "0.0.0.0", 514

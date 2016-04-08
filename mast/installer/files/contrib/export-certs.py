@@ -6,6 +6,8 @@ import mast.datapower.datapower as datapower
 from time import sleep
 import xml.etree.cElementTree as etree
 
+__version__ = "{}-0".format(os.environ["MAST_VERSION"])
+
 from mast.timestamp import Timestamp
 
 t = Timestamp()

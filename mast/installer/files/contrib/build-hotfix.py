@@ -14,6 +14,7 @@ from cStringIO import StringIO
 from mast.timestamp import Timestamp
 from mast.logging import make_logger
 
+__version__ = "{}-0".format(os.environ["MAST_VERSION"])
 
 def system_call(
         command,
