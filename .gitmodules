@@ -88,3 +88,6 @@
 [submodule "mast/installer/packages/mast.datapower.crypto"]
 	path = mast/installer/packages/mast.datapower.crypto
 	url = https://github.com/mcindi/mast.datapower.crypto
+[submodule "mast/installer/packages/mast.testsuite"]
+	path = mast/installer/packages/mast.testsuite
+	url = https://github.com/mcindi/mast.testsuite
