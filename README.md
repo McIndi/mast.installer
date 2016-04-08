@@ -1,16 +1,5 @@
 # mast.installer
 
-## TODO
-
-this is a list of todo items which I wish to include in the documentation,
-so I am including them as if they are true, but listing them here so
-readers are aware:
-
-- [ ] move `build.py` to the root directory of the package
-- [ ] write at least some tests
-- [ ] have `build.py` create the installer in the root directory of the project
-- [ ] implement installer options
-
 ## The Package
 
 This package brings everything together in order to build an executable
@@ -37,18 +26,14 @@ some other options to specify how you would like to install MAST.
 
 ```
 -p --prefix      - The directory in which to install MAST
--d --daemon      - Install mastd as a service
 -n --net-install - pull the latest versions of everything instead of the bundled
                    versions.
--a --add-to-path - add mast directory and anaconda's executables to the path of the
-                   user executing the installer
 ```
 
 ## Requirements
 
 1. Python 2.7
 2. pyinstaller==2.1
-3. py.test
 
 ## Links to the dependent packages
 
@@ -79,31 +64,31 @@ some other options to specify how you would like to install MAST.
 * [markdown](https://github.com/waylan/Python-Markdown)
 * [ecdsa](https://github.com/warner/python-ecdsa)
 * [pycrypto](https://github.com/dlitz/pycrypto)
-
+* [dulwich](https://www.dulwich.io/)
 
 __NOTE__ If building your own installation of MAST (not building an installer),
 these are the dependencies you will need to have installed:
 
 BASE
 ====
-import cherrypy
-import colorama
-import commandr
-import Crypto
-import dulwich
-import ecdsa
-import flask
-import lxml
-import markdown
-import openpyxl
-import OpenSSL
-import pandas
-import paramiko
-import pygments
-import requests
+* cherrypy
+* colorama
+* commandr
+* Crypto
+* dulwich
+* ecdsa
+* flask
+* lxml
+* markdown
+* openpyxl
+* OpenSSL
+* pandas
+* paramiko
+* pygments
+* requests
 
 Windows Only
 ============
-import msvcrt
-import pywin32
-import pyreadline
+* msvcrt
+* pywin32
+* pyreadline
