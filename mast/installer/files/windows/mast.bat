@@ -1,4 +1,5 @@
 @echo off
+setlocal
 
 SET MAST_HOME=<%MAST_HOME%>
 SET MAST_VERSION=2.1.0
@@ -11,3 +12,4 @@ if "%~1"=="" (
 ) else (
   %MAST_HOME%\anaconda\python %*
 )
+endlocal
