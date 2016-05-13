@@ -19,33 +19,26 @@ if "Windows" in platform.system():
             cwd,
             "scripts",
             "anaconda",
-            "Anaconda-2.4.0-Windows-x86.exe")
+            "Anaconda-4.0.0-Windows-x86.exe")
     elif "64bit" in platform.architecture():
         ANACONDA_INSTALL_SCRIPT = os.path.join(
             cwd,
             "scripts",
             "anaconda",
-            "Anaconda-2.4.0-Windows-x86_64.exe")
+            "Anaconda-4.0.0-Windows-x86_64.exe")
 elif "Linux" in platform.system():
     if '32bit' in platform.architecture():
-        if "armv7l" in platform.machine():
-            ANACONDA_INSTALL_SCRIPT = os.path.join(
-                cwd,
-                "scripts",
-                "anaconda",
-                "Miniconda-latest-Linux-armv7l.sh")
-        else:
-            ANACONDA_INSTALL_SCRIPT = os.path.join(
-                cwd,
-                "scripts",
-                "anaconda",
-                "anaconda-2.4.0-linux32-install.sh")
+        ANACONDA_INSTALL_SCRIPT = os.path.join(
+            cwd,
+            "scripts",
+            "anaconda",
+            "anaconda-4.0.0-linux32-install.sh")
     elif '64bit' in platform.architecture():
         ANACONDA_INSTALL_SCRIPT = os.path.join(
             cwd,
             "scripts",
             "anaconda",
-            "anaconda-2.4.0-linux64-install.sh")
+            "anaconda-4.0.0-linux64-install.sh")
 
 INSTALL_DIR = cwd
 
@@ -467,3 +460,4 @@ def main(prefix="", net_install=False):
 if __name__ == "__main__":
     _cli = cli.Cli(main=main)
     _cli.run()
+
