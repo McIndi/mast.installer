@@ -256,6 +256,7 @@ repos = [
 def main(
         output_file=default_out_file,
         build_dir=default_build_dir,
+        no_verify=False,
         install=False,
         remove_build_dir=False,
         timeout=60):
@@ -302,6 +303,7 @@ def main(
 
     timeout - The number of seconds to wait for the server to respond
     """
+    verify = not no_verify
     socket.setdefaulttimeout(timeout)
 
     if not os.path.exists(build_dir):
@@ -323,7 +325,7 @@ def main(
     os.chdir(dist_dir)
     for repo in repos:
         print repo
-        resp = requests.get(repo)
+        resp = requests.get(repo, verify=verify)
         zf = zipfile.ZipFile(StringIO(resp.content))
         zf.extractall()
         for item in zf.infolist():
@@ -337,7 +339,8 @@ def main(
 
     # Get all files
     resp = requests.get(
-        "https://github.com/McIndi/mast.installer/archive/master.zip")
+        "https://github.com/McIndi/mast.installer/archive/master.zip",
+        verify=verify)
     zf = zipfile.ZipFile(StringIO(resp.content))
     zf.extractall()
 
