@@ -153,7 +153,7 @@ def main():
         logger.info(msg)
         print msg
         os.chdir(d)
-        if d == "dulwich":
+        if "dulwich" in d:
             out, err = system_call([python, "setup.py", "--pure", "install", "--force"])
         else:
             out, err = system_call(command)
