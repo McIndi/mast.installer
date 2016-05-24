@@ -84,9 +84,9 @@ def main(appliances=[],
                                 credentials,
                                 timeout=timeout,
                                 check_hostname=check_hostname)
-    if obj_name_filter    
+    if obj_name_filter:
         obj_name_filter = re.compile(obj_name_filter)
-    else
+    else:
         obj_name_filter = re.compile(".*")
     for appliance in env.appliances: 
         print appliance.hostname
