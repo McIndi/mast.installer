@@ -329,7 +329,10 @@ def main(
         zf = zipfile.ZipFile(StringIO(resp.content))
         zf.extractall()
         for item in zf.infolist():
-            print "\t", item.filename
+            try:
+                print "\t", item.filename
+            except UnicodeEncodeError:
+                print "\t<UNABLE TO DISPLAY FILENAME>"
 
     # Rename directories
     _dirs = os.listdir(".")
