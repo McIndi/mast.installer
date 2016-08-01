@@ -20,12 +20,15 @@ be disabled
 * `-d, --domains`: A list of domains to affect. You can pass in
 "all-domains" to affect all domains, or you can specify one or more
 domains by passing multiple arguments in the form of
-`-d domain-1 -d domain-2` 
+`-d domain-1 -d domain-2`
 * `-o, --obj-class`: The class of objects to affect. Only one object
 class is permitted.
 * `-O, --obj-name-filter`: A regular expression to filter affected objects
 by name. Only objects with names matching the regular expression will be
 affected.
+* `--obj-filter`: A regular expression to filter affected objects. Only
+objects whose XML formatted configuration contains a string matching
+the regular expression will be affected.
 * `-D, --dry-run`: If specified, no requests will be sent to the
 appliances, instead the request that would've been sent to the
 appliances is printed to stdout
@@ -52,7 +55,7 @@ address to an EthernetInterface, you would have pass in something like:
 
 If the vector-add is nested, you will need to add the "(vector-add)"
 directive to the actual element being modified like this:
-`--mods "parent/(vector-add)child=value"`   
+`--mods "parent/(vector-add)child=value"`
 """
 from collections import defaultdict
 from itertools import groupby
@@ -76,6 +79,7 @@ def main(appliances=[],
          domains=[],
          obj_class="",
          obj_name_filter="",
+         obj_filter="",
          mods=[],
          dry_run=False,
          save_config=False):
@@ -88,18 +92,30 @@ def main(appliances=[],
         obj_name_filter = re.compile(obj_name_filter)
     else:
         obj_name_filter = re.compile(".*")
-    for appliance in env.appliances: 
+
+    if obj_filter:
+        obj_filter = re.compile(obj_filter)
+    else:
+        obj_filter = re.compile(".*")
+
+    for appliance in env.appliances:
         print appliance.hostname
         if "all-domains" in domains:
-            domains = appliance.domains        
+            domains = appliance.domains
         for domain in domains:
             print "\t", domain
             print "\t\t", obj_class
             config = appliance.get_config(_class=obj_class,
                                           domain=domain)
             objs = config.xml.findall(datapower.CONFIG_XPATH)
-            objs = filter(lambda x: obj_name_filter.search(x.get("name")),
-                          objs)
+            objs = filter(
+                lambda x: obj_name_filter.search(x.get("name")),
+                objs
+            )
+            objs = filter(
+                lambda x: obj_filter.search(str(x)),
+                objs
+            )
             for obj in objs:
                 name = obj.get("name")
                 print "\t\t\t{}".format(name)
@@ -113,12 +129,12 @@ def main(appliances=[],
                         ks = k.split("/")
                         level = parsed_mods
                         for _k in ks:
-                            last_level = level                            
+                            last_level = level
                             level = level[_k]
                         last_level[_k] = v
                     else:
                         parsed_mods[k] = v
-                
+
                 def append_mods(request, mods):
                     for k, v in mods.items():
                         if k.startswith("(vector-add)"):
