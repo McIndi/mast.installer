@@ -11,6 +11,7 @@ from time import sleep
 from mast.cli import Cli
 from textwrap import dedent
 from cStringIO import StringIO
+from shutil import make_archive
 from mast.timestamp import Timestamp
 from mast.logging import make_logger
 
@@ -37,20 +38,6 @@ def system_call(
         shell=shell)
     stdout, stderr = pipe.communicate()
     return stdout, stderr
-
-
-def zipdir(path, filename):
-    zipf = zipfile.ZipFile(filename, 'w', zipfile.ZIP_DEFLATED)
-    for root, dirs, files in os.walk(path):
-        for f in files:
-            zipf.write(
-                os.path.join(root, f),
-                os.path.relpath(
-                    os.path.join(root, f),
-                    os.path.join(path, '..')
-                )
-            )
-    zipf.close()
 
 
 install_script = r'''
@@ -303,6 +290,7 @@ def main(
 
     timeout - The number of seconds to wait for the server to respond
     """
+    output_file = output_file.replace(".zip", "")
     verify = not no_verify
     socket.setdefaulttimeout(timeout)
 
@@ -329,7 +317,10 @@ def main(
         zf = zipfile.ZipFile(StringIO(resp.content))
         zf.extractall()
         for item in zf.infolist():
-            print "\t", item.filename
+            try:
+                print "\t", item.filename
+            except UnicodeEncodeError:
+                print "\t<UNABLE TO DISPLAY FILENAME>"
 
     # Rename directories
     _dirs = os.listdir(".")
@@ -357,7 +348,7 @@ def main(
     os.chdir(cwd)
 
     # zip up the dist_dir
-    zipdir(dist_dir, output_file)
+    output_file = make_archive(output_file, "zip", dist_dir)
 
     # Install the hotfixes if user says so
     if install:
