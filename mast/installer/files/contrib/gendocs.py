@@ -375,7 +375,7 @@ def main(out_dir="doc"):
         fout.write(api_md)
 
     cli_md = generate_cli_reference()
-    cli_md = "[Back to index](./index.html)\n\n<h1>MAST for IBM DataPower Version {}</h1><h2>CLI Reference v {}</h2>\n\n[TOC]\n\n{}".format(os.environ["MAST_VERSION"], os.environ["MAST_VERSION"] cli_md)
+    cli_md = "[Back to index](./index.html)\n\n<h1>MAST for IBM DataPower Version {}</h1><h2>CLI Reference v {}</h2>\n\n[TOC]\n\n{}".format(os.environ["MAST_VERSION"], os.environ["MAST_VERSION"], cli_md)
     cli_html = markdown.markdown(
         cli_md,
         extensions=[
