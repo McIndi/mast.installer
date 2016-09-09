@@ -337,6 +337,7 @@ def main(out_dir="doc"):
             with open(in_file, "rb") as fin:
                 md = unicode(fin.read())
 
+            md = md.format(os.environ["MAST_VERSION"])
             html = markdown.markdown(
                 unicode(md),
                 extensions=[
@@ -354,7 +355,7 @@ def main(out_dir="doc"):
 
     api_objects = get_objects(api_modules)
     api_md = generate_markdown(api_objects)
-    api_md = "[Back to index](./index.html)\n\n<h1>MAST for IBM DataPower Version 2.1.0</h1><h2>API Documentation v 2.1.0</h2>\n\n[TOC]\n\n{}".format(api_md)
+    api_md = "[Back to index](./index.html)\n\n<h1>MAST for IBM DataPower Version {}</h1><h2>API Documentation v {}</h2>\n\n[TOC]\n\n{}".format(os.environ["MAST_VERSION"], os.environ["MAST_VERSION"], api_md)
 
     api_html = markdown.markdown(
         api_md,
@@ -374,7 +375,7 @@ def main(out_dir="doc"):
         fout.write(api_md)
 
     cli_md = generate_cli_reference()
-    cli_md = "[Back to index](./index.html)\n\n<h1>MAST for IBM DataPower Version 2.1.0</h1><h2>CLI Reference v 2.1.0</h2>\n\n[TOC]\n\n{}".format(cli_md)
+    cli_md = "[Back to index](./index.html)\n\n<h1>MAST for IBM DataPower Version {}</h1><h2>CLI Reference v {}</h2>\n\n[TOC]\n\n{}".format(os.environ["MAST_VERSION"], os.environ["MAST_VERSION"] cli_md)
     cli_html = markdown.markdown(
         cli_md,
         extensions=[

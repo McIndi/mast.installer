@@ -1,12 +1,12 @@
 [Back to index](./index.html)
-<h1>MAST for IBM DataPower Version 2.1.0</h1>
+<h1>MAST for IBM DataPower Version {0}</h1>
 <h2>Release Notes</h2>
 
 [TOC]
 
 # Introduction
 
-MAST for IBM DataPower version 2.1.0 has quite a few improvements and
+MAST for IBM DataPower version {0} has quite a few improvements and
 bugfixes. In this release we focused on stability and enduser experience
 rather than new features, however, we do have a few new features which we
 believe will help tremendously with maximizing your return on investment in

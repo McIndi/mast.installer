@@ -1,5 +1,5 @@
 [Back to index](./index.html)
-<h1>MAST for IBM DataPower Version 2.1.0</h1>
+<h1>MAST for IBM DataPower Version {0}</h1>
 <h2>Release Notes</h2>
 
 [TOC]
@@ -60,7 +60,7 @@ made in the past as well as decisions which we are currently making.
     * Focus on bug fixes, documentation and stabilization
     * Start the process of decoupling MAST from MAST for IBM DataPower so
     each project can focus on their primary concern
-* Version 2.1.0 - Beta
+* Version 2.1.0 - Complete
     * Bring in the Python library [dulwich](https://github.com/jelmer/dulwich)
     for native git integration, we have a number of uses for this functionality
         * Configuration (persisted and/or running) auditing
@@ -80,6 +80,13 @@ made in the past as well as decisions which we are currently making.
             and a couple of markdown files. This allows our users to update
             our product and generate the updated documentation on-the-fly
     * Focus on bug fixes and stability
+* Version 2.2.0 - Complete
+    * Remove dependency on dulwich due to lack of support, although they are
+    working on the issues, we need certain features to work
+    * Focus on usability and bug fixes
+    * Dynamically populate version throughout product to help with
+     troubleshooting
+    * Lots more, please check out our [release notes](./releasenotes.html)
 * Version 3
     * Improve the process of contributing to our projects
         * Adopt a better, more modern development workflow

@@ -1,4 +1,4 @@
-<h1>MAST for IBM DataPower Version 2.1.0</h1>
+<h1>MAST for IBM DataPower Version {0}</h1>
 <h2>Documentation</h2>
 
 [TOC]
@@ -6,13 +6,13 @@
 # Introduction
 
 Hello and welcome to the documentation for MAST for IBM DataPower Version
-2.1.0. There are a number of updates to this release over the 2.0.1 release
+{0}. There are a number of updates to this release over the previous release
 and we are pleased to share them with you. Please check out the
 [release notes](./releasenotes.html) to see what has changed.
 
 If you are a new user, you can head over to the [Installation Guide](./installation.html)
 or the [Getting Started Guide](./getting-started.html) for instructions on getting
-set-up with MAST for IBM DataPower Version 2.1.0.
+set-up with MAST for IBM DataPower Version {0}.
 
 You may also be interested in our [Road Map](./roadmap.html) for future versions
 which also contains the list of known issues.

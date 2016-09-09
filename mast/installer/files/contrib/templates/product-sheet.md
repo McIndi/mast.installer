@@ -1,5 +1,5 @@
 [Back to index](./index.html)
-<h1>MAST for IBM DataPower version 2.1.0</h1>
+<h1>MAST for IBM DataPower version {0}</h1>
 <h2>Product Sheet</h2>
 
 [TOC]
