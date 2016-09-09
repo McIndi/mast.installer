@@ -2,7 +2,7 @@
 setlocal
 
 SET MAST_HOME=<%MAST_HOME%>
-SET MAST_VERSION=2.1.1
+SET MAST_VERSION=2.2.0
 
 cd /d %MAST_HOME%
 call set-env.bat
