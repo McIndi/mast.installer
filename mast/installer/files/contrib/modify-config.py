@@ -100,9 +100,10 @@ def main(appliances=[],
 
     for appliance in env.appliances:
         print appliance.hostname
+        _domains = domains
         if "all-domains" in domains:
-            domains = appliance.domains
-        for domain in domains:
+            _domains = appliance.domains
+        for domain in _domains:
             print "\t", domain
             print "\t\t", obj_class
             config = appliance.get_config(_class=obj_class,
