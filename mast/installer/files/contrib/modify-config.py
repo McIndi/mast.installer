@@ -62,7 +62,7 @@ from itertools import groupby
 from mast.datapower import datapower
 from mast.logging import make_logger
 from mast.cli import Cli
-from mast.pprint import pprint_xml_str
+from mast.pprint import pprint_xml_str, pprint_xml
 import os
 import re
 
@@ -114,7 +114,7 @@ def main(appliances=[],
                 objs
             )
             objs = filter(
-                lambda x: obj_filter.search(str(x)),
+                lambda x: obj_filter.search(datapower.etree.tostring(x)),
                 objs
             )
             for obj in objs:
@@ -149,6 +149,7 @@ def main(appliances=[],
                 append_mods(request, parsed_mods)
 
                 if dry_run:
+                    pprint_xml(obj)
                     pprint_xml_str(str(appliance.request))
                     continue
                 else:
