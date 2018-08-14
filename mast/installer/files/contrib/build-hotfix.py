@@ -128,7 +128,7 @@ def main():
         "commandr",
         "cherrypy",
         "paramiko",
-        "Python-Markdown",
+        "markdown",
         "python-ecdsa",
         "dulwich",
     ]
