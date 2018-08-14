@@ -94,7 +94,7 @@ def from_dp(appliances=[],
             no_check_hostname=False,
             location="",
             out_dir="tmp",
-            Domain="",
+            Domain=["all-domains"],
             recursive=False,
             ignore_errors=False):
     """This will get all of the files from a directory on the appliances
@@ -110,30 +110,34 @@ def from_dp(appliances=[],
     for appliance in env.appliances:
         logger.info("Syncing with {}".format(appliance.hostname))
         print appliance.hostname
-        print "\t", Domain
-        _out_dir = os.path.join(out_dir, appliance.hostname)
-        print "\t\t", location, "->", _out_dir
-        if not os.path.exists(_out_dir) or not os.path.isdir(_out_dir):
-            logger.info("Making directory {}".format(_out_dir))
-            os.makedirs(_out_dir)
-        try:
-            download_directory(appliance,
-                               location,
-                               _out_dir,
-                               Domain,
-                               recursive=recursive,
-                               ignore_errors=ignore_errors)
-        except:
-            logger.exception("An error occurred during download of "
-                             "{} to {} from {}:{}".format(location,
-                                                          _out_dir,
-                                                          appliance.hostname,
-                                                          Domain))
-            print "\t\t\tERROR downloading above directory stacktrace can be found in the logs"
-            if ignore_errors:
-                pass
-            else:
-                raise
+        _domains = domains
+        if "all-domains" in _domains:
+            _domains = appliance.domains
+        for Domain in _domains:
+            print "\t", Domain
+            _out_dir = os.path.join(out_dir, appliance.hostname)
+            print "\t\t", location, "->", _out_dir
+            if not os.path.exists(_out_dir) or not os.path.isdir(_out_dir):
+                logger.info("Making directory {}".format(_out_dir))
+                os.makedirs(_out_dir)
+            try:
+                download_directory(appliance,
+                                   location,
+                                   _out_dir,
+                                   Domain,
+                                   recursive=recursive,
+                                   ignore_errors=ignore_errors)
+            except:
+                logger.exception("An error occurred during download of "
+                                 "{} to {} from {}:{}".format(location,
+                                                              _out_dir,
+                                                              appliance.hostname,
+                                                              Domain))
+                print "\t\t\tERROR downloading above directory stacktrace can be found in the logs"
+                if ignore_errors:
+                    pass
+                else:
+                    raise
 
 def upload_file(appl, domain, f, overwrite, create_dir, ignore_errors, filestore=None):
     logger = make_logger("fs-sync")

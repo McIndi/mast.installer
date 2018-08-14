@@ -30,9 +30,11 @@ def system_call(
 
 def download_file(url, dst):
     """helper function to stream a file from url to dst"""
-    req = urllib2.urlopen(url)
+    opener = urllib2.build_opener()
+    opener.addheaders = [('User-Agent', '00100')]
+    response = opener.open(url)
     with open(dst, 'wb') as fp:
-        shutil.copyfileobj(req, fp)
+        shutil.copyfileobj(response, fp)
 
 
 if "Windows" in platform.system():
