@@ -331,7 +331,8 @@ def main(
     # Get all files
     resp = requests.get(
         "https://github.com/McIndi/mast.installer/archive/master.zip",
-        verify=verify)
+        verify=verify
+    )
     zf = zipfile.ZipFile(StringIO(resp.content))
     zf.extractall()
 

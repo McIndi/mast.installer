@@ -94,7 +94,7 @@ def from_dp(appliances=[],
             no_check_hostname=False,
             location="",
             out_dir="tmp",
-            Domain=["all-domains"],
+            domains=["all-domains"],
             recursive=False,
             ignore_errors=False):
     """This will get all of the files from a directory on the appliances
