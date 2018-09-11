@@ -91,3 +91,6 @@
 [submodule "mast/installer/packages/mast.testsuite"]
 	path = mast/installer/packages/mast.testsuite
 	url = https://github.com/mcindi/mast.testsuite
+[submodule "mast\\installer\\packages\\cheroot"]
+	path = mast\\installer\\packages\\cheroot
+	url = https://github.com/cherrypy/cheroot
