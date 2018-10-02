@@ -60,14 +60,12 @@ elif "Linux" in platform.system():
 dst = os.path.join(
     "scripts",
     "anaconda",
-    anaconda_installer,
-)
+    anaconda_installer)
 if not os.path.exists(dst):
     print "Downloading Anaconda installer"
     download_file(
         anaconda_installer_url,
-        dst,
-    )
+        dst)
     print "\tDone"
 else:
     print "Anaconda installer already downloaded, reusing."

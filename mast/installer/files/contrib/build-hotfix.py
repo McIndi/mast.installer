@@ -126,9 +126,6 @@ def main():
         "mast.timestamp",
         "mast.xor",
         "commandr",
-        "setuptools_scm",
-        "setuptools_scm_git_archive",
-        "cheroot",
         "cherrypy",
         "paramiko",
         "markdown",
@@ -235,9 +232,6 @@ repos = [
     "https://github.com/mcindi/mast.timestamp/archive/master.zip",
     "https://github.com/mcindi/mast.xor/archive/master.zip",
     "https://github.com/tellapart/commandr/archive/master.zip",
-    "https://github.com/pypa/setuptools_scm/archive/master.zip",
-    "https://github.com/Changaco/setuptools_scm_git_archive/archive/master.zip",
-    "https://github.com/cherrypy/cheroot/archive/master.zip",
     "https://github.com/cherrypy/cherrypy/archive/master.zip",
     "https://github.com/paramiko/paramiko/archive/master.zip",
     "https://github.com/waylan/Python-Markdown/archive/master.zip",
@@ -337,8 +331,7 @@ def main(
     # Get all files
     resp = requests.get(
         "https://github.com/McIndi/mast.installer/archive/master.zip",
-        verify=verify
-    )
+        verify=verify)
     zf = zipfile.ZipFile(StringIO(resp.content))
     zf.extractall()
 

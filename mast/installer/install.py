@@ -189,14 +189,11 @@ def _install_packages(prefix, net_install):
             "https://github.com/mcindi/mast.timestamp/archive/master.zip",
             "https://github.com/mcindi/mast.xor/archive/master.zip",
             "https://github.com/tellapart/commandr/archive/master.zip",
-            "https://github.com/pypa/setuptools_scm/archive/master.zip",
-            "https://github.com/Changaco/setuptools_scm_git_archive/archive/master.zip",
-            "https://github.com/cherrypy/cheroot/archive/master.zip",
             "https://github.com/cherrypy/cherrypy/archive/master.zip",
             "https://github.com/paramiko/paramiko/archive/master.zip",
             "https://github.com/waylan/Python-Markdown/archive/master.zip",
             "https://github.com/warner/python-ecdsa/archive/master.zip",
-            "https://github.com/jelmer/dulwich/archive/master.zip",
+            "https://github.com/jelmer/dulwich/archive/master.zip"
         ]
         for repo in repos:
             print "\tinstalling", repo
@@ -262,9 +259,7 @@ def _install_packages(prefix, net_install):
                 print "\t\tDone. See log for details."
                 logger.debug(
                     "Installing {}...Result: out: {}, err: {}".format(
-                        d, out, err
-                    )
-                )
+                        d, out, err))
 
 
 def render_template(string, mappings):
@@ -465,3 +460,4 @@ def main(prefix="", net_install=False):
 if __name__ == "__main__":
     _cli = cli.Cli(main=main)
     _cli.run()
+

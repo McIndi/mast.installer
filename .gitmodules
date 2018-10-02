@@ -91,12 +91,3 @@
 [submodule "mast/installer/packages/mast.testsuite"]
 	path = mast/installer/packages/mast.testsuite
 	url = https://github.com/mcindi/mast.testsuite
-[submodule "mast\\installer\\packages\\cheroot"]
-	path = mast\\installer\\packages\\cheroot
-	url = https://github.com/cherrypy/cheroot
-[submodule "mast\\installer\\packages\\setuptools_scm"]
-	path = mast\\installer\\packages\\setuptools_scm
-	url = https://github.com/pypa/setuptools_scm
-[submodule "mast\\installer\\packages\\setuptools_scm_git_archive"]
-	path = mast\\installer\\packages\\setuptools_scm_git_archive
-	url = https://github.com/Changaco/setuptools_scm_git_archive
