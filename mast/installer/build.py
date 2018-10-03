@@ -40,20 +40,20 @@ def download_file(url, dst):
 if "Windows" in platform.system():
     # Set Windows parameters here
     if "32bit" in platform.architecture():
-        anaconda_installer = "Anaconda-4.0.0-Windows-x86.exe"
-        anaconda_installer_url = "http://repo.continuum.io/archive/Anaconda2-4.0.0-Windows-x86.exe"
+        anaconda_installer = "Miniconda2-latest-Windows-x86.exe"
+        anaconda_installer_url = "http://repo.continuum.io/miniconda/Miniconda2-latest-Windows-x86.exe"
     elif "64bit" in platform.architecture():
-        anaconda_installer = "Anaconda-4.0.0-Windows-x86_64.exe"
-        anaconda_installer_url = "http://repo.continuum.io/archive/Anaconda2-4.0.0-Windows-x86_64.exe"
+        anaconda_installer = "Miniconda2-latest-Windows-x86_64.exe"
+        anaconda_installer_url = "http://repo.continuum.io/miniconda/Miniconda2-latest-Windows-x86_64.exe"
     spec_file = "install.spec.windows"
 elif "Linux" in platform.system():
     # Set Linux parameters here
     if '32bit' in platform.architecture():
-        anaconda_installer_url = "http://repo.continuum.io/archive/Anaconda2-4.0.0-Linux-x86.sh"
-        anaconda_installer = "anaconda-4.0.0-linux32-install.sh"
+        anaconda_installer_url = "http://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86.sh"
+        anaconda_installer = "Miniconda2-latest-linux32-install.sh"
     elif '64bit' in platform.architecture():
-        anaconda_installer_url = "http://repo.continuum.io/archive/Anaconda2-4.0.0-Linux-x86_64.sh"
-        anaconda_installer = "anaconda-4.0.0-linux64-install.sh"
+        anaconda_installer_url = "http://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh"
+        anaconda_installer = "Miniconda2-latest-linux64-install.sh"
     spec_file = "install.spec.linux"
 
 # Grab the Anaconda installer
