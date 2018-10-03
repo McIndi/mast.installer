@@ -1,15 +1,9 @@
 #!/usr/bin/env sh
 
 export MAST_HOME=<%MAST_HOME%>
-export MAST_VERSION=2.2.0
+export MAST_VERSION=2.2.1
 
 cd $MAST_HOME
 source ./set-env
 
-if [ $# -eq 0 ]; then
-    anaconda/bin/ipython
-else
-    anaconda/bin/python $@
-fi
-
-
+miniconda/bin/python $@

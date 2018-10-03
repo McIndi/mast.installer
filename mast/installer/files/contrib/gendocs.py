@@ -6,7 +6,6 @@ import mast.datapower.accounts
 import mast.datapower.backups
 import mast.datapower.crypto
 import mast.datapower.datapower
-import mast.datapower.deploy
 import mast.datapower.deployment
 import mast.datapower.developer
 import mast.datapower.network
@@ -181,7 +180,6 @@ api_modules = LastUpdatedOrderedDict([
     (mast.datapower.accounts, LastUpdatedOrderedDict()),
     (mast.datapower.backups, LastUpdatedOrderedDict()),
     (mast.datapower.crypto, LastUpdatedOrderedDict()),
-    (mast.datapower.deploy, LastUpdatedOrderedDict()),
     (mast.datapower.deployment, LastUpdatedOrderedDict()),
     (mast.datapower.developer, LastUpdatedOrderedDict()),
     (mast.datapower.network, LastUpdatedOrderedDict()),
