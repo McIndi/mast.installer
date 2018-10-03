@@ -101,12 +101,12 @@ def install_anaconda(prefix):
             "/RegisterPython=0",
             "/D={}".format(prefix)]
     elif "Linux" in platform.system():
-        command = [
+        command = " ".join([
             ANACONDA_INSTALL_SCRIPT,
             "-b",
             "-p",
             "{}".format(prefix),
-            "-f"]
+            "-f"])
     out, err = system_call(command, stdout=sys.stdout, stderr=sys.stderr)
     print(out)
     print(err)
@@ -364,7 +364,7 @@ def generate_docs(prefix):
     if "Linux" in platform.system():
         mast = os.path.join(prefix, "mast")
     system_call(
-        [mast, "contrib/gendocs.py"],
+        " ".join([mast, "contrib/gendocs.py"]),
         stdout=sys.stdout,
         stderr=sys.stderr,
     )
