@@ -2,7 +2,7 @@
 import os
 import sys
 import cli
-import shutil
+from shutil import *
 import logging
 import platform
 import urllib2
@@ -14,6 +14,47 @@ from resources import (
     pip_dependencies,
     conda_dependencies,
 )
+
+
+def copytree(src, dst, symlinks=False, ignore=None):
+    names = os.listdir(src)
+    if ignore is not None:
+        ignored_names = ignore(src, names)
+    else:
+        ignored_names = set()
+
+    if not os.path.exists(dst):
+        os.makedirs(dst)
+    errors = []
+    for name in names:
+        if name in ignored_names:
+            continue
+        srcname = os.path.join(src, name)
+        dstname = os.path.join(dst, name)
+        try:
+            if symlinks and os.path.islink(srcname):
+                linkto = os.readlink(srcname)
+                os.symlink(linkto, dstname)
+            elif os.path.isdir(srcname):
+                copytree(srcname, dstname, symlinks, ignore)
+            else:
+                copy2(srcname, dstname)
+            # XXX What about devices, sockets etc.?
+        except (IOError, os.error) as why:
+            errors.append((srcname, dstname, str(why)))
+        # catch the Error from the recursive copytree so that we can
+        # continue with other files
+        except Error as err:
+            errors.extend(err.args[0])
+    try:
+        copystat(src, dst)
+    except WindowsError:
+        # can't copy file access times on Windows
+        pass
+    except OSError as why:
+        errors.extend((src, dst, str(why)))
+    if errors:
+        raise Error(errors)
 
 cwd = sys._MEIPASS
 
@@ -167,6 +208,7 @@ def _install_packages(prefix, net_install):
                 " ".join([
                     python,
                     "-m",
+                    "conda",
                     "install",
                     dependency,
                 ]),
@@ -215,20 +257,37 @@ def _install_packages(prefix, net_install):
             _dependency = dependency
             if "git+" in dependency:
                 _dependency = dependency.split("/")[-1].split("#")[0]
-            system_call(
-                " ".join([
-                    python,
-                    "-m",
-                    "pip",
-                    "install",
-                    "--no-index",
-                    "--find-links",
-                    directory,
-                    '"{}"'.format(_dependency),
-                ]),
-                stdout=sys.stdout,
-                stderr=sys.stderr,
-            )
+            if "mast." in dependency:
+                system_call(
+                    " ".join([
+                        python,
+                        "-m",
+                        "pip",
+                        "install",
+                        "--no-index",
+                        "--force-reinstall",
+                        "--find-links",
+                        directory,
+                        '"{}"'.format(_dependency),
+                    ]),
+                    stdout=sys.stdout,
+                    stderr=sys.stderr,
+                )
+            else:
+                system_call(
+                    " ".join([
+                        python,
+                        "-m",
+                        "pip",
+                        "install",
+                        "--no-index",
+                        "--find-links",
+                        directory,
+                        '"{}"'.format(_dependency),
+                    ]),
+                    stdout=sys.stdout,
+                    stderr=sys.stderr,
+                )
 
 
 def render_template(string, mappings):
@@ -332,30 +391,38 @@ def _add_scripts(prefix):
                 filename,
             )
             shutil.copyfile(src, dst)
-    shutil.copytree(
+    copytree(
         os.path.join(INSTALL_DIR, "files", "bin"),
-        os.path.join(prefix, "bin"))
-    shutil.copytree(
+        os.path.join(prefix, "bin")
+    )
+    copytree(
         os.path.join(INSTALL_DIR, "files", "etc"),
-        os.path.join(prefix, "etc"))
-    shutil.copytree(
+        os.path.join(prefix, "etc")
+    )
+    copytree(
         os.path.join(INSTALL_DIR, "files", "var"),
-        os.path.join(prefix, "var"))
-    shutil.copytree(
+        os.path.join(prefix, "var")
+    )
+    copytree(
         os.path.join(INSTALL_DIR, "files", "usrbin"),
-        os.path.join(prefix, "usrbin"))
-    shutil.copytree(
+        os.path.join(prefix, "usrbin")
+    )
+    copytree(
         os.path.join(INSTALL_DIR, "files", "notebooks"),
-        os.path.join(prefix, "notebooks"))
-    shutil.copytree(
+        os.path.join(prefix, "notebooks")
+    )
+    copytree(
         os.path.join(INSTALL_DIR, "files", "tmp"),
-        os.path.join(prefix, "tmp"))
-    shutil.copytree(
+        os.path.join(prefix, "tmp")
+    )
+    copytree(
         os.path.join(INSTALL_DIR, "files", "doc"),
-        os.path.join(prefix, "doc"))
-    shutil.copytree(
+        os.path.join(prefix, "doc")
+    )
+    copytree(
         os.path.join(INSTALL_DIR, "files", "contrib"),
-        os.path.join(prefix, "contrib"))
+        os.path.join(prefix, "contrib")
+    )
 
 
 def generate_docs(prefix):
