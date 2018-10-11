@@ -19,11 +19,11 @@ conda_dependencies = {
       "Linux": {
             "64bit": {
                   "pycrypto": "https://anaconda.org/anaconda/pycrypto/2.6.1/download/linux-64/pycrypto-2.6.1-py27h14c3975_9.tar.bz2",
-                  "lxml": "https://anaconda.org/anaconda/lxml/4.1.1/download/linux-64/lxml-4.2.5-py27hdd00cef_0.tar.bz2",
+                  "lxml": "https://anaconda.org/anaconda/lxml/4.2.4/download/linux-64/lxml-4.2.4-py27hf71bdeb_0.tar.bz2",
             },
             "32bit": {
                   "pycrypto": "https://anaconda.org/anaconda/pycrypto/2.6.1/download/linux-32/pycrypto-2.6.1-py27_0.tar.bz2",
-                  "lxml": "https://anaconda.org/anaconda/lxml/4.1.1/download/linux-32/lxml-4.2.5-py27he277b01_0.tar.bz2",
+                  "lxml": "https://anaconda.org/anaconda/lxml/4.2.4/download/linux-32/lxml-4.2.4-py27hf71bdeb_0.tar.bz2",
             },
 
       },
