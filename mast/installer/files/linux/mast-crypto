@@ -4,4 +4,4 @@ export MAST_HOME=<%MAST_HOME%>
 
 cd $MAST_HOME
 
-./mast -m mast.datapower.crypto $@
+./mast -m mast.datapower.crypto "$@"

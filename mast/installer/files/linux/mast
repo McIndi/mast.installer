@@ -6,4 +6,4 @@ export MAST_VERSION=2.2.1
 cd $MAST_HOME
 source ./set-env
 
-miniconda/bin/python $@
+miniconda/bin/python "$@"

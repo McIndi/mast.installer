@@ -4,5 +4,4 @@ export MAST_HOME=<%MAST_HOME%>
 export NOTEBOOK_HOME=<%MAST_HOME%>/notebooks
 
 cd $NOTEBOOK_HOME
-../anaconda/bin/ipython notebook $@
-
+../anaconda/bin/ipython notebook "$@"
