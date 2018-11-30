@@ -37,6 +37,8 @@ pip_dependencies = [
       "python-dateutil",
       "flask",
       "openpyxl",
+      "pygments",
+      "colorama",
       "git+https://github.com/McIndi/mast.cli#egg=mast.cli",
       "git+https://github.com/McIndi/mast.config#egg=mast.config",
       "git+https://github.com/McIndi/mast.cron#egg=mast.cron",
