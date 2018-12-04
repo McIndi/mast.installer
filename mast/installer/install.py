@@ -358,7 +358,7 @@ def _add_scripts(prefix):
         content = render_template_file(src, mapping)
         write_file(dst, content)
         if "Linux" in platform.system():
-            os.chmod(dst, 0755)
+            os.chmod(dst, 0o755)
 
     if "Windows" in platform.system():
         # copy python27.dll to site-packages/win32 directory to get around
@@ -372,7 +372,7 @@ def _add_scripts(prefix):
             "win32",
             "python27.dll"
         )
-        shutil.copyfile(src, dst)
+        copyfile(src, dst)
         for filename in ["pythoncom27.dll", "pythoncomloader27.dll", "pywintypes27.dll"]:
             src = os.path.join(
                 prefix,
@@ -390,7 +390,7 @@ def _add_scripts(prefix):
                 "win32",
                 filename,
             )
-            shutil.copyfile(src, dst)
+            copyfile(src, dst)
     copytree(
         os.path.join(INSTALL_DIR, "files", "bin"),
         os.path.join(prefix, "bin")
