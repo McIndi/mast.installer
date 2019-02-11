@@ -120,7 +120,8 @@ def system_call(
         stdin=stdin,
         stdout=stdout,
         stderr=stderr,
-        shell=shell)
+        shell=shell,
+    )
     stdout, stderr = pipe.communicate()
     return stdout, stderr
 
