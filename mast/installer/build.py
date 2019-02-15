@@ -80,18 +80,18 @@ else:
     print "miniconda installer already downloaded, reusing."
 
 # ensure up-to-date conda and pip
-system_call(
-    " ".join([
-        sys.executable,
-        "-m",
-        "conda",
-        "update",
-        "conda",
-        "--yes",
-    ]),
-    stdout=sys.stdout,
-    stderr=sys.stderr,
-)
+#system_call(
+#    " ".join([
+#        sys.executable,
+#        "-m",
+#        "conda",
+#        "update",
+#        "conda",
+#        "--yes",
+#    ]),
+#    stdout=sys.stdout,
+#    stderr=sys.stderr,
+#)
 system_call(
     " ".join([
         sys.executable,
