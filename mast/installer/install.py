@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+from __future__ import print_function
 import os
 import sys
 import cli
@@ -14,6 +14,24 @@ from resources import (
     pip_dependencies,
     conda_dependencies,
 )
+
+t = Timestamp()
+filename = "{}-mast-install.log".format(t.timestamp)
+logging.basicConfig(
+    filename=filename,
+    filemode="w",
+    format="level=%(levelname)s; datetime=%(asctime)s; "
+           "process_name=%(processName)s; pid=%(process)d; "
+           "thread=%(thread)d; module=%(module)s; "
+           "function=%(funcName)s; line=%(lineno)d; message=%(message)s")
+logger = logging.getLogger("mast.installer")
+logger.setLevel(10)
+
+
+def print(s):
+    logger.info(s)
+    sys.stdout.write("{}{}".format(s.rstrip(), os.linesep))
+    sys.stdout.flush()
 
 
 def copytree(src, dst, symlinks=False, ignore=None):
@@ -87,26 +105,8 @@ elif "Linux" in platform.system():
 
 INSTALL_DIR = cwd
 
-# TODO: Move some of the logging options to the command line
-t = Timestamp()
-filename = "{}-mast-install.log".format(t.timestamp)
-logging.basicConfig(
-    filename=filename,
-    filemode="w",
-    format="level=%(levelname)s; datetime=%(asctime)s; "
-           "process_name=%(processName)s; pid=%(process)d; "
-           "thread=%(thread)d; module=%(module)s; "
-           "function=%(funcName)s; line=%(lineno)d; message=%(message)s")
-logger = logging.getLogger("mast.installer")
-logger.setLevel(10)
 
-
-def system_call(
-        command,
-        stdin=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        shell=True):
+def system_call(command):
     """
     # system_call
 
@@ -117,13 +117,12 @@ def system_call(
     stderr = subprocess.STDOUT
     pipe = subprocess.Popen(
         command,
-        stdin=stdin,
-        stdout=stdout,
-        stderr=stderr,
-        shell=shell,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        shell=True,
     )
     stdout, stderr = pipe.communicate()
-    return stdout, stderr
+    print(stdout)
 
 
 # TODO: Move some options to the command line.
@@ -136,12 +135,12 @@ def install_anaconda(prefix):
     """
     prefix = os.path.join(os.path.realpath(prefix), "miniconda")
     if "Windows" in platform.system():
-        command = [
+        command = " ".join([
             ANACONDA_INSTALL_SCRIPT,
             "/S",
             "/AddToPath=0",
             "/RegisterPython=0",
-            "/D={}".format(prefix)]
+            "/D={}".format(prefix)])
     elif "Linux" in platform.system():
         command = " ".join([
             ANACONDA_INSTALL_SCRIPT,
@@ -149,9 +148,7 @@ def install_anaconda(prefix):
             "-p",
             "{}".format(prefix),
             "-f"])
-    out, err = system_call(command, stdout=sys.stdout, stderr=sys.stderr)
-    print(out)
-    print(err)
+    system_call(command)
 
 
 # TODO: Tailor package installation based on options specified on the command line
@@ -179,7 +176,7 @@ def _install_packages(prefix, net_install):
         # Fix for the SELinux issue on the 32 bit installer
         if "32bit" in platform.architecture() and "armv7l" not in platform.machine():
             system_call(
-                [
+                " ".join([
                     "execstack",
                     "-c",
                     os.path.join(
@@ -188,18 +185,14 @@ def _install_packages(prefix, net_install):
                         "lib-dynload",
                         "_ctypes.so"
                     )
-                ],
-                stdout=sys.stdout,
-                stderr=sys.stderr,
+                ]),
             )
 
         python = os.path.join(prefix, "bin", "python")
 
     print("\tEnsuring pip is installed")
     system_call(
-        [python, "-m", "ensurepip"],
-        stdout=sys.stdout,
-        stderr=sys.stderr,
+        " ".join([python, "-m", "ensurepip"]),
     )
 
     if net_install:
@@ -213,8 +206,6 @@ def _install_packages(prefix, net_install):
                     "install",
                     dependency,
                 ]),
-                stdout=sys.stdout,
-                stderr=sys.stderr,
             )
         for dependency in pip_dependencies:
             print("### installing: {}".format(dependency))
@@ -227,8 +218,6 @@ def _install_packages(prefix, net_install):
                     "install",
                     '"{}"'.format(dependency),
                 ]),
-                stdout=sys.stdout,
-                stderr=sys.stderr,
             )
     else:
         for dependency in conda_dependencies[platform.system()][platform.architecture()[0]].keys():
@@ -250,8 +239,6 @@ def _install_packages(prefix, net_install):
                     "--offline",
                     _dependency,
                 ]),
-                stdout=sys.stdout,
-                stderr=sys.stderr,
             )
         for dependency in pip_dependencies:
             print("### installing: {}".format(dependency))
@@ -271,8 +258,6 @@ def _install_packages(prefix, net_install):
                         directory,
                         '"{}"'.format(_dependency),
                     ]),
-                    stdout=sys.stdout,
-                    stderr=sys.stderr,
                 )
             else:
                 system_call(
@@ -286,8 +271,6 @@ def _install_packages(prefix, net_install):
                         directory,
                         '"{}"'.format(_dependency),
                     ]),
-                    stdout=sys.stdout,
-                    stderr=sys.stderr,
                 )
 
 
@@ -433,27 +416,25 @@ def generate_docs(prefix):
         mast = os.path.join(prefix, "mast")
     system_call(
         " ".join([mast, "contrib/gendocs.py"]),
-        stdout=sys.stdout,
-        stderr=sys.stderr,
     )
 
 
 def install_packages(prefix, net_install):
-    print "Installing Python Packages"
+    print("Installing Python Packages")
     _install_packages(prefix, net_install)
 
 
 def add_scripts(prefix):
-    print "Adding scripts"
+    print("Adding scripts")
     try:
         _add_scripts(prefix)
     except:
-        print "An error occurred while adding scripts"
-        print "See log for details."
+        print("An error occurred while adding scripts")
+        print("See log for details.")
         logger.exception(
             "An error occurred while adding scripts")
         sys.exit(-1)
-    print "\tDone. See log for details"
+    print("\tDone. See log for details")
 
 
 
