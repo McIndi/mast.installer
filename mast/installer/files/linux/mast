@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/bash
 
 export MAST_HOME=<%MAST_HOME%>
 export MAST_VERSION=2.3.1

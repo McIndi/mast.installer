@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/bash
 
 export MAST_HOME=<%MAST_HOME%>
 
