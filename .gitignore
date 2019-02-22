@@ -7,3 +7,11 @@ mast/installer/scripts/anaconda/
 mast/installer/tmp/
 .spyderworkspace
 mast/.spyderproject
+*.pyc
+*.whl
+*.sh
+*.exe
+*.tar
+*.bz2
+*.gz
+*.zip

@@ -110,7 +110,7 @@ def from_dp(appliances=[],
     for appliance in env.appliances:
         logger.info("Syncing with {}".format(appliance.hostname))
         print appliance.hostname
-        _domains = domains
+        _domains = Domain
         if "all-domains" in _domains:
             _domains = appliance.domains
         for Domain in _domains:

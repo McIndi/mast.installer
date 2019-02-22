@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+from __future__ import print_function
 import os
 import sys
 import cli
-import shutil
+from shutil import *
 import logging
 import platform
 import urllib2
@@ -10,39 +10,11 @@ import zipfile
 import subprocess
 from tstamp import Timestamp
 from cStringIO import StringIO
+from resources import (
+    pip_dependencies,
+    conda_dependencies,
+)
 
-cwd = sys._MEIPASS
-
-if "Windows" in platform.system():
-    if "32bit" in platform.architecture():
-        ANACONDA_INSTALL_SCRIPT = os.path.join(
-            cwd,
-            "scripts",
-            "anaconda",
-            "Anaconda-4.0.0-Windows-x86.exe")
-    elif "64bit" in platform.architecture():
-        ANACONDA_INSTALL_SCRIPT = os.path.join(
-            cwd,
-            "scripts",
-            "anaconda",
-            "Anaconda-4.0.0-Windows-x86_64.exe")
-elif "Linux" in platform.system():
-    if '32bit' in platform.architecture():
-        ANACONDA_INSTALL_SCRIPT = os.path.join(
-            cwd,
-            "scripts",
-            "anaconda",
-            "anaconda-4.0.0-linux32-install.sh")
-    elif '64bit' in platform.architecture():
-        ANACONDA_INSTALL_SCRIPT = os.path.join(
-            cwd,
-            "scripts",
-            "anaconda",
-            "anaconda-4.0.0-linux64-install.sh")
-
-INSTALL_DIR = cwd
-
-# TODO: Move some of the logging options to the command line
 t = Timestamp()
 filename = "{}-mast-install.log".format(t.timestamp)
 logging.basicConfig(
@@ -56,56 +28,127 @@ logger = logging.getLogger("mast.installer")
 logger.setLevel(10)
 
 
-def system_call(
-        command,
-        stdin=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        shell=False):
+def print(s):
+    logger.info(s)
+    sys.stdout.write("{}{}".format(s.rstrip(), os.linesep))
+    sys.stdout.flush()
+
+
+def copytree(src, dst, symlinks=False, ignore=None):
+    names = os.listdir(src)
+    if ignore is not None:
+        ignored_names = ignore(src, names)
+    else:
+        ignored_names = set()
+
+    if not os.path.exists(dst):
+        os.makedirs(dst)
+    errors = []
+    for name in names:
+        if name in ignored_names:
+            continue
+        srcname = os.path.join(src, name)
+        dstname = os.path.join(dst, name)
+        try:
+            if symlinks and os.path.islink(srcname):
+                linkto = os.readlink(srcname)
+                os.symlink(linkto, dstname)
+            elif os.path.isdir(srcname):
+                copytree(srcname, dstname, symlinks, ignore)
+            else:
+                copy2(srcname, dstname)
+            # XXX What about devices, sockets etc.?
+        except (IOError, os.error) as why:
+            errors.append((srcname, dstname, str(why)))
+        # catch the Error from the recursive copytree so that we can
+        # continue with other files
+        except Error as err:
+            errors.extend(err.args[0])
+    try:
+        copystat(src, dst)
+    except WindowsError:
+        # can't copy file access times on Windows
+        pass
+    except OSError as why:
+        errors.extend((src, dst, str(why)))
+    if errors:
+        raise Error(errors)
+
+cwd = sys._MEIPASS
+
+if "Windows" in platform.system():
+    if "32bit" in platform.architecture():
+        ANACONDA_INSTALL_SCRIPT = os.path.join(
+            cwd,
+            "scripts",
+            "miniconda",
+            "Miniconda2-latest-Windows-x86.exe")
+    elif "64bit" in platform.architecture():
+        ANACONDA_INSTALL_SCRIPT = os.path.join(
+            cwd,
+            "scripts",
+            "miniconda",
+            "Miniconda2-latest-Windows-x86_64.exe")
+elif "Linux" in platform.system():
+    if '32bit' in platform.architecture():
+        ANACONDA_INSTALL_SCRIPT = os.path.join(
+            cwd,
+            "scripts",
+            "miniconda",
+            "Miniconda2-latest-linux32-install.sh")
+    elif '64bit' in platform.architecture():
+        ANACONDA_INSTALL_SCRIPT = os.path.join(
+            cwd,
+            "scripts",
+            "miniconda",
+            "Miniconda2-latest-linux64-install.sh")
+
+INSTALL_DIR = cwd
+
+
+def system_call(command):
     """
     # system_call
 
     helper function to shell out commands. This should be platform
     agnostic.
     """
+    print("\n### {}".format(command))
     stderr = subprocess.STDOUT
     pipe = subprocess.Popen(
         command,
-        stdin=stdin,
-        stdout=stdout,
-        stderr=stderr,
-        shell=shell)
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        shell=True,
+    )
     stdout, stderr = pipe.communicate()
-    return stdout, stderr
+    print(stdout)
 
 
 # TODO: Move some options to the command line.
-def _install_anaconda(prefix):
+def install_anaconda(prefix):
     """
     install_anaconda
 
     This will issue the command to install Anaconda into the specified
     directory.
     """
-    prefix = os.path.join(os.path.realpath(prefix), "anaconda")
+    prefix = os.path.join(os.path.realpath(prefix), "miniconda")
     if "Windows" in platform.system():
-        command = [
+        command = " ".join([
             ANACONDA_INSTALL_SCRIPT,
             "/S",
             "/AddToPath=0",
             "/RegisterPython=0",
-            "/D={}".format(prefix)]
+            "/D={}".format(prefix)])
     elif "Linux" in platform.system():
-        command = [
+        command = " ".join([
             ANACONDA_INSTALL_SCRIPT,
             "-b",
             "-p",
             "{}".format(prefix),
-            "-f"]
-    out, err = system_call(command)
-    logger.info(
-        "Finished installing Anaconda Python distribution. "
-        "Output: {}, err: {}".format(out, err))
+            "-f"])
+    system_call(command)
 
 
 # TODO: Tailor package installation based on options specified on the command line
@@ -117,7 +160,7 @@ def _install_packages(prefix, net_install):
     This should install the necessary packages into the Anaconda installation
     in order for MAST to run.
     """
-    prefix = os.path.join(os.path.realpath(prefix), "anaconda")
+    prefix = os.path.join(os.path.realpath(prefix), "miniconda")
     directory = os.path.join(sys._MEIPASS, "packages")
     tmp_dir = os.path.join(sys._MEIPASS, "tmp")
     if not os.path.exists(tmp_dir):
@@ -132,134 +175,103 @@ def _install_packages(prefix, net_install):
 
         # Fix for the SELinux issue on the 32 bit installer
         if "32bit" in platform.architecture() and "armv7l" not in platform.machine():
-            out, err = system_call([
-                "execstack",
-                "-c",
-                os.path.join(
-                    lib_dir,
-                    "python2.7",
-                    "lib-dynload",
-                    "_ctypes.so")])
-            logger.debug(
-                "removing execstack issue on _ctypes.so:"
-                "Result: out: {}, err: {}".format(out, err))
+            system_call(
+                " ".join([
+                    "execstack",
+                    "-c",
+                    os.path.join(
+                        lib_dir,
+                        "python2.7",
+                        "lib-dynload",
+                        "_ctypes.so"
+                    )
+                ]),
+            )
 
         python = os.path.join(prefix, "bin", "python")
 
-    logger.info("Ensuring pip is installed")
-    print "\tEnsuring pip is installed"
-    out, err = system_call([python, "-m", "ensurepip"])
-    if err:
-        logger.error("An error occurred while ensuring pip is installed, {}".format(err))
-        print "\t\tERROR: See log for details"
-    else:
-        logger.debug("Output of ensurepip, {}".format(out))
-        print "\t\tDone, see log for details"
-    logger.debug("PATH: {}".format(os.environ["PATH"]))
-    try:
-        logger.debug("PYTHONPATH: {}".format(os.environ["PYTHONPATH"]))
-    except:
-        pass
+    print("\tEnsuring pip is installed")
+    system_call(
+        " ".join([python, "-m", "ensurepip"]),
+    )
 
     if net_install:
-        repos = [
-            "https://github.com/McIndi/mast.cli/archive/master.zip",
-            "https://github.com/McIndi/mast.config/archive/master.zip",
-            "https://github.com/McIndi/mast.cron/archive/master.zip",
-            "https://github.com/McIndi/mast.daemon/archive/master.zip",
-            "https://github.com/McIndi/mast.datapower.accounts/archive/master.zip",
-            "https://github.com/McIndi/mast.datapower.backups/archive/master.zip",
-            "https://github.com/McIndi/mast.datapower.crypto/archive/master.zip",
-            "https://github.com/McIndi/mast.datapower.datapower/archive/master.zip",
-            "https://github.com/McIndi/mast.datapower.deploy/archive/master.zip",
-            "https://github.com/McIndi/mast.datapower.deployment/archive/master.zip",
-            "https://github.com/McIndi/mast.datapower.developer/archive/master.zip",
-            "https://github.com/McIndi/mast.datapower.network/archive/master.zip",
-            "https://github.com/McIndi/mast.datapower.ssh/archive/master.zip",
-            "https://github.com/McIndi/mast.datapower.status/archive/master.zip",
-            "https://github.com/mcindi/mast.datapower.system/archive/master.zip",
-            "https://github.com/mcindi/mast.datapower.web/archive/master.zip",
-            "https://github.com/mcindi/mast.hashes/archive/master.zip",
-            "https://github.com/mcindi/mast.logging/archive/master.zip",
-            "https://github.com/mcindi/mast.plugins/archive/master.zip",
-            "https://github.com/mcindi/mast.plugin_utils/archive/master.zip",
-            "https://github.com/mcindi/mast.pprint/archive/master.zip",
-            "https://github.com/McIndi/mast.test/archive/master.zip",
-            "https://github.com/McIndi/mast.testsuite/archive/master.zip",
-            "https://github.com/mcindi/mast.timestamp/archive/master.zip",
-            "https://github.com/mcindi/mast.xor/archive/master.zip",
-            "https://github.com/tellapart/commandr/archive/master.zip",
-            "https://github.com/cherrypy/cherrypy/archive/master.zip",
-            "https://github.com/paramiko/paramiko/archive/master.zip",
-            "https://github.com/waylan/Python-Markdown/archive/master.zip",
-            "https://github.com/warner/python-ecdsa/archive/master.zip",
-            "https://github.com/jelmer/dulwich/archive/master.zip"
-        ]
-        for repo in repos:
-            print "\tinstalling", repo
+        for dependency in conda_dependencies[platform.system()][platform.architecture()[0]].keys():
+            print("### installing: {}".format(dependency))
+            system_call(
+                " ".join([
+                    python,
+                    "-m",
+                    "conda",
+                    "install",
+                    dependency,
+                ]),
+            )
+        for dependency in pip_dependencies:
+            print("### installing: {}".format(dependency))
 
-            resp = urllib2.urlopen(repo)
-            zf = zipfile.ZipFile(StringIO(resp.read()))
-            zf.extractall()
-            for item in zf.infolist():
-                print "\t\t", item.filename
-            dirname = zf.infolist()[0].filename.replace("/", "")
-            # chdir & install
-
-            cwd = os.getcwd()
-            os.chdir(dirname)
-            if "dulwich" in repo:
-                out, err = system_call([python,
-                                        "setup.py",
-                                        "--pure",
-                                        "install",
-                                        "--force"])
-            else:
-                out, err = system_call([python,
-                                        "setup.py",
-                                        "install",
-                                        "--force"])
-            if err:
-                print "\t\tERROR: check the log for details"
-                logger.error(
-                    "An error was encountered: {}".format(err))
-            else:
-                print "\t\tDONE: {} installed, check log for details".format(
-                    repo)
-                logger.debug(
-                    "installed {}. out: {}, err: {}".format(repo, out, err))
-            os.chdir(cwd)
-            shutil.rmtree(dirname)
+            system_call(
+                " ".join([
+                    python,
+                    "-m",
+                    "pip",
+                    "install",
+                    '"{}"'.format(dependency),
+                ]),
+            )
     else:
-        # Sort the packages
-        dir_list = os.listdir(directory)
-        dir_list.sort()
-        print dir_list
-        for d in dir_list:
-            _dir = os.path.join(directory, d)
-            if os.path.exists(_dir) and os.path.isdir(_dir):
-                print "\tInstalling", d
-                os.chdir(_dir)
-                if "ecdsa" in d:
-                    with open("setup.py", "r") as fin:
-                        content = fin.read()
+        for dependency in conda_dependencies[platform.system()][platform.architecture()[0]].keys():
+            print("### installing: {}".format(dependency))
+            _dependency = list(
+                filter(
+                    lambda filename: (dependency.lower() in filename.lower()) and (".tar.bz2" in filename),
+                    os.listdir(directory)
+                )
+            )
+            _dependency = os.path.join(directory, _dependency[0])
 
-                    content = content.replace(
-                        "version=versioneer.get_version(),",
-                        "version=0.13,")
-
-                    with open("setup.py", "w") as fout:
-                        fout.write(content)
-
-                if "dulwich" in d:
-                    out, err = system_call([python, "setup.py", "--pure", "install"])
-                else:
-                    out, err = system_call([python, "setup.py", "install"])
-                # TODO: Handle errors
-                print "\t\tDone. See log for details."
-                logger.debug(
-                    "Installing {}...Result: out: {}, err: {}".format(
-                        d, out, err))
+            system_call(
+                " ".join([
+                    python,
+                    "-m",
+                    "conda",
+                    "install",
+                    "--offline",
+                    _dependency,
+                ]),
+            )
+        for dependency in pip_dependencies:
+            print("### installing: {}".format(dependency))
+            _dependency = dependency
+            if "git+" in dependency:
+                _dependency = dependency.split("/")[-1].split("#")[0]
+            if "mast." in dependency:
+                system_call(
+                    " ".join([
+                        python,
+                        "-m",
+                        "pip",
+                        "install",
+                        "--no-index",
+                        "--force-reinstall",
+                        "--find-links",
+                        directory,
+                        '"{}"'.format(_dependency),
+                    ]),
+                )
+            else:
+                system_call(
+                    " ".join([
+                        python,
+                        "-m",
+                        "pip",
+                        "install",
+                        "--no-index",
+                        "--find-links",
+                        directory,
+                        '"{}"'.format(_dependency),
+                    ]),
+                )
 
 
 def render_template(string, mappings):
@@ -326,112 +338,105 @@ def _add_scripts(prefix):
     for f in files:
         dst = os.path.join(prefix, f)
         src = os.path.join(script_dir, f)
+        print("{} -> {}".format(src, dst))
         content = render_template_file(src, mapping)
         write_file(dst, content)
         if "Linux" in platform.system():
-            os.chmod(dst, 0755)
+            os.chmod(dst, 0o755)
 
     if "Windows" in platform.system():
         # copy python27.dll to site-packages/win32 directory to get around
         # issue when starting mastd
-        src = os.path.join(prefix, "anaconda", "python27.dll")
+        src = os.path.join(prefix, "miniconda", "python27.dll")
         dst = os.path.join(
             prefix,
-            "anaconda",
+            "miniconda",
             "Lib",
             "site-packages",
             "win32",
             "python27.dll"
         )
-        shutil.copyfile(src, dst)
-
-    shutil.copytree(
+        copyfile(src, dst)
+        for filename in ["pythoncom27.dll", "pythoncomloader27.dll", "pywintypes27.dll"]:
+            src = os.path.join(
+                prefix,
+                "miniconda",
+                "Lib",
+                "site-packages",
+                "pywin32_system32",
+                filename,
+            )
+            dst = os.path.join(
+                prefix,
+                "miniconda",
+                "Lib",
+                "site-packages",
+                "win32",
+                filename,
+            )
+            copyfile(src, dst)
+    copytree(
         os.path.join(INSTALL_DIR, "files", "bin"),
-        os.path.join(prefix, "bin"))
-    shutil.copytree(
+        os.path.join(prefix, "bin")
+    )
+    copytree(
         os.path.join(INSTALL_DIR, "files", "etc"),
-        os.path.join(prefix, "etc"))
-    shutil.copytree(
+        os.path.join(prefix, "etc")
+    )
+    copytree(
         os.path.join(INSTALL_DIR, "files", "var"),
-        os.path.join(prefix, "var"))
-    shutil.copytree(
+        os.path.join(prefix, "var")
+    )
+    copytree(
         os.path.join(INSTALL_DIR, "files", "usrbin"),
-        os.path.join(prefix, "usrbin"))
-    shutil.copytree(
+        os.path.join(prefix, "usrbin")
+    )
+    copytree(
         os.path.join(INSTALL_DIR, "files", "notebooks"),
-        os.path.join(prefix, "notebooks"))
-    shutil.copytree(
+        os.path.join(prefix, "notebooks")
+    )
+    copytree(
         os.path.join(INSTALL_DIR, "files", "tmp"),
-        os.path.join(prefix, "tmp"))
-    shutil.copytree(
+        os.path.join(prefix, "tmp")
+    )
+    copytree(
         os.path.join(INSTALL_DIR, "files", "doc"),
-        os.path.join(prefix, "doc"))
-    shutil.copytree(
+        os.path.join(prefix, "doc")
+    )
+    copytree(
         os.path.join(INSTALL_DIR, "files", "contrib"),
-        os.path.join(prefix, "contrib"))
+        os.path.join(prefix, "contrib")
+    )
 
 
-def install_anaconda(prefix):
-    print "Installing Anaconda Python Distribution"
-    try:
-        _install_anaconda(prefix)
-    except:
-        print "An error occurred while installing Anaconda Python distribution"
-        print "See log for details."
-        logger.exception(
-            "An error occurred while installing Anaconda Python distribution")
-        sys.exit(-1)
-    print "\tDone. See log for details"
-
-
-def _generate_docs(prefix):
+def generate_docs(prefix):
     if "Windows" in platform.system():
         mast = os.path.join(prefix, "mast.bat")
     if "Linux" in platform.system():
         mast = os.path.join(prefix, "mast")
-    out, err = system_call([mast, "contrib/gendocs.py"])
-    print out
-    if err:
-        print "\n\nERROR:\n\n{}".format(err)
+    system_call(
+        " ".join([mast, "contrib/gendocs.py"]),
+    )
 
 
 def install_packages(prefix, net_install):
-    print "Installing Python Packages"
-    try:
-        _install_packages(prefix, net_install)
-    except:
-        print "An error occurred while installing Python Packages"
-        print "See log for details."
-        logger.exception(
-            "An error occurred while installing Python Packages")
-        sys.exit(-1)
-    print "\tDone. See log for details"
+    print("Installing Python Packages")
+    _install_packages(prefix, net_install)
 
 
 def add_scripts(prefix):
-    print "Adding scripts"
+    print("Adding scripts")
     try:
         _add_scripts(prefix)
     except:
-        print "An error occurred while adding scripts"
-        print "See log for details."
+        print("An error occurred while adding scripts")
+        print("See log for details.")
         logger.exception(
             "An error occurred while adding scripts")
         sys.exit(-1)
-    print "\tDone. See log for details"
+    print("\tDone. See log for details")
 
 
-def generate_docs(prefix):
-    print "Generating Documentation"
-    try:
-        _generate_docs(prefix)
-    except:
-        print "An error occurred generating documentation"
-        print "See log for details"
-        logger.exception(
-            "An error occurred generating documentation")
-        raise
-    print "\tDone. See log for details."
 
 def main(prefix="", net_install=False):
     """
@@ -460,4 +465,3 @@ def main(prefix="", net_install=False):
 if __name__ == "__main__":
     _cli = cli.Cli(main=main)
     _cli.run()
-
