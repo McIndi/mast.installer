@@ -302,7 +302,6 @@ def _add_scripts(prefix):
         script_dir = os.path.join(INSTALL_DIR, "files", "windows")
         files = [
             "mast.bat",
-            "notebook.bat",
             "mast-system.bat",
             "mast-accounts.bat",
             "mast-backups.bat",
@@ -311,16 +310,16 @@ def _add_scripts(prefix):
             "mast-developer.bat",
             "mast-network.bat",
             "test-mast.bat",
+            "mast-version.bat",
             "mast-web.bat",
             "mastd.bat",
             "mast-ssh.bat",
-            "set-env.bat"
+            "set-env.bat",
         ]
     elif "Linux" in platform.system():
         script_dir = os.path.join(INSTALL_DIR, "files", "linux")
         files = [
             "mast",
-            "notebook",
             "mast-system",
             "mast-accounts",
             "mast-backups",
@@ -329,10 +328,11 @@ def _add_scripts(prefix):
             "mast-developer",
             "mast-network",
             "test-mast",
+            "mast-version",
             "mast-web",
             "mast-ssh",
             "mastd",
-            "set-env"
+            "set-env",
         ]
 
     for f in files:
@@ -390,10 +390,6 @@ def _add_scripts(prefix):
     copytree(
         os.path.join(INSTALL_DIR, "files", "usrbin"),
         os.path.join(prefix, "usrbin")
-    )
-    copytree(
-        os.path.join(INSTALL_DIR, "files", "notebooks"),
-        os.path.join(prefix, "notebooks")
     )
     copytree(
         os.path.join(INSTALL_DIR, "files", "tmp"),
