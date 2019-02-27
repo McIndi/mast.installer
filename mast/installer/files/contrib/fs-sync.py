@@ -94,7 +94,7 @@ def from_dp(appliances=[],
             no_check_hostname=False,
             location="",
             out_dir="tmp",
-            Domain=["all-domains"],
+            domains=["all-domains"],
             recursive=False,
             ignore_errors=False):
     """This will get all of the files from a directory on the appliances
@@ -110,11 +110,11 @@ def from_dp(appliances=[],
     for appliance in env.appliances:
         logger.info("Syncing with {}".format(appliance.hostname))
         print appliance.hostname
-        _domains = Domain
+        _domains = domains
         if "all-domains" in _domains:
             _domains = appliance.domains
-        for Domain in _domains:
-            print "\t", Domain
+        for domain in _domains:
+            print "\t", domain
             _out_dir = os.path.join(out_dir, appliance.hostname)
             print "\t\t", location, "->", _out_dir
             if not os.path.exists(_out_dir) or not os.path.isdir(_out_dir):
@@ -124,7 +124,7 @@ def from_dp(appliances=[],
                 download_directory(appliance,
                                    location,
                                    _out_dir,
-                                   Domain,
+                                   domain,
                                    recursive=recursive,
                                    ignore_errors=ignore_errors)
             except:
@@ -132,7 +132,7 @@ def from_dp(appliances=[],
                                  "{} to {} from {}:{}".format(location,
                                                               _out_dir,
                                                               appliance.hostname,
-                                                              Domain))
+                                                              domain))
                 print "\t\t\tERROR downloading above directory stacktrace can be found in the logs"
                 if ignore_errors:
                     pass
