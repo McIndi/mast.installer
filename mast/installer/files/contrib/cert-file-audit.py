@@ -33,11 +33,11 @@ def main(appliances=[],
     rows = []
 
     for appliance in env.appliances:
-        print appliance.hostname
+        print(appliance.hostname)
         domain = "default"
 
         for location in locations:
-            print "\t{}".format(location)
+            print("\t{}".format(location))
             filestore = appliance.get_filestore(domain=domain,
                                                 location=location)
             _location = filestore.xml.find(datapower.FILESTORE_XPATH)
@@ -47,7 +47,7 @@ def main(appliances=[],
                 for _file in _location.findall("./file"):
                     dir_name = _location.get("name")
                     filename = _file.get("name")
-                    print "\t\t{}".format(filename)
+                    print("\t\t{}".format(filename))
                     size = _file.find("size").text
                     modified = _file.find("modified").text
                     rows.append([appliance.hostname,
@@ -58,10 +58,10 @@ def main(appliances=[],
                                  modified])
             for directory in _location.findall(".//directory"):
                 dir_name = directory.get("name")
-                print "\t\t{}".format(dir_name)
+                print("\t\t{}".format(dir_name))
                 for _file in directory.findall(".//file"):
                     filename = _file.get("name")
-                    print "\t\t\t{}".format(filename)
+                    print("\t\t\t{}".format(filename))
                     size = _file.find("size").text
                     modified = _file.find("modified").text
 

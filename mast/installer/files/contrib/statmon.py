@@ -52,16 +52,16 @@ def display_rows(header_row, rows, grep, provider):
         length = len(max(_, key=len)) + 3
         _format_string += "{%s: <%s}" % (index, length)
     clear()
-    print Timestamp()
-    print provider
-    print "\n", _format_string.format(*header_row)
-    print '-' * len(_format_string.format(*header_row))
+    print(Timestamp())
+    print(provider)
+    print("\n", _format_string.format(*header_row))
+    print('-' * len(_format_string.format(*header_row)))
     for row in rows:
         for pattern in grep:
             if not pattern.search(_format_string.format(*row)):
                 break
         else:
-            print _format_string.format(*row)
+            print(_format_string.format(*row))
 
 
 def main(appliances=[],
@@ -79,7 +79,7 @@ def main(appliances=[],
     if not provider:
         msg = "provider must be provided"
         logger.error(msg)
-        print msg
+        print(msg)
         sys.exit(1)
 
     check_hostname = not no_check_hostname

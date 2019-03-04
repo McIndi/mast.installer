@@ -192,33 +192,21 @@ api_modules = LastUpdatedOrderedDict([
 def get_objects(modules):
     for module in dict(modules):
         functions = inspect.getmembers(module, inspect.isfunction)
-        functions = filter(
-            lambda x: not x[0].startswith("_"),
-            functions)
-        functions = filter(
-            lambda x: module.__name__ in x[1].__module__,
-            functions)
+        functions = [x for x in functions if not x[0].startswith("_")]
+        functions = [x for x in functions if module.__name__ in x[1].__module__]
         modules[module]["functions"] = functions
 
         classes = inspect.getmembers(module, inspect.isclass)
-        classes = filter(
-            lambda x: not x[0].startswith("_"),
-            classes)
-        classes = filter(
-            lambda x: module.__name__ in x[1].__module__,
-            classes)
+        classes = [x for x in classes if not x[0].startswith("_")]
+        classes = [x for x in classes if module.__name__ in x[1].__module__]
         if classes:
             modules[module]["classes"] = LastUpdatedOrderedDict()
         for cls in classes:
             methods = inspect.getmembers(
                 cls[1],
                 lambda x: inspect.ismethod(x) or isinstance(x, property))
-            methods = filter(
-                lambda x: isinstance(x[1    ], property) or module.__name__ in x[1].__module__,
-                methods)
-            methods = filter(
-                lambda x: hasattr(x[1], "__doc__") or x[0].startswith("_"),
-                methods)
+            methods = [x for x in methods if isinstance(x[1    ], property) or module.__name__ in x[1].__module__]
+            methods = [x for x in methods if hasattr(x[1], "__doc__") or x[0].startswith("_")]
             if methods:
                 modules[module]["classes"][cls] = methods
     return modules
@@ -229,14 +217,14 @@ def escape(string):
 
 def generate_markdown(objects):
     md = ""
-    for k, v in objects.items():
+    for k, v in list(objects.items()):
         # Module names
         md += "\n# {}\n".format(escape(k.__name__))
         if k.__doc__:
             md += "\n\n{}\n".format(textwrap.dedent(k.__doc__))
         else:
             md += "\n\nNo module level documentation\n"
-        for _k, _v in v.items():
+        for _k, _v in list(v.items()):
             # _k will either be functions or classes
             # md += "\n### {}\n".format(_k)
             if _k == "functions":
@@ -253,7 +241,7 @@ def generate_markdown(objects):
                     else:
                         md += "\n\nNo documentation available for this function!\n"
             elif _k == "classes":
-                for __k, __v in _v.items():
+                for __k, __v in list(_v.items()):
                     # class name
                     md += "\n## {}\n".format(escape(__k[0]))
                     if __k[1].__doc__:
@@ -274,13 +262,9 @@ def generate_markdown(objects):
 def generate_cli_reference():
     mast_home = os.environ["MAST_HOME"]
     scripts = os.listdir(mast_home)
-    scripts = filter(
-        lambda f: os.path.isfile(os.path.join(mast_home, f)),
-        scripts)
-    scripts = filter(
-        lambda f: f.startswith("mast-"),
-        scripts)
-    scripts = filter(lambda f: "mast-web" not in f, scripts)
+    scripts = [f for f in scripts if os.path.isfile(os.path.join(mast_home, f))]
+    scripts = [f for f in scripts if f.startswith("mast-")]
+    scripts = [f for f in scripts if "mast-web" not in f]
 
     ret = ""
     for script in scripts:
@@ -302,7 +286,7 @@ def generate_cli_reference():
         out = out.replace("----------------------------------------", "")
         ret += "{}\n\n".format(textwrap.dedent(out))
         if "mast-ssh" not in _script:
-            subcommands = filter(lambda l: l.startswith("* "), out.splitlines())
+            subcommands = [l for l in out.splitlines() if l.startswith("* ")]
             subcommands = [x.split(" - ")[0].strip().replace("* ", "").replace("`", "") for x in subcommands]
             for subcommand in subcommands:
                 if subcommand == "help":
@@ -333,21 +317,21 @@ def main(out_dir="doc"):
             md_file = os.path.join(out_dir, filename)
 
             with open(in_file, "rb") as fin:
-                md = unicode(fin.read())
+                md = str(fin.read())
 
             md = md.format(os.environ["MAST_VERSION"])
             html = markdown.markdown(
-                unicode(md),
+                str(md),
                 extensions=[
                     TocExtension(title="Table of Contents"),
                     CodeHiliteExtension(guess_lang=False)])
             html = tpl.replace("<%content%>", html)
 
-            print "Output: {}".format(html_file)
+            print("Output: {}".format(html_file))
             with open(html_file, "wb") as fout:
                 fout.write(html)
 
-            print "Output: {}".format(md_file)
+            print("Output: {}".format(md_file))
             with open(md_file, "wb") as fout:
                 fout.write(md)
 
@@ -363,12 +347,12 @@ def main(out_dir="doc"):
     api_html = tpl.replace("<%content%>", api_html)
 
     filename = os.path.join(out_dir, "APIReference.html")
-    print "Output: {}".format(filename)
+    print("Output: {}".format(filename))
     with open(filename, "w") as fout:
         fout.write(api_html)
 
     filename = os.path.join(out_dir, "APIReference.md")
-    print "Output: {}".format(filename)
+    print("Output: {}".format(filename))
     with open(filename, "w") as fout:
         fout.write(api_md)
 
@@ -382,12 +366,12 @@ def main(out_dir="doc"):
     cli_html = tpl.replace("<%content%>", cli_html)
 
     filename = os.path.join(out_dir, "CLIReference.md")
-    print "Output: {}".format(filename)
+    print("Output: {}".format(filename))
     with open(filename, "w") as fout:
         fout.write(cli_md)
 
     filename = os.path.join(out_dir, "CLIReference.html")
-    print "Output: {}".format(filename)
+    print("Output: {}".format(filename))
     with open(filename, "w") as fout:
         fout.write(cli_html)
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import subprocess
 import platform
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import shutil
 import sys
 import os
@@ -22,7 +22,7 @@ def system_call(
     helper function to shell out commands. This should be platform
     agnostic.
     """
-    print("\n### {}".format(command))
+    print(("\n### {}".format(command)))
     stderr = subprocess.STDOUT
     pipe = subprocess.Popen(
         command,
@@ -36,8 +36,8 @@ def system_call(
 
 def download_file(url, dst):
     """helper function to stream a file from url to dst"""
-    print("downloading {} -> {}".format(url, dst))
-    opener = urllib2.build_opener()
+    print(("downloading {} -> {}".format(url, dst)))
+    opener = urllib.request.build_opener()
     opener.addheaders = [('User-Agent', '00100')]
     response = opener.open(url)
     with open(dst, 'wb') as fp:
@@ -47,20 +47,20 @@ def download_file(url, dst):
 if "Windows" in platform.system():
     # Set Windows parameters here
     if "32bit" in platform.architecture():
-        miniconda_installer = "Miniconda2-latest-Windows-x86.exe"
-        miniconda_installer_url = "https://repo.continuum.io/miniconda/Miniconda2-latest-Windows-x86.exe"
+        miniconda_installer = "Miniconda3-latest-Windows-x86.exe"
+        miniconda_installer_url = "https://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86.exe"
     elif "64bit" in platform.architecture():
-        miniconda_installer = "Miniconda2-latest-Windows-x86_64.exe"
-        miniconda_installer_url = "https://repo.continuum.io/miniconda/Miniconda2-latest-Windows-x86_64.exe"
+        miniconda_installer = "Miniconda3-latest-Windows-x86_64.exe"
+        miniconda_installer_url = "https://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe"
     spec_file = "install.spec.windows"
 elif "Linux" in platform.system():
     # Set Linux parameters here
     if '32bit' in platform.architecture():
-        miniconda_installer_url = "https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86.sh"
-        miniconda_installer = "Miniconda2-latest-linux32-install.sh"
+        miniconda_installer_url = "https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86.sh"
+        miniconda_installer = "Miniconda3-latest-linux32-install.sh"
     elif '64bit' in platform.architecture():
-        miniconda_installer_url = "https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh"
-        miniconda_installer = "Miniconda2-latest-linux64-install.sh"
+        miniconda_installer_url = "https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh"
+        miniconda_installer = "Miniconda3-latest-linux64-install.sh"
     spec_file = "install.spec.linux"
 
 # Grab the miniconda installer
@@ -70,14 +70,14 @@ dst = os.path.join(
     miniconda_installer
 )
 if not os.path.exists(dst):
-    print "Downloading miniconda installer"
+    print("Downloading miniconda installer")
     download_file(
         miniconda_installer_url,
         dst
     )
-    print "\tDone"
+    print("\tDone")
 else:
-    print "miniconda installer already downloaded, reusing."
+    print("miniconda installer already downloaded, reusing.")
 
 # ensure up-to-date conda and pip
 #system_call(
@@ -107,7 +107,7 @@ system_call(
 
 
 # Download packages
-for dependency, url in conda_dependencies[platform.system()][platform.architecture()[0]].items():
+for dependency, url in list(conda_dependencies[platform.system()][platform.architecture()[0]].items()):
     dst = os.path.join(
         "packages",
         url.split("/")[-1]
@@ -130,12 +130,12 @@ for dependency in pip_dependencies:
         stderr=sys.stderr,
     )
 # Pyinstaller bahaves strangely if the spec file doesn't end in .spec
-print "Renaming spec file"
+print("Renaming spec file")
 os.rename(spec_file, "install.spec")
-print "\tDone."
+print("\tDone.")
 
 # Build the installer executable
-print "Building Executable installer"
+print("Building Executable installer")
 system_call(
     " ".join(["pyinstaller", "--onefile", "install.spec"]),
     stdout=sys.stdout,
@@ -143,6 +143,6 @@ system_call(
 )
 
 # Rename the spec file to get ready for the next build
-print "Renaming spec file"
+print("Renaming spec file")
 os.rename("install.spec", spec_file)
-print "\tDone."
+print("\tDone.")

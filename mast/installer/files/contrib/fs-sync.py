@@ -10,7 +10,7 @@ from mast.logging import make_logger
 __version__ = "{}-0".format(os.environ["MAST_VERSION"])
 
 def _exit(ret_code=-1):
-    print "An error occurred, see log for details."
+    print("An error occurred, see log for details.")
     sys.exit(ret_code)
 
 cli = Cli()
@@ -51,8 +51,8 @@ def to_dp(appliances=[],
     for appl in env.appliances:
         filestore = appl.get_filestore(domain=domain,
                                        location=location)
-        print appl.hostname
-        print "\t{}".format(domain)
+        print(appl.hostname)
+        print("\t{}".format(domain))
         files = []
         if recursive:
             for root, dirs, _files in os.walk(local_dir, followlinks=followlinks):
@@ -67,10 +67,10 @@ def to_dp(appliances=[],
         targets = [x.replace(os.path.sep, "/") for x in targets]
         targets = [x.replace("//", "/") for x in targets]
         targets = [re.sub(r":[/]*", r":///", x) for x in targets]
-        files = zip(files, targets)
+        files = list(zip(files, targets))
 
         for f in files:
-            print "\t\t{}  ->  {}".format(f[0], f[1])
+            print("\t\t{}  ->  {}".format(f[0], f[1]))
             if not dry_run:
                 try:
                     filestore = upload_file(appl, domain, f, overwrite, create_dir, ignore_errors, filestore)
@@ -80,7 +80,7 @@ def to_dp(appliances=[],
                                                                 f[1],
                                                                 appl.hostname,
                                                                 domain))
-                    print "\t\t\tERROR uploading above file stacktrace is in the logs:"
+                    print("\t\t\tERROR uploading above file stacktrace is in the logs:")
                     if ignore_errors:
                         pass
                     else:
@@ -109,14 +109,14 @@ def from_dp(appliances=[],
 
     for appliance in env.appliances:
         logger.info("Syncing with {}".format(appliance.hostname))
-        print appliance.hostname
+        print(appliance.hostname)
         _domains = domains
         if "all-domains" in _domains:
             _domains = appliance.domains
         for domain in _domains:
-            print "\t", domain
+            print("\t", domain)
             _out_dir = os.path.join(out_dir, appliance.hostname)
-            print "\t\t", location, "->", _out_dir
+            print("\t\t", location, "->", _out_dir)
             if not os.path.exists(_out_dir) or not os.path.isdir(_out_dir):
                 logger.info("Making directory {}".format(_out_dir))
                 os.makedirs(_out_dir)
@@ -133,7 +133,7 @@ def from_dp(appliances=[],
                                                               _out_dir,
                                                               appliance.hostname,
                                                               domain))
-                print "\t\t\tERROR downloading above directory stacktrace can be found in the logs"
+                print("\t\t\tERROR downloading above directory stacktrace can be found in the logs")
                 if ignore_errors:
                     pass
                 else:
@@ -150,11 +150,11 @@ def upload_file(appl, domain, f, overwrite, create_dir, ignore_errors, filestore
 
     if create_dir:
         if (not appl.directory_exists(dirname, domain, filestore)) and (not appl.location_exists(dirname, domain, filestore)):
-            print "\t\t\tCreating Directory {}".format(dirname)
+            print("\t\t\tCreating Directory {}".format(dirname))
             resp = appl.CreateDir(domain=domain, Dir=dirname)
             if "<error-log>" in resp.text:
                 logger.error("An error occurred creating directory {} on {}:{}".format(dirname, appl.hostname, domain))
-                print "\t\t\t\tERROR Creating directory, stack trace can be found in the logs"
+                print("\t\t\t\tERROR Creating directory, stack trace can be found in the logs")
                 if not ignore_errors:
                     raise datapower.AuthenticationFailure
             filestore = appl.get_filestore(domain=domain,
@@ -167,7 +167,7 @@ def upload_file(appl, domain, f, overwrite, create_dir, ignore_errors, filestore
             _exit()
     resp = appl.set_file(f[0], f[1], domain, overwrite, filestore)
     if not resp:
-        print "\t\t\tNot overwriting {}".format(f[1])
+        print("\t\t\tNot overwriting {}".format(f[1]))
     return filestore
 
 
@@ -227,7 +227,7 @@ def download_directory(appl,
                 "Error reading directory"
                 ": %s, request: %s, response: %s" % (
                     dir, appl.request, appl.last_response.read()))
-            print "ERROR: while reading directory {}".format(location)
+            print("ERROR: while reading directory {}".format(location))
             if ignore_errors:
                 return ""
             else:
@@ -256,14 +256,14 @@ def download_directory(appl,
         filename = os.path.join(local_path, file.split('/')[-1])
         with open(filename, 'wb') as fout:
             fname = '{}/{}'.format(dp_path, file)
-            print "\t\t\t{} -> {}".format(fname, filename)
+            print("\t\t\t{} -> {}".format(fname, filename))
             try:
                 fout.write(appl.getfile(domain=domain, filename=fname))
             except:
                 logger.exception("An unhandled exception occurred")
-                print "ERROR: While downloading {} from {}:{}".format(fname,
+                print("ERROR: While downloading {} from {}:{}".format(fname,
                                                                       appl.hostname,
-                                                                      domain)
+                                                                      domain))
                 if ignore_errors:
                     pass
                 else:

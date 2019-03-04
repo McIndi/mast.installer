@@ -27,10 +27,10 @@ def main(appliances=[],
         check_hostname=check_hostname)
     allaterror = etree.fromstring('<LogEvents><Class class="LogLabel">all</Class><Priority>error</Priority></LogEvents>')
     for appliance in env.appliances:
-        print(appliance.hostname)
+        print((appliance.hostname))
         for domain in appliance.domains:
             changed = False
-            print("\t{}".format(domain))
+            print(("\t{}".format(domain)))
             config = appliance.get_config("LogTarget", "default-log", domain=domain, persisted=False)
             config = etree.fromstring(str(config))
             #config = config.xpath(r"/env:Envelope/env:Body/dp:response/dp:config/LogTarget", nsmap=nsmap)
@@ -50,7 +50,7 @@ def main(appliances=[],
                         nodeset.attrib.pop("read-only")
                 #print(appliance.request)
                 if not dry_run:
-                    print(appliance.send_request(boolean=True))
+                    print((appliance.send_request(boolean=True)))
                 else:
                     pprint_xml(allaterror)
                 print(" ")

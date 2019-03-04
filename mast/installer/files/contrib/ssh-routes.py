@@ -83,20 +83,20 @@ def main(appliances=[],
     atexit.register(env.perform_action, "ssh_disconnect")
     for appliance in env.appliances:
         issue_command = appliance.ssh_issue_command
-        print appliance.hostname, "\n"
-        print issue_command("config")
-        print issue_command("interface {}".format(EthernetInterface))
-        print issue_command("show route")
+        print(appliance.hostname, "\n")
+        print(issue_command("config"))
+        print(issue_command("interface {}".format(EthernetInterface)))
+        print(issue_command("show route"))
         for static_route in del_static_routes:
-            print issue_command("no ip route {}".format(static_route))
+            print(issue_command("no ip route {}".format(static_route)))
         for static_route in add_static_routes:
-            print issue_command("ip route {}".format(static_route))
-        print issue_command("exit")
+            print(issue_command("ip route {}".format(static_route)))
+        print(issue_command("exit"))
         if save_config:
-            print issue_command("write mem")
-            print issue_command("y")
-        print issue_command("show route")
-        print issue_command("exit")
+            print(issue_command("write mem"))
+            print(issue_command("y"))
+        print(issue_command("show route"))
+        print(issue_command("exit"))
 
 
 if __name__ == "__main__":

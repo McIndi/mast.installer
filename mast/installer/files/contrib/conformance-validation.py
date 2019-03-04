@@ -40,14 +40,14 @@ def main(appliances=[],
         ws = wb.create_sheet()
         ws.title = appliance.hostname
         ws.append(fields)
-        print appliance.hostname
+        print(appliance.hostname)
         _domains = domains
         if "all-domains" in domains:
             _domains = appliance.domains
         for domain in _domains:
-            print "\t", domain
+            print("\t", domain)
             for profile in profiles:
-                print "\t\t", profile
+                print("\t\t", profile)
                 appliance.request.clear()
                 appliance.request.request(domain=domain).get_conformance_report(profile=profile)
                 resp = appliance.send_request()
@@ -68,7 +68,7 @@ def main(appliances=[],
                     ])
     wb.save(out_file)
 
-    print "Done"
+    print("Done")
 
 
 

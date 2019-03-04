@@ -99,27 +99,21 @@ def main(appliances=[],
         obj_filter = re.compile(".*")
 
     for appliance in env.appliances:
-        print appliance.hostname
+        print(appliance.hostname)
         _domains = domains
         if "all-domains" in domains:
             _domains = appliance.domains
         for domain in _domains:
-            print "\t", domain
-            print "\t\t", obj_class
+            print("\t", domain)
+            print("\t\t", obj_class)
             config = appliance.get_config(_class=obj_class,
                                           domain=domain)
             objs = config.xml.findall(datapower.CONFIG_XPATH)
-            objs = filter(
-                lambda x: obj_name_filter.search(x.get("name")),
-                objs
-            )
-            objs = filter(
-                lambda x: obj_filter.search(datapower.etree.tostring(x)),
-                objs
-            )
+            objs = [x for x in objs if obj_name_filter.search(x.get("name"))]
+            objs = [x for x in objs if obj_filter.search(datapower.etree.tostring(x))]
             for obj in objs:
                 name = obj.get("name")
-                print "\t\t\t{}".format(name)
+                print("\t\t\t{}".format(name))
                 appliance.request.clear()
                 request = appliance.request.request(domain=domain).modify_config()[obj_class](name=name)
 
@@ -137,7 +131,7 @@ def main(appliances=[],
                         parsed_mods[k] = v
 
                 def append_mods(request, mods):
-                    for k, v in mods.items():
+                    for k, v in list(mods.items()):
                         if k.startswith("(vector-add)"):
                             k = k.replace("(vector-add)", "")
                             for node in obj.findall(k):
@@ -155,9 +149,9 @@ def main(appliances=[],
                 else:
                     resp = appliance.send_request()
                 if resp:
-                    print "\t\t\t\tOK"
+                    print("\t\t\t\tOK")
                 else:
-                    print "\t\t\t\tERROR, see log for details"
+                    print("\t\t\t\tERROR, see log for details")
             if save_config and not dry_run:
                 appliance.SaveConfig(domain=domain)
 

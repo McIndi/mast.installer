@@ -4,13 +4,13 @@ import sys
 import socket
 import shutil
 import zipfile
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import requests
 import subprocess
 from time import sleep
 from mast.cli import Cli
 from textwrap import dedent
-from cStringIO import StringIO
+from io import StringIO
 from shutil import make_archive
 from mast.timestamp import Timestamp
 from mast.logging import make_logger
@@ -297,7 +297,7 @@ def main(
     if not os.path.exists(build_dir):
         os.makedirs(build_dir)
     if os.listdir(build_dir):
-        print "build-dir must be empty"
+        print("build-dir must be empty")
         sys.exit(1)
     # Create a directory to store the hotfix
     dist_dir = os.path.join(build_dir, "hotfix-{}".format(now))
@@ -312,19 +312,19 @@ def main(
     cwd = os.getcwd()
     os.chdir(dist_dir)
     for repo in repos:
-        print repo
+        print(repo)
         resp = requests.get(repo, verify=verify)
         zf = zipfile.ZipFile(StringIO(resp.content))
         zf.extractall()
         for item in zf.infolist():
             try:
-                print "\t", item.filename
+                print("\t", item.filename)
             except UnicodeEncodeError:
-                print "\t<UNABLE TO DISPLAY FILENAME>"
+                print("\t<UNABLE TO DISPLAY FILENAME>")
 
     # Rename directories
     _dirs = os.listdir(".")
-    _dirs = filter(lambda x: "-master" in x, _dirs)
+    _dirs = [x for x in _dirs if "-master" in x]
     for directory in _dirs:
         os.rename(directory, directory.replace("-master", ""))
 
@@ -352,28 +352,28 @@ def main(
 
     # Install the hotfixes if user says so
     if install:
-        print "\nInstalling hotfix..."
+        print("\nInstalling hotfix...")
         os.chdir(dist_dir)
         python = sys.executable
         out, err = system_call([python, "install-hotfix.py"])
 
-        print "Output of installation:\n"
+        print("Output of installation:\n")
         for line in out.splitlines():
-            print "\t", line
+            print("\t", line)
 
         if err:
-            print "Errors were encountered during installation:\n"
+            print("Errors were encountered during installation:\n")
             for line in err.splitlines():
-                print "\t", line
+                print("\t", line)
         else:
-            print "No Errors were encountered during installation"
-        print "See more details in log file: {}".format(os.path.join(
-            dist_dir, "install.log"))
+            print("No Errors were encountered during installation")
+        print("See more details in log file: {}".format(os.path.join(
+            dist_dir, "install.log")))
     if remove_build_dir:
         # Get out of build_dir so we can zip it up
         os.chdir(cwd)
         shutil.rmtree(build_dir)
-    print "\n\nhotfix zip can be found here: {}".format(output_file)
+    print("\n\nhotfix zip can be found here: {}".format(output_file))
 
 
 if __name__ == "__main__":

@@ -31,7 +31,7 @@ For more information on joining tables please see the
     left = pd.read_excel(left_file)
     right = pd.read_excel(right_file)
     new = pd.merge(left, right, on=on, how=how)
-    print "SAVING {}".format(out_file)
+    print("SAVING {}".format(out_file))
     new.to_excel(out_file, index=False)
 
 

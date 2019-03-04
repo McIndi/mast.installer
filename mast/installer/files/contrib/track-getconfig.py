@@ -5,12 +5,12 @@ from dulwich import porcelain as git
 from mast.timestamp import Timestamp
 from mast.datapower import datapower
 from mast.logging import make_logger
-from cStringIO import StringIO
+from io import StringIO
 from pygments import highlight
 import mast.pprint as pprint
 from mast.cli import Cli
 import colorama
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import os
 import re
 
@@ -87,7 +87,7 @@ def main(appliances=[],
         repo = git.Repo(base_dir)
         repo.head()
     except NotGitRepository:
-        print "Initializing git repository"
+        print("Initializing git repository")
         git.init(base_dir)
         git.add(base_dir)
         git.commit(base_dir, message="Initial Commit")
@@ -125,7 +125,7 @@ def main(appliances=[],
                 fout.write(config)
 
     git.add(base_dir)
-    print git.status(base_dir)
+    print(git.status(base_dir))
     git.commit(base_dir, message=comment)
     
     tmp = StringIO()
@@ -135,7 +135,7 @@ def main(appliances=[],
     if page:
         pprint.page(out)
     else:
-        print out
+        print(out)
 
 if __name__ == "__main__":
     cli = Cli(main=main, description=main.__doc__)
