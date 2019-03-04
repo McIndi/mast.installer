@@ -39,7 +39,7 @@ pip_dependencies = [
       "openpyxl",
       "pygments",
       "colorama",
-      "git+https://github.com/mcindi/mast#egg=mast",
+      "git+https://github.com/mcindi/mast#egg=mast@python3",
 ]
 if "Windows" in platform.system():
       pip_dependencies.insert(0, "pyreadline")
