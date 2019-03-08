@@ -273,8 +273,12 @@ def generate_cli_reference():
 
         command = [_script, "--help"]
         out, err = system_call(command)
+
+        out = out.decode() if out else ""
+        err = err.decode() if err else ""
+
         out = out.replace("  -", "    -")
-        # Put all subcommand into an unordered list 
+        # Put all subcommand into an unordered list
         out = re.sub(r"^  (\w)", r"* \1", out, flags=re.MULTILINE)
         # Put subcommand name in backticks
         out = re.sub(r"^\* (.*?)\s-\s", r"* `\1` - ", out, flags=re.MULTILINE)
@@ -293,6 +297,10 @@ def generate_cli_reference():
                     continue
                 command = [_script, subcommand, "--help"]
                 out, err = system_call(command)
+
+                out = out.decode() if out else ""
+                err = err.decode() if err else ""
+
                 out = out.replace("  -", "    -")
                 out = out.replace("Options:", "Options:\n\n")
                 out = out.replace("----------------------------------------", "")
@@ -329,11 +337,11 @@ def main(out_dir="doc"):
 
             print("Output: {}".format(html_file))
             with open(html_file, "wb") as fout:
-                fout.write(html)
+                fout.write(html.encode())
 
             print("Output: {}".format(md_file))
             with open(md_file, "wb") as fout:
-                fout.write(md)
+                fout.write(md.encode())
 
     api_objects = get_objects(api_modules)
     api_md = generate_markdown(api_objects)
@@ -348,13 +356,13 @@ def main(out_dir="doc"):
 
     filename = os.path.join(out_dir, "APIReference.html")
     print("Output: {}".format(filename))
-    with open(filename, "w") as fout:
-        fout.write(api_html)
+    with open(filename, "wb") as fout:
+        fout.write(api_html.encode())
 
     filename = os.path.join(out_dir, "APIReference.md")
     print("Output: {}".format(filename))
-    with open(filename, "w") as fout:
-        fout.write(api_md)
+    with open(filename, "wb") as fout:
+        fout.write(api_md.encode())
 
     cli_md = generate_cli_reference()
     cli_md = "[Back to index](./index.html)\n\n<h1>MAST for IBM DataPower Version {}</h1><h2>CLI Reference v {}</h2>\n\n[TOC]\n\n{}".format(os.environ["MAST_VERSION"], os.environ["MAST_VERSION"], cli_md)
@@ -367,13 +375,13 @@ def main(out_dir="doc"):
 
     filename = os.path.join(out_dir, "CLIReference.md")
     print("Output: {}".format(filename))
-    with open(filename, "w") as fout:
-        fout.write(cli_md)
+    with open(filename, "wb") as fout:
+        fout.write(cli_md.encode())
 
     filename = os.path.join(out_dir, "CLIReference.html")
     print("Output: {}".format(filename))
-    with open(filename, "w") as fout:
-        fout.write(cli_html)
+    with open(filename, "wb") as fout:
+        fout.write(cli_html.encode())
 
 
 if __name__ == "__main__":

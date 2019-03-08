@@ -1,4 +1,4 @@
-
+import re
 import os
 import sys
 import cli
@@ -241,8 +241,8 @@ def _install_packages(prefix, net_install):
             print("### installing: {}".format(dependency))
             _dependency = dependency
             if "git+" in dependency:
-                _dependency = dependency.split("/")[-1].split("#")[0]
-            if "mast." in dependency:
+                _dependency = re.split("[@#]", dependency.split("/")[-1])[0]
+            if dependency == "mast":
                 system_call(
                     " ".join([
                         python,
@@ -342,36 +342,21 @@ def _add_scripts(prefix):
             os.chmod(dst, 0o755)
 
     if "Windows" in platform.system():
-        # copy python27.dll to site-packages/win32 directory to get around
+        # copy python37.dll to site-packages/win32 directory to get around
         # issue when starting mastd
-        src = os.path.join(prefix, "miniconda", "python27.dll")
+
+        # TODO: Make python37.dll filename dynamic depending on version of
+        # Python being installed
+        src = os.path.join(prefix, "miniconda", "python37.dll")
         dst = os.path.join(
             prefix,
             "miniconda",
             "Lib",
             "site-packages",
             "win32",
-            "python27.dll"
+            "python37.dll"
         )
         copyfile(src, dst)
-        for filename in ["pythoncom27.dll", "pythoncomloader27.dll", "pywintypes27.dll"]:
-            src = os.path.join(
-                prefix,
-                "miniconda",
-                "Lib",
-                "site-packages",
-                "pywin32_system32",
-                filename,
-            )
-            dst = os.path.join(
-                prefix,
-                "miniconda",
-                "Lib",
-                "site-packages",
-                "win32",
-                filename,
-            )
-            copyfile(src, dst)
     copytree(
         os.path.join(INSTALL_DIR, "files", "bin"),
         os.path.join(prefix, "bin")
