@@ -245,7 +245,7 @@ def _install_packages(prefix, net_install):
             _dependency = dependency
             if "git+" in dependency:
                 _dependency = dependency.split("/")[-1].split("#")[0]
-            if "mast." in dependency:
+            if "mast" in dependency:
                 system_call(
                     " ".join([
                         python,
