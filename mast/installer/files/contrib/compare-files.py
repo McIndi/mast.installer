@@ -7,6 +7,8 @@ import glob
 import os
 
 def main(pattern="", out_dir="", wrapcolumn=80, tabsize=4):
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
     diff = difflib.HtmlDiff(
         tabsize=tabsize,
         wrapcolumn=wrapcolumn,
