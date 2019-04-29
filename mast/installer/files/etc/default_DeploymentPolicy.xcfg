@@ -1,0 +1,55 @@
+<datapower-configuration version="3">
+    <configuration domain="mast">
+        <ConfigDeploymentPolicy name="default" xmlns:env="http://www.w3.org/2003/05/soap-envelope" xmlns:dp="http://www.datapower.com/schemas/management">
+            <mAdminState read-only="true">enabled</mAdminState>
+            <ModifiedConfig>
+                <Match>*/*/services/multiprotocol-gateway?Name=.*&amp;Property=DebugMode&amp;Value=on</Match>
+                <Type>change</Type>
+                <Property/>
+                <Value>off</Value>
+            </ModifiedConfig>
+            <ModifiedConfig>
+                <Match>*/*/services/multiprotocol-gateway?Name=.*&amp;Property=DebugTrigger/ClientIP&amp;Value=.*</Match>
+                <Type>delete</Type>
+                <Property/>
+                <Value/>
+            </ModifiedConfig>
+            <ModifiedConfig>
+                <Match>*/*/services/multiprotocol-gateway?Name=.*&amp;Property=DebugTrigger/InURLMatch&amp;Value=.*</Match>
+                <Type>delete</Type>
+                <Property/>
+                <Value/>
+            </ModifiedConfig>
+            <ModifiedConfig>
+                <Match>*/*/services/multiprotocol-gateway?Name=.*&amp;Property=DebugTrigger/OutURLMatch&amp;Value=.*</Match>
+                <Type>delete</Type>
+                <Property/>
+                <Value/>
+            </ModifiedConfig>
+            <ModifiedConfig>
+                <Match>*/*/services/multiprotocol-gateway?Name=.*&amp;Property=DebugTrigger/RuleType&amp;Value=.*</Match>
+                <Type>delete</Type>
+                <Property/>
+                <Value/>
+            </ModifiedConfig>
+            <ModifiedConfig>
+                <Match>*/*/services/multiprotocol-gateway?Name=.*&amp;Property=DebugTrigger/RuleMatch&amp;Value=.*</Match>
+                <Type>delete</Type>
+                <Property/>
+                <Value/>
+            </ModifiedConfig>
+            <ModifiedConfig>
+                <Match>*/*/services/multiprotocol-gateway?Name=.*&amp;Property=DebugTrigger/XPath&amp;Value=.*</Match>
+                <Type>delete</Type>
+                <Property/>
+                <Value/>
+            </ModifiedConfig>
+            <ModifiedConfig>
+                <Match>*/*/logging/target?Property=LogEvents/Priority&amp;Value=[Dd][Ee][Bb][Uu][Gg]</Match>
+                <Type>delete</Type>
+                <Property/>
+                <Value/>
+            </ModifiedConfig>
+        </ConfigDeploymentPolicy>
+    </configuration>
+</datapower-configuration>
