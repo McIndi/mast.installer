@@ -12,7 +12,6 @@ from collections import OrderedDict, defaultdict
 from glob import glob
 
 XPATHS = {
-    '/*/*[local-name()="attribute-set"]': ['name'],
     '/*/*[local-name()="import"]': ['href'],
     '/*/*[local-name()="include"]': ['href'],
     '/*/*[local-name()="output"]': [
@@ -27,17 +26,19 @@ XPATHS = {
         'indent',
         'media-type',
     ],
+    '/*/*[local-name()="attribute-set"]': ['name'],
     '/*/*[local-name()="param"]': ['name'],
+    '/*/*[local-name()="variable"]': [
+        'name',
+        'select',
+    ],
     '/*/*[local-name()="template"]': [
         'name',
         'match',
         'priority',
         'mode',
     ],
-    '/*/*[local-name()="variable"]': [
-        'name',
-        'select',
-    ],
+    '/*/*[local-name()="function"]': ['name'],
 }
 
 HTML_TABLE = """
@@ -72,9 +73,10 @@ def main(
         wrapcolumn=80,
         tabsize=4,
         no_only_differences=False,
+        no_same_filenames=False,
     ):
     only_differences = not no_only_differences
-
+    same_filenames = not no_same_filenames
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
     parser = etree.XMLParser(
@@ -83,20 +85,36 @@ def main(
     )
     differ = difflib.HtmlDiff(wrapcolumn=wrapcolumn, tabsize=tabsize)
     # Get list of filenames
-    filenames = []
+    filenames = set()
     for pattern in xsl_globs:
         for filename in glob(pattern):
-            filenames.append(os.path.abspath(filename))
+            filenames.add(os.path.abspath(filename))
+
     # Pretty print for consistency
     for filename in filenames:
         tree = etree.parse(filename, parser)
+        print(get_sha256(filename), filename)
         with open(filename, "w") as fp:
             fp.write(etree.tostring(tree, pretty_print=True))
     # Gather top level nodes and compare
     for index, (left_filename, right_filename) in enumerate(combinations(filenames, 2)):
+        if same_filenames and os.path.basename(left_filename) != os.path.basename(right_filename):
+            continue
         if get_sha256(left_filename) == get_sha256(right_filename):
             continue
-        html_rows = defaultdict(list)
+        print("{} -> {}".format(left_filename, right_filename))
+        html_rows = OrderedDict(
+            (
+                ('/*/*[local-name()="import"]', []),
+                ('/*/*[local-name()="include"]', []),
+                ('/*/*[local-name()="output"]', []),
+                ('/*/*[local-name()="attribute-set"]', []),
+                ('/*/*[local-name()="param"]', []),
+                ('/*/*[local-name()="variable"]', []),
+                ('/*/*[local-name()="template"]', []),
+                ('/*/*[local-name()="function"]', []),
+            )
+        )
         left_tree = etree.parse(left_filename, parser)
         right_tree = etree.parse(right_filename, parser)
         left_nodes = {}
@@ -145,7 +163,7 @@ def main(
         for xpath, identifiers in right_nodes.items():
             for identifier, right_text in identifiers.items():
                 if identifier not in left_nodes[xpath]:
-                    lside = "{}\n".format(" "*(wrapcolumn-1)) * len(left_text.splitlines())
+                    lside = "{}\n".format(" "*(wrapcolumn-1)) * len(right_text.splitlines())
                     lside = lside.splitlines()
                     html_rows[xpath].append(
                         TABLE_ROW.format(
@@ -184,11 +202,19 @@ def main(
             )
 
 
-        diff_filename = "{}-{}-vs-{}.html".format(
-            index,
-            "_".join([x for x in left_filename.split(os.path.sep) if x not in right_filename.split(os.path.sep)]),
-            "_".join([x for x in right_filename.split(os.path.sep) if x not in left_filename.split(os.path.sep)]),
-        )
+        if same_filenames:
+            diff_filename = "{}-{}-vs-{}-{}.html".format(
+                index,
+                "_".join(set([x for x in left_filename.split(os.path.sep) if x not in right_filename.split(os.path.sep)])),
+                "_".join(set([x for x in right_filename.split(os.path.sep) if x not in left_filename.split(os.path.sep)])),
+                os.path.basename(left_filename),
+            )
+        else:
+            diff_filename = "{}-{}-vs-{}.html".format(
+                index,
+                "_".join(set([x for x in left_filename.split(os.path.sep) if x not in right_filename.split(os.path.sep)])),
+                "_".join(set([x for x in right_filename.split(os.path.sep) if x not in left_filename.split(os.path.sep)])),
+            )
         diff_filename = os.path.join(
             out_dir,
             diff_filename,
