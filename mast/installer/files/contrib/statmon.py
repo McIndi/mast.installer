@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+4# -*- coding: utf-8 -*-
 import re
 import os
 import sys
@@ -9,8 +9,6 @@ from mast.datapower import datapower
 from mast.logging import make_logger
 from mast.timestamp import Timestamp
 from mast.datapower.datapower import Environment
-
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
 
 # #########################
 # TODO:
@@ -48,7 +46,7 @@ def recurse_status(prefix, elem, row, header_row):
 def display_rows(header_row, rows, grep, provider):
     _format_string = ""
     for index, field in enumerate(header_row):
-        _ = [field] + [str(x[index]) for x in rows]
+        _ = [field] + [str(x[index]) if len(x) >= index else " " for x in rows]
         length = len(max(_, key=len)) + 3
         _format_string += "{%s: <%s}" % (index, length)
     clear()

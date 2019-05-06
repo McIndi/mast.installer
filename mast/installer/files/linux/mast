@@ -1,7 +1,6 @@
 #!/bin/bash
 
 export MAST_HOME=<%MAST_HOME%>
-export MAST_VERSION=2.3.1
 
 cd $MAST_HOME
 source ./set-env

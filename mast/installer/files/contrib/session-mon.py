@@ -14,8 +14,6 @@ from itertools import groupby
 from mast.cli import Cli
 import os
 
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
-
 class UserSession(object):
     def __init__(self, node):
         """UserSession: A class representing an active user session

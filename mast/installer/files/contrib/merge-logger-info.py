@@ -21,8 +21,6 @@ from mast.cli import Cli
 from mast.logging import make_logger
 import pandas as pd
 
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
-
 def main(config_xlsx="",
          status_xlsx="",
          out_file=""):

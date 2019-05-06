@@ -66,8 +66,6 @@ from mast.pprint import pprint_xml_str, pprint_xml
 import os
 import re
 
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
-
 def tree():
     return defaultdict(tree)
 

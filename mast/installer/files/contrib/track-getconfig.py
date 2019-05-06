@@ -14,8 +14,6 @@ import urllib2
 import os
 import re
 
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
-
 colorama.init()
 
 
@@ -38,14 +36,14 @@ def main(appliances=[],
 
     Store running or persisted domain configuration in a local git
     repository for auditing purposes.
-    
+
     Usage:
-        
+
         :::bash
         $ mast contrib/track_getconfig.py --appliances <HOSTNAMES> --credentials <USER:PASS> --base-dir tmp/config
 
     Parameters:
-    
+
     * `-a, --appliances` - The hostname(s), ip addresse(s), environment name(s)
     or alias(es) of the appliances you would like to affect. For details
     on configuring environments please see the comments in
@@ -66,7 +64,7 @@ def main(appliances=[],
     off when sending commands to the appliances.
     * `-b, --base-dir`: The base directory where to store the downloaded
     files. Files will actually be stored in a subdirectory of `base_dir`
-    named after the hostname in the form of `base_dir/<hostname>`    
+    named after the hostname in the form of `base_dir/<hostname>`
     * `-p, --persisted`: If specified, the persisted configuration will
     be retrieved as opposed to the running configuration (which is the
     default)
@@ -94,7 +92,7 @@ def main(appliances=[],
     except KeyError:
         git.add(base_dir)
         git.commit(base_dir, message="Initial Commit")
-    
+
     check_hostname = not no_check_hostname
     env = datapower.Environment(appliances,
                                 credentials,
@@ -127,7 +125,7 @@ def main(appliances=[],
     git.add(base_dir)
     print git.status(base_dir)
     git.commit(base_dir, message=comment)
-    
+
     tmp = StringIO()
     git.show(base_dir, outstream=tmp)
     tmp.seek(0)

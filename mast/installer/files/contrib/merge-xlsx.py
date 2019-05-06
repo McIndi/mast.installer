@@ -4,8 +4,6 @@ from mast.cli import Cli
 import pandas as pd
 import os
 
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
-
 def main(left_file="",
          right_file="",
          out_file="",

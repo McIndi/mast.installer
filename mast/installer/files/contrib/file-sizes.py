@@ -7,8 +7,6 @@ from mast.datapower import datapower
 from mast.timestamp import Timestamp
 import xml.etree.cElementTree as etree
 
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
-
 t = Timestamp()
 
 default_out_file = os.path.join(os.environ["MAST_HOME"],

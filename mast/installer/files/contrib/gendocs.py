@@ -31,8 +31,6 @@ from collections import OrderedDict
 from markdown.extensions.toc import TocExtension
 from markdown.extensions.codehilite import CodeHiliteExtension
 
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
-
 def system_call(
         command,
         stdin=subprocess.PIPE,
@@ -290,7 +288,7 @@ def generate_cli_reference():
         command = [_script, "--help"]
         out, err = system_call(command)
         out = out.replace("  -", "    -")
-        # Put all subcommand into an unordered list 
+        # Put all subcommand into an unordered list
         out = re.sub(r"^  (\w)", r"* \1", out, flags=re.MULTILINE)
         # Put subcommand name in backticks
         out = re.sub(r"^\* (.*?)\s-\s", r"* `\1` - ", out, flags=re.MULTILINE)

@@ -7,8 +7,6 @@ from mast.timestamp import Timestamp
 from mast.datapower import datapower
 from mast.logging import make_logger
 
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
-
 def _exit(ret_code=-1):
     print "An error occurred, see log for details."
     sys.exit(ret_code)

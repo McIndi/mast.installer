@@ -5,8 +5,6 @@ from lxml import etree
 import mast.cli as cli
 import os
 
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
-
 nsmap = {
     "env": "http://schemas.xmlsoap.org/soap/envelope/",
     "dp":"http://www.datapower.com/schemas/management"
@@ -63,6 +61,6 @@ if __name__ == "__main__":
         interface.run()
     except SystemExit:
         pass
-    except: 
+    except:
         make_logger("error").exception("Sorry, an unhandled exception has occurred.")
         raise

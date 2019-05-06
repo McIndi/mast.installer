@@ -67,8 +67,6 @@ from lxml import etree
 import os
 import re
 
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
-
 def main(appliances=[],
          credentials=[],
          timeout=120,

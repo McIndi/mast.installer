@@ -13,8 +13,6 @@ from mast.cli import Cli
 import colorama
 import os
 
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
-
 colorama.init()
 
 def pull_autoconfig(appliances=[],
@@ -26,19 +24,19 @@ def pull_autoconfig(appliances=[],
     _function_: `pull_autoconfig(appliances=[], credentials=[], timeout=120, no_check_hostname=False, base_dir=".")`
 
     Description:
-    
+
     For each appliance loop through each domain and copy the `.cfg`
     file to `base_dir/<hostname>/.`
-    
+
     Usage:
-    
+
         :::python
         >>> pull_autoconfig(appliances=["hostname"],
         ...                 credentials=["user:pass"],
         ...                 base_dir="tmp")
-    
+
     Parameters:
-    
+
     * `appliances` - The hostname(s), ip addresse(s), environment name(s)
     or alias(es) of the appliances you would like to affect. For details
     on configuring environments please see the comments in
@@ -103,14 +101,14 @@ def main(appliances=[],
 
     Store persisted domain configuration in a local git repository
     for auditing purposes.
-    
+
     Usage:
-        
+
         :::bash
         $ mast contrib/track_autoconfig.py --appliances <HOSTNAMES> --credentials <USER:PASS> --base-dir tmp/config
 
     Parameters:
-    
+
     * `-a, --appliances` - The hostname(s), ip addresse(s), environment name(s)
     or alias(es) of the appliances you would like to affect. For details
     on configuring environments please see the comments in
@@ -131,7 +129,7 @@ def main(appliances=[],
     off when sending commands to the appliances.
     * `-b, --base-dir`: The base directory where to store the downloaded
     files. Files will actually be stored in a subdirectory of `base_dir`
-    named after the hostname in the form of `base_dir/<hostname>`    
+    named after the hostname in the form of `base_dir/<hostname>`
     * `-p, --page`: If specified, page the output when too long to display
     at once
     * `-N, --no-highlight-diff`: If specified, the output of the diff will
@@ -164,7 +162,7 @@ def main(appliances=[],
     second_sha1 = git.commit(base_dir, message=comment)
     print second_sha1
     print "\n\nDIFF\n\n"
-    
+
     tmp = StringIO()
     git.show(base_dir, outstream=tmp)
     tmp.seek(0)

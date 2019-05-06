@@ -7,8 +7,6 @@ from mast.datapower import datapower
 from mast.timestamp import Timestamp
 from mast.datapower.datapower import Environment
 
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
-
 t = Timestamp()
 
 logger = make_logger("mast.getstatus", propagate=False)
