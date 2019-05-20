@@ -115,12 +115,11 @@ def main(
         strip_cdata=False,
     )
     differ = difflib.HtmlDiff(wrapcolumn=wrapcolumn, tabsize=tabsize)
-    filenames = []
+    filenames = set()
     # Clean up xml documents
     for pattern in xcfg_globs:
         for filename in glob(pattern):
-            filenames.append(os.path.abspath(filename))
-            print(filename)
+            filenames.add(os.path.abspath(filename))
             tree = etree.parse(filename, parser).getroot()
             if remove_namespaces:
                 tree = REMOVE_NAMESPACES(tree).getroot()
@@ -128,6 +127,30 @@ def main(
             sort_children(tree)
             with open(filename, "wb") as fp:
                 fp.write(etree.tostring(tree, pretty_print=True))
+    # Cast to a list for order
+    filenames = list(filenames)
+    # sort by basename
+    common_prefix = os.path.dirname(os.path.commonprefix(filenames))
+    _filenames = map(
+        lambda x: x.replace(common_prefix, ""),
+        filenames,
+    )
+
+    # remove leading path seperator
+    _filenames = map(
+        lambda x: x.lstrip(os.path.sep),
+        _filenames,
+    )
+
+    # Sort by dirname
+    _filenames.sort(key=lambda p: p.split(os.path.sep))
+
+    # sort by filename
+    _filenames.sort(key=os.path.basename)
+
+    for filename in _filenames:
+        print("{} {}".format(get_sha256(os.path.join(common_prefix, filename)), filename))
+
     for index, (left_filename, right_filename) in enumerate(combinations(filenames, 2)):
         if get_sha256(left_filename) == get_sha256(right_filename):
             continue

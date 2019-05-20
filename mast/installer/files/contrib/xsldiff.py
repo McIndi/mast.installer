@@ -85,17 +85,41 @@ def main(
     )
     differ = difflib.HtmlDiff(wrapcolumn=wrapcolumn, tabsize=tabsize)
     # Get list of filenames
+    # Start with a set for uniqueness
     filenames = set()
     for pattern in xsl_globs:
         for filename in glob(pattern):
             filenames.add(os.path.abspath(filename))
+    # Cast to a list for order
+    filenames = list(filenames)
+    # sort by basename
+    common_prefix = os.path.dirname(os.path.commonprefix(filenames))
+    _filenames = map(
+        lambda x: x.replace(common_prefix, ""),
+        filenames,
+    )
+
+    # remove leading path seperator
+    _filenames = map(
+        lambda x: x.lstrip(os.path.sep),
+        _filenames,
+    )
+
+    # Sort by dirname
+    _filenames.sort(key=lambda p: p.split(os.path.sep))
+
+    # sort by filename
+    _filenames.sort(key=os.path.basename)
 
     # Pretty print for consistency
     for filename in filenames:
         tree = etree.parse(filename, parser)
-        print(get_sha256(filename), filename)
         with open(filename, "w") as fp:
             fp.write(etree.tostring(tree, pretty_print=True))
+
+    for filename in _filenames:
+        print("{} {}".format(get_sha256(os.path.join(common_prefix, filename)), filename))
+
     # Gather top level nodes and compare
     for index, (left_filename, right_filename) in enumerate(combinations(filenames, 2)):
         if same_filenames and os.path.basename(left_filename) != os.path.basename(right_filename):

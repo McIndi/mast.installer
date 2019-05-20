@@ -1,7 +1,7 @@
 from itertools import combinations
 from mast.logging import make_logger
 from mast.cli import Cli
-from mast.hashes import get_sha512
+from mast.hashes import get_sha256
 import difflib
 import glob
 import os
@@ -18,9 +18,28 @@ def main(pattern="", out_dir="", wrapcolumn=80, tabsize=4):
     filenames = []
     for filename in glob.glob(pattern):
         filenames.append(os.path.abspath(filename))
+    common_prefix = os.path.dirname(os.path.commonprefix(filenames))
+    _filenames = map(
+        lambda x: x.replace(common_prefix, ""),
+        filenames,
+    )
+
+    # remove leading /
+    _filenames = map(
+        lambda x: x.lstrip(os.path.sep),
+        _filenames,
+    )
+
+    # Sort by dirname
+    _filenames.sort(key=lambda p: p.split("/"))
+
+    # sort by filename
+    _filenames.sort(key=os.path.basename)
+    for filename in _filenames:
+        print("{} {}".format(get_sha256(os.path.join(common_prefix, filename)), filename))
     for combination in combinations(filenames, 2):
         from_file, to_file = combination
-        if get_sha512(from_file) == get_sha512(to_file):
+        if get_sha256(from_file) == get_sha256(to_file):
             continue
         with open(from_file, "r") as fp:
             from_lines = fp.readlines()
