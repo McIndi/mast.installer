@@ -153,14 +153,14 @@ $( document ).ready(function(){
 
     $("#main").on("click", ".multiTextButton", function(event){
         target = $(event.target);
-        parent = target.parent();
-        input = parent.find(".multiTextTextbox");
+        // parent = target.parent();
+        input = target.parent().find(".multiTextTextbox");
         value = input.val();
         if (value.length == 0 ){
             return
         }
         input.val("");
-        currentChoices = parent.find(".multiTextCurrent");
+        currentChoices = target.parent().find(".multiTextCurrent");
         choices = currentChoices.html().replace("<i>Current selection: </i>", "").split(" ");
         choices.push("<span class='multiTextSelection bordered'>"+value+"<span class='multiTextSelectionCancel'> X </span></span>");
         currentChoices.html("<i>Current selection: </i>"+choices.join(" "));
@@ -173,12 +173,12 @@ $( document ).ready(function(){
 
     $("#main").on("change", ".multiSelect", function(event){
         target = $(event.target);
-        parent = target.parent();
         value = target.val();
         if (value.length == 0 ){
             return
         }
-        currentChoices = parent.find(".multiSelectCurrent");
+        // parent = target.parent();
+        currentChoices = target.parent().find(".multiSelectCurrent");
         choices = currentChoices.html().replace("<i>Current selection: </i>", "").split(" ");
         choices.push("<span class='multiSelectSelection bordered'>"+value+"<span class='multiSelectSelectionCancel'> X </span></span>");
         currentChoices.html("<i>Current selection: </i>"+choices.join(" "));
