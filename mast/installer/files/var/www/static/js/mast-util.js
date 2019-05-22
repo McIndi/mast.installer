@@ -103,7 +103,7 @@ var addHandlerForFormSubmission = function(plugin){
             choices = choices.split(" ");
             $.each(choices, function(index, value){
                 if (/[a-zA-Z0-9\.]+/.test(value)){
-                    data += "&"+id+"[]="+value;
+                    data += "&"+encodeURIComponent(id)+"[]="+encodeURIComponent(value);
                 }
             });
         });
@@ -118,7 +118,7 @@ var addHandlerForFormSubmission = function(plugin){
             choices = choices.split(" ");
             $.each(choices, function(index, value){
                 if (/[a-zA-Z0-9\.]+/.test(value)){
-                    data += "&"+id+"[]="+value;
+                    data += "&"+encodeURIComponent(id)+"[]="+encodeURIComponent(value);
                 }
             });
         });
