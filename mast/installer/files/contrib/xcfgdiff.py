@@ -210,10 +210,11 @@ def main(
                         )
                     )
                 )
-        diff_filename = "{}-{}-vs-{}.html".format(
+        diff_filename = "{}-{}-vs-{}-{}.html".format(
             index,
-            "_".join([x for x in left_filename.split(os.path.sep) if x not in right_filename.split(os.path.sep)]),
-            "_".join([x for x in right_filename.split(os.path.sep) if x not in left_filename.split(os.path.sep)]),
+            "_".join(list(OrderedDict.fromkeys([x for x in left_filename.split(os.path.sep) if x not in right_filename.split(os.path.sep)]))),
+            "_".join(list(OrderedDict.fromkeys([x for x in right_filename.split(os.path.sep) if x not in left_filename.split(os.path.sep)]))),
+            os.path.basename(left_filename),
         )
         diff_filename = os.path.join(
             out_dir,

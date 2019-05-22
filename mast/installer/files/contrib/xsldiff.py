@@ -229,15 +229,15 @@ def main(
         if same_filenames:
             diff_filename = "{}-{}-vs-{}-{}.html".format(
                 index,
-                "_".join(set([x for x in left_filename.split(os.path.sep) if x not in right_filename.split(os.path.sep)])),
-                "_".join(set([x for x in right_filename.split(os.path.sep) if x not in left_filename.split(os.path.sep)])),
+                "_".join(list(OrderedDict.fromkeys([x for x in left_filename.split(os.path.sep) if x not in right_filename.split(os.path.sep)]))),
+                "_".join(list(OrderedDict.fromkeys([x for x in right_filename.split(os.path.sep) if x not in left_filename.split(os.path.sep)]))),
                 os.path.basename(left_filename),
             )
         else:
             diff_filename = "{}-{}-vs-{}.html".format(
                 index,
-                "_".join(set([x for x in left_filename.split(os.path.sep) if x not in right_filename.split(os.path.sep)])),
-                "_".join(set([x for x in right_filename.split(os.path.sep) if x not in left_filename.split(os.path.sep)])),
+                "_".join(list(OrderedDict.fromkeys([x for x in left_filename.split(os.path.sep) if x not in right_filename.split(os.path.sep)]))),
+                "_".join(list(OrderedDict.fromkeys([x for x in right_filename.split(os.path.sep) if x not in left_filename.split(os.path.sep)]))),
             )
         diff_filename = os.path.join(
             out_dir,
