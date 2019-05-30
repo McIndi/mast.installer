@@ -17,22 +17,11 @@ possible. Let's first review the requirements:
 * That's it (Although we do suggest a machine with at least 4 CPUs and 8GB RAM,
 but this is not a hard requirement)
 
-# Considerations
+## Security concerns
 
-There are a few options to consider before you install MAST for IBM DataPower.
-First, there are two main installation bundles:
-
-* Server
-* Workstation
-
-We will review the differences between these two options below:
-
-## Server Install
-
-The server install is designed to be as minimal as possible to serve the MAST
-for IBM DataPower Web GUI. Though it is important to understand that because the
-Web GUI is dynamically generated from the same code-base as the CLI, so CLI will
-also be available from the server hosting MAST.
+It is important to replace the key and cert in $MAST_HOME/etc/crypto with
+trusted certificates and to update the key and cert configuration in
+$MAST_HOME/etc/server.conf.
 
 For those with serious concerns over security, it may be a good idea to configure
 the appliance's management interface to listen only to the IP Address of the MAST
@@ -40,32 +29,10 @@ server. This is a good idea if you really need to restrict access to the DataPow
 but if your organization embraces a more distributed or agile management strategy
 there is the option to install MAST on your team's workstation.
 
-The server install is powered by [miniconda](http://conda.pydata.org/miniconda.html)
-
-## Workstation Install
-
-The workstation install is powered by Anaconda, find out more [here](https://www.continuum.io/why-anaconda)
-
-If you choose the workstation installation, you will have access to many more
-tools, which will enable your team to work with your appliances in a much more
-agile way. A small list of tools which would be available in a workstation
-install is listed here:
-
-* py.test - A simple no-boilerplate testing framework
-* spyder - A Python IDE useful for extending MAST's functionality
-* IPython - An enhanced Python terminal useful for exploring MAST's Python API
-* IPython notebook - An interactive computational environment, in which you can combine code execution, rich text, mathematics, plots and rich media.
-* Python libraries to interact with Excel
-* pandas - A library for data manipulation and analysis
-* bokeh - An interactive visualization library that targets modern web browsers for presentation
-* And tons more, see [why anaconda](https://www.continuum.io/why-anaconda)
-
 # Installing MAST
 
-Either way you go, installation is easy. Pre-built binaries are available to
-those with a Support Contract as well as this documentation, so if you are
-reading this you have received an email with links to both this documentation
-and the binary installers. Please select the binary for your target platform.
+The server install is powered by [miniconda](http://conda.pydata.org/miniconda.html)
+
 The easiest way to install MAST for IBM DataPower is to place the executable
 in the directory you want your MAST installation and run it. If run this way,
 it will create a subdirectory called mast and install there. There are other
@@ -91,7 +58,8 @@ script to install, control and remove the mastd service. You can install the mas
 service with the following command:
 
     :::batch
-    C:\mast\> mastd install
+    mastd install
+    mastd start
 
 This will install mastd as a Windows service and it can be controlled and configured
 as a standard Windows service. You can also provide certain parameters to control

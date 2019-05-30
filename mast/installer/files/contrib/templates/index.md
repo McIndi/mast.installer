@@ -17,7 +17,8 @@ set-up with MAST for IBM DataPower Version {0}.
 You may also be interested in our [Road Map](./roadmap.html) for future versions
 which also contains the list of known issues.
 
-For an overview of the current features and capabilities of MAST for DataPower, see the [Product Sheet](./product-sheet.html)
+For an overview of the current features and capabilities of MAST for DataPower,
+see the [Product Sheet](./product-sheet.html)
 
 # References
 
@@ -27,7 +28,8 @@ which can help when you just need to perform a quick search.
 * [The CLI Reference](./CLIReference.html)
 * [The API Reference](./APIReference.html)
 
-Additional reference information for the IBM DataPower can be found at the [IBM Knowledge Center](http://www-01.ibm.com/software/integration/datapower/library/documentation/).
+Additional reference information for the IBM DataPower can be found at the
+[IBM Knowledge Center](http://www-01.ibm.com/software/integration/datapower/library/documentation/).
 
 # Contributing
 
@@ -45,7 +47,7 @@ operations of your DataPower appliances, please contact us at
 
 If you would like to offer help in the form of bug reports or pull requests,
 work is currently being done on the
-[GitHub repository for the installer](https://github.com/mcindi/mast.installer).
+[GitHub repository](https://github.com/mcindi/mast).
 Please note that the upcoming version will be ironing out the development and
 contribution process, so it's all subject to change.
 

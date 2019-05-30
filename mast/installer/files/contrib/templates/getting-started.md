@@ -109,7 +109,7 @@ as defined above, we could configure our environments like this:
     appliances: dev_dp_1 dev_dp_2 qa_dp_1 qa_dp_2 prod_dp_1 prod_dp_2
 
 Now if you need to affect both appliances in prod, you can simply
-provide `prod` as the hostname 
+provide `prod` as the hostname
 
 # Configuring the Server
 
@@ -188,7 +188,7 @@ do that with the following command:
 
 This will add a user to both dev appliances and associate them with the
 developer group. We can then verify that it was added by listing the users
-just as we did above: 
+just as we did above:
 
     :::bash
     `$ ./mast-accounts list-users -a all -c username:password`

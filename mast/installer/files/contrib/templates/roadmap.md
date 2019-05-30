@@ -97,10 +97,9 @@ made in the past as well as decisions which we are currently making.
         * MAST for docker
         * MAST for Linux
         * MAST for Windows
-    * Start migrating to Python 3
-        * We will try to keep a code base compatible with
-        both Python 2.5, 2.6, 2.7, 3.3, 3.4, 3.5, but if any
-        problems arise, we will prioritize 2.7 and 3.5
+    * Migrate to Python 3
+        * Python 2 support will end January 2020, so we need to migrate to
+        Python 3.7.
     * Rewrite the Web GUI to have a more useful, modern UI
     based on bootstrap, JQuery and D3
 * Version 4
@@ -111,4 +110,3 @@ made in the past as well as decisions which we are currently making.
 
 This document is living and breathing, please check back to see updates
 to this document which will outline our direction for the future.
-

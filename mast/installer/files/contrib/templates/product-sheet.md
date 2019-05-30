@@ -28,7 +28,9 @@ situations where your organization has special needs.
 * As an open source product with an API, MAST, provides for both in-house
 customization and input from the community, which can be submitted for future
 version inclusion.
-* MAST was developed in-house by a team employing lessons learned from real world experience, with extensive IBM DataPower development, administration, support and security knowledge.
+* MAST was developed in-house by a team employing lessons learned from real
+world experience, with extensive IBM DataPower development, administration,
+support and security knowledge.
 
 ### MAST for DataPower: Stability, Security and Productivity Benefits
 
@@ -91,10 +93,3 @@ version inclusion.
 
 * Sales: [mcindi.com](www.mcindi.com/sales/mast) & [email](mailto:mastsales@mcindi.com)
 * Support: [mcindi.com/support](www.mcindi.com/support/mast) & [email](mailto:mastsupport@mcind.com)
-
-### Road map (*some of the features under development*):
-* MAST Package Manager
-    * Install services/objects into multiple appliances with a single setup
-    * Pre-configure deployment policies to ease the deployment of services
-    * Allow easy install/uninstall of objects/services
-    * Handle dependencies of files/objects/services
