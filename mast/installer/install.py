@@ -266,6 +266,7 @@ def _install_packages(prefix, net_install):
                         "-m",
                         "pip",
                         "install",
+                        "--upgrade",
                         "--no-index",
                         "--find-links",
                         directory,

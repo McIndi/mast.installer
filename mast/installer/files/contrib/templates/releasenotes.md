@@ -39,7 +39,7 @@ We are pleased to present the MAST v 2.4.3 update which fixes a number of new fe
 
 * Fixed a bug in contrib/statmon.py which caused a crash when a field was present in only a subset of readings.
 
-# Mast for IBM DataPower Version 2.4.2
+# Mast Version 2.4.2
 
 We are pleased to announce the 2.4.2 update to MAST for IBM DataPower. Please see below for the bug fixes and improvements.
 
@@ -234,23 +234,25 @@ secure backup, because this change affects the short option for
 
 # MAST Version 2.1.1
 
-Changelog
+## Enhancements
+
+* Improved versioning of MAST
+* Enhanced statmon to support multiple --grep options and case-insensitive searches
+* Updated chart.js to latest stable release
+* Add option to ignore errors in fs-sync.py
+* Added contributing guide to our documentation
+
+## Features
+
+* Added the basics of the user-facing automated testing suite
+* Included a POC for modify-config script (This one still needs work, please submit issues to our issue tracker)
+
+## Bug Fixes
 
 * Changed mast.bat to set PATH during run, to avoid issues with shared
 libraries not being found
-* Started our weekly release schedule
-* Added the basics of the user-facing automated testing suite
-* Improved versioning of MAST
-* Fixed bug where latest build of pywin32 prevented mastd from
-starting/stoping/starting
+* Fixed bug where latest build of pywin32 prevented mastd from starting/stoping/starting
 * Fixed bug in linux version of set-env which prevented it from working
-* Enhanced statmon to support multiple --grep options and case-insensitive
-searches
 * Fixed a bug causing excess output when an error occurred in cert-audit
 * Fixed a bug in formatting the output of gendocs
-* Updated chart.js to latest stable release
 * Fixed rare bug causing import error during install and build-hotfix
-* Included a POC for modify-config script (This one still needs work,
-please submit issues to our issue tracker)
-* Add option to ignore errors in fs-sync.py
-* Added contributing guide to our documentation
