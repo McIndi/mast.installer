@@ -121,6 +121,7 @@ def cert_audit(appliances=[],
         "certificate-object",
         "filename",
         "subject",
+        "SANs",
         "not-before",
         "not-after",
         "issuer"]
@@ -200,12 +201,20 @@ def cert_audit(appliances=[],
                     ";".join(
                         ["=".join(x)
                          for x in _cert.get_subject().get_components()]))
+                sans = []
+                ext_count = _cert.get_extension_count()
+                for i in range(0, ext_count):
+                    ext = _cert.get_extension(i)
+                    if 'subjectAltName' in str(ext.get_short_name()):
+                        sans.append(ext.__str__())
+                sans = "\n".join(sans)
                 issuer = "'{}'".format(
                     ";".join(
                         ["=".join(x)
                          for x in _cert.get_issuer().get_components()]))
                 row.extend(
                     [subject,
+                    sans,
                      _cert.get_notBefore(),
                      _cert.get_notAfter(),
                      issuer])
