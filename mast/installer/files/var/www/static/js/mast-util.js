@@ -54,7 +54,7 @@ var addHandlerForFileUploads = function(plugin){
         var id = div.attr("id");
         var iframe = div.find("iframe[name^=_"+plugin+"]");
         $(document).trigger("ajaxStart");
-        iframe.load(function(event){
+        iframe.on("load", function(event){
             $(document).trigger("ajaxStop");
             var value = $.parseJSON($(iframe.contents().children()).find("body").find("pre").html()).filename;
             console.log( "filename: " + value );
