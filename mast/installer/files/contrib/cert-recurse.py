@@ -1,25 +1,13 @@
 import os
-import re
-import flask
-import OpenSSL
-import commandr
-import openpyxl
 import json
+import OpenSSL
 from lxml import etree
-from time import sleep
-from datetime import datetime
-from collections import defaultdict
-from mast.pprint import print_table, html_table
-from mast.logging import make_logger
-from mast.timestamp import Timestamp
-from pkg_resources import resource_string
-import mast.datapower.datapower as datapower
-import mast.plugin_utils.plugin_utils as util
-from functools import partial, update_wrapper
-from dateutil import parser, tz, relativedelta
-import mast.plugin_utils.plugin_functions as pf
-from mast import __version__
 from mast.cli import Cli
+from datetime import datetime
+from dateutil import parser, tz
+from collections import defaultdict
+from mast.logging import make_logger
+import mast.datapower.datapower as datapower
 
 def insert_newlines(string, every=64):
     return '\n'.join(string[i:i+every] for i in xrange(0, len(string), every))
