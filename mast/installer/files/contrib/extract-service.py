@@ -2,6 +2,7 @@ import re
 import os
 import sys
 import csv
+import urllib2
 from glob import glob
 from lxml import etree
 from mast.cli import Cli
@@ -29,6 +30,11 @@ def get_cert_details(appliance, domain, cert_object):
     req["do-view-certificate-details"]["certificate-object"](cert_object)
     return appliance.send_request()
 
+XCFG_TEMPLATE = """<datapower-configuration version="3">
+  <configuration>
+  {}
+  </configuration>
+</datapower-configuration>"""
 
 def main(
         credentials="",
@@ -174,7 +180,11 @@ def main(
                 # crypto_details += "\t\tFILENAME: {}{}".format(remotefile, os.linesep)
 
                 if cert_object.tag == "CryptoCertificate":
-                    details = etree.fromstring(str(get_cert_details(appliance, row["domain"], cert_object.get("name"))))
+                    try:
+                        details = etree.fromstring(str(get_cert_details(appliance, row["domain"], cert_object.get("name"))))
+                    except urllib2.HTTPError:
+                        print("\tUnable to get details fpr {}".format(cert_object.get("name")))
+                        continue
                     subject = details.xpath(
                         "/*[local-name() = 'Envelope']"
                         "/*[local-name() = 'Body']"
@@ -330,12 +340,28 @@ def main(
         rows = []
         rows.append("localfile, LBG{}".format(os.linesep))
         for filename in glob(pattern):
+            lbg_dir = os.path.join(
+                os.path.dirname(filename),
+                "LBG",
+            )
+            if not os.path.exists(lbg_dir):
+                os.makedirs(lbg_dir)
             print("{}:".format(filename))
             tree = etree.parse(filename, parser)
             for node in tree.xpath("//LoadBalancerGroup"):
                 name = node.get("name")
                 print("\t{}".format(name))
                 rows.append("{},{}{}".format(filename, name, os.linesep))
+                _filename = os.path.join(
+                    lbg_dir,
+                    "{}.xcfg".format(name),
+                )
+                with open(_filename, "wb") as fp:
+                    fp.write(
+                        XCFG_TEMPLATE.format(
+                            etree.tostring(node, pretty_print=True)
+                        )
+                    )
         with open(lbg_out_file, "wb") as fp:
             for row in rows:
                 fp.write("{}".format(row))
