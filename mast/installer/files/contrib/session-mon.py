@@ -38,8 +38,8 @@ def find_sessions(response_xml):
     return sessions
 
 
-def get_users_with_sessions(sessions):
-    return list(set([session.user for session in sessions]))
+def get_users_with_sessions(sessions, domain):
+    return list(set([session.user for session in sessions if session.domain == domain]))
 
 
 def get_users_session_ids(sessions, user):
@@ -49,10 +49,17 @@ def get_users_session_ids(sessions, user):
 def disconnect_all(appliance, user, ids):
     logger = make_logger("session_mon")
     for session_id in ids:
-        resp = appliance.Disconnect(id=session_id)
+        resp = appliance.Disconnect(id=session_id, domain="default")
         if resp:
             logger.debug(
                 "Successfully disconnected {} - {} from {}".format(
+                    user,
+                    session_id,
+                    appliance.hostname
+                )
+            )
+            print(
+                "\t\t\t\tSuccessfully disconnected {} - {} from {}".format(
                     user,
                     session_id,
                     appliance.hostname
@@ -67,10 +74,19 @@ def disconnect_all(appliance, user, ids):
                     repr(resp)
                 )
             )
+            print(
+                "\t\t\t\tFailed to disconnect {} - {} from {}. Response: {}".format(
+                    user,
+                    session_id,
+                    appliance.hostname,
+                    repr(resp)
+                )
+            )
 
 
 def main(appliances=[],
          credentials=[],
+         domains=[],
          no_check_hostname=False,
          max_sessions=20,
          timeout=120):
@@ -82,31 +98,49 @@ def main(appliances=[],
         credentials,
         timeout,
         check_hostname=check_hostname)
-
+    if not domains:
+        domains = ["all-domains"]
     for appl in env.appliances:
+        print(appl.hostname)
         response = appl.get_status("ActiveUsers")
-        sessions = find_sessions(response_xml=response.xml)
-        logger.debug(
-            "{} total active sessions found on {}".format(
-                len(sessions), appl.hostname
-            )
-        )
-
-        users = get_users_with_sessions(sessions)
-        for user in users:
-            users_sessions = get_users_session_ids(sessions, user)
+        _domains = domains
+        if "all-domains" in domains:
+            _domains = appl.domains
+        for domain in _domains:
+            print("\t{}".format(domain))
+            sessions = find_sessions(response_xml=response.xml)
             logger.debug(
-                "user {} found with {} active sessions".format(
-                    user, len(users_sessions)
+                "{} total active sessions found on {}".format(
+                    len(sessions), appl.hostname
                 )
             )
-            if len(users_sessions) > max_sessions:
-                logger.info(
-                    "user {} found with {} active sessions, this is greater than max, disconnecting.".format(
+
+            users = get_users_with_sessions(sessions, domain)
+            for user in users:
+                print("\t\t{}".format(user))
+                users_sessions = get_users_session_ids(sessions, user)
+                logger.debug(
+                    "\t\t\tuser {} found with {} active sessions".format(
                         user, len(users_sessions)
                     )
                 )
-                disconnect_all(appl, user, users_sessions)
+                print(
+                    "\t\t\tuser {} found with {} active sessions".format(
+                        user, len(users_sessions)
+                    )
+                )
+                if len(users_sessions) > max_sessions:
+                    logger.info(
+                        "user {} found with {} active sessions, this is greater than max, disconnecting.".format(
+                            user, len(users_sessions)
+                        )
+                    )
+                    print(
+                        "\t\t\tuser {} found with {} active sessions, this is greater than max, disconnecting.".format(
+                            user, len(users_sessions)
+                        )
+                    )
+                    disconnect_all(appl, user, users_sessions)
 
 
 if __name__ == "__main__":
