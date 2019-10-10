@@ -15,7 +15,7 @@ def sort_children(node, sort_attribute):
         for child in sorted(groups[k], key=lambda child: child.get("name")):
             if len(child):
                 sort_children(child, sort_attribute)
-            _attrib = OrderedDict((k, v) for k, v in sorted(child.attrib.items(), key=lambda n: n[0]))
+            _attrib = OrderedDict((k, v) for k, v in sorted(list(child.attrib.items()), key=lambda n: n[0]))
             node.remove(child)
             child.attrib.clear()
             child.attrib.update(_attrib)

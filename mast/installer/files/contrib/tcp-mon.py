@@ -59,13 +59,13 @@ def get_connections(env, clear_screen, class_filter, object_filter,
     if clear_screen:
         clear()
     else:
-        print "\n\n"
+        print("\n\n")
 
     for appliance in env.appliances:
         header = "LocalIP LocalPort RemoteIP RemotePort State Domain ServiceClass ServiceName".split()
-        print "\n", appliance.hostname, "-", Timestamp(), "\n", "=" * 133
-        print "{0: <16} {1: <9} {2: <16} {3: <11} {4: <15} {5: <15} {6: <30} {7: <30}".format(*header)
-        print "-" * 133
+        print(("\n", appliance.hostname, "-", Timestamp(), "\n", "=" * 133))
+        print(("{0: <16} {1: <9} {2: <16} {3: <11} {4: <15} {5: <15} {6: <30} {7: <30}".format(*header)))
+        print(("-" * 133))
         matching_values = []
         tcp_table = appliance.get_status("TCPTable")
         for node in tcp_table.xml.findall(STATUS_XPATH):
@@ -83,7 +83,7 @@ def get_connections(env, clear_screen, class_filter, object_filter,
                 matching_values.append(values)
 
         for value in matching_values:
-            print "{0: <16} {1: <9} {2: <16} {3: <11} {4: <15} {5: <15} {6: <30} {7: <30}".format(*value)
+            print(("{0: <16} {1: <9} {2: <16} {3: <11} {4: <15} {5: <15} {6: <30} {7: <30}".format(*value)))
 
 
 

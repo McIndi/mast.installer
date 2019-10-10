@@ -89,18 +89,18 @@ def main(
                     if result:
                         error_count += 1
                         print("FAILURE ")
-                        print("\tTestSuite: '{}'".format(test_name))
-                        print("\tconstraint: '{}'".format(constraint_name))
-                        print("\tXpath: '{}'".format(xpath))
-                        print("\tTrigger: '{}'".format(trigger))
-                        print("\tAppliance: '{}'".format(appliance.hostname))
-                        print("\tDomain: '{}'".format(domain))
+                        print(("\tTestSuite: '{}'".format(test_name)))
+                        print(("\tconstraint: '{}'".format(constraint_name)))
+                        print(("\tXpath: '{}'".format(xpath)))
+                        print(("\tTrigger: '{}'".format(trigger)))
+                        print(("\tAppliance: '{}'".format(appliance.hostname)))
+                        print(("\tDomain: '{}'".format(domain)))
                         try:
-                            print("\tMatches:\n\t\t'{}'".format("\n\t\t".join([etree.tostring(match, pretty_print=True).strip() for match in matches])))
+                            print(("\tMatches:\n\t\t'{}'".format("\n\t\t".join([etree.tostring(match, pretty_print=True).strip() for match in matches]))))
                         except:
-                            print("\tMatches:\n\t'{}'".format("\n\t\t".join([str(match).strip() for match in matches])))
-                        print("\tresult: '{}'".format(result))
-    print("Total Number of Failures: '{}'".format(error_count))
+                            print(("\tMatches:\n\t'{}'".format("\n\t\t".join([str(match).strip() for match in matches]))))
+                        print(("\tresult: '{}'".format(result)))
+    print(("Total Number of Failures: '{}'".format(error_count)))
 
 
 if __name__ == "__main__":

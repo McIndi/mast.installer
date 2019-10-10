@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 import logging
-import SocketServer
+import socketserver
 
 LOG_FILE = 'datapower_syslog.log'
 HOST, PORT = "0.0.0.0", 514
@@ -13,7 +13,7 @@ logging.basicConfig(
     filename=LOG_FILE, filemode='a')
 
 
-class SyslogUDPHandler(SocketServer.BaseRequestHandler):
+class SyslogUDPHandler(socketserver.BaseRequestHandler):
     def handle(self):
         data = bytes.decode(self.request[0].strip())
         socket = self.request[1]
@@ -22,9 +22,9 @@ class SyslogUDPHandler(SocketServer.BaseRequestHandler):
 
 if __name__ == "__main__":
 	try:
-		server = SocketServer.UDPServer((HOST,PORT), SyslogUDPHandler)
+		server = socketserver.UDPServer((HOST,PORT), SyslogUDPHandler)
 		server.serve_forever(poll_interval=0.5)
 	except (IOError, SystemExit):
 		raise
 	except KeyboardInterrupt:
-		print "Crtl+C Pressed. Shutting down."
+		print("Crtl+C Pressed. Shutting down.")

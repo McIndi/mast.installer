@@ -2,7 +2,7 @@ import re
 import os
 import sys
 import csv
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from glob import glob
 from lxml import etree
 from mast.cli import Cli
@@ -68,7 +68,7 @@ def main(
     ]
     with open(service_csv, "rb") as fin:
         for row in csv.DictReader(fin):
-            print row
+            print(row)
             dp_out_dir = os.path.join(
                 out_dir,
                 row["zone"],
@@ -182,8 +182,8 @@ def main(
                 if cert_object.tag == "CryptoCertificate":
                     try:
                         details = etree.fromstring(str(get_cert_details(appliance, row["domain"], cert_object.get("name"))))
-                    except urllib2.HTTPError:
-                        print("\tUnable to get details fpr {}".format(cert_object.get("name")))
+                    except urllib.error.HTTPError:
+                        print(("\tUnable to get details fpr {}".format(cert_object.get("name"))))
                         continue
                     subject = details.xpath(
                         "/*[local-name() = 'Envelope']"
@@ -262,7 +262,7 @@ def main(
             sys.stdout = fp
             #############################################################
             # Diff xcfg files
-            print("{}*** Comparing Configuration".format(os.linesep))
+            print(("{}*** Comparing Configuration".format(os.linesep)))
             diff_dir = os.path.join(out_dir, "diffs", "xcfg")
             if not os.path.exists(diff_dir):
                 os.makedirs(diff_dir)
@@ -279,7 +279,7 @@ def main(
 
             #############################################################
             # Diff xsl files
-            print("{}*** Comparing Stylesheets".format(os.linesep))
+            print(("{}*** Comparing Stylesheets".format(os.linesep)))
             diff_dir = os.path.join(out_dir, "diffs", "xsl")
             if not os.path.exists(diff_dir):
                 os.makedirs(diff_dir)
@@ -293,7 +293,7 @@ def main(
                 no_only_differences=no_only_differences,
                 no_same_filenames=no_same_filenames,
             )
-            print("{}*** Second Comparing Stylesheets".format(os.linesep))
+            print(("{}*** Second Comparing Stylesheets".format(os.linesep)))
             diff_dir = os.path.join(out_dir, "diffs", "xsl")
             if not os.path.exists(diff_dir):
                 os.makedirs(diff_dir)
@@ -346,11 +346,11 @@ def main(
             )
             if not os.path.exists(lbg_dir):
                 os.makedirs(lbg_dir)
-            print("{}:".format(filename))
+            print(("{}:".format(filename)))
             tree = etree.parse(filename, parser)
             for node in tree.xpath("//LoadBalancerGroup"):
                 name = node.get("name")
-                print("\t{}".format(name))
+                print(("\t{}".format(name)))
                 rows.append("{},{}{}".format(filename, name, os.linesep))
                 _filename = os.path.join(
                     lbg_dir,
@@ -390,7 +390,7 @@ def main(
                                     cert_matches[match].append(filename)
         cert_file = os.path.join(out_dir, "referenced_cert_files.txt")
         with open(cert_file, "wb") as fp:
-            for cert, filenames in cert_matches.items():
+            for cert, filenames in list(cert_matches.items()):
                 fp.write("{}{}".format(cert, os.linesep))
                 for filename in filenames:
                     fp.write("\t{}{}".format(filename, os.linesep))

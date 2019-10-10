@@ -58,13 +58,13 @@ def disconnect_all(appliance, user, ids):
                     appliance.hostname
                 )
             )
-            print(
+            print((
                 "\t\t\t\tSuccessfully disconnected {} - {} from {}".format(
                     user,
                     session_id,
                     appliance.hostname
                 )
-            )
+            ))
         else:
             logger.error(
                 "Failed to disconnect {} - {} from {}. Response: {}".format(
@@ -74,14 +74,14 @@ def disconnect_all(appliance, user, ids):
                     repr(resp)
                 )
             )
-            print(
+            print((
                 "\t\t\t\tFailed to disconnect {} - {} from {}. Response: {}".format(
                     user,
                     session_id,
                     appliance.hostname,
                     repr(resp)
                 )
-            )
+            ))
 
 
 def main(appliances=[],
@@ -101,13 +101,13 @@ def main(appliances=[],
     if not domains:
         domains = ["all-domains"]
     for appl in env.appliances:
-        print(appl.hostname)
+        print((appl.hostname))
         response = appl.get_status("ActiveUsers")
         _domains = domains
         if "all-domains" in domains:
             _domains = appl.domains
         for domain in _domains:
-            print("\t{}".format(domain))
+            print(("\t{}".format(domain)))
             sessions = find_sessions(response_xml=response.xml)
             logger.debug(
                 "{} total active sessions found on {}".format(
@@ -117,29 +117,29 @@ def main(appliances=[],
 
             users = get_users_with_sessions(sessions, domain)
             for user in users:
-                print("\t\t{}".format(user))
+                print(("\t\t{}".format(user)))
                 users_sessions = get_users_session_ids(sessions, user)
                 logger.debug(
                     "\t\t\tuser {} found with {} active sessions".format(
                         user, len(users_sessions)
                     )
                 )
-                print(
+                print((
                     "\t\t\tuser {} found with {} active sessions".format(
                         user, len(users_sessions)
                     )
-                )
+                ))
                 if len(users_sessions) > max_sessions:
                     logger.info(
                         "user {} found with {} active sessions, this is greater than max, disconnecting.".format(
                             user, len(users_sessions)
                         )
                     )
-                    print(
+                    print((
                         "\t\t\tuser {} found with {} active sessions, this is greater than max, disconnecting.".format(
                             user, len(users_sessions)
                         )
-                    )
+                    ))
                     disconnect_all(appl, user, users_sessions)
 
 

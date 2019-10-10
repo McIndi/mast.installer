@@ -28,9 +28,9 @@ def main(appliances=[],
         _domains = domains
         if "all-domains" in _domains:
             _domains = appliance.domains
-        print(appliance.hostname)
+        print((appliance.hostname))
         for domain in domains:
-            print("\t{}".format(domain))
+            print(("\t{}".format(domain)))
             filestore_dict = defaultdict(list)
             for path in paths:
                 location = path.split(":")[0] + ":"
@@ -39,7 +39,7 @@ def main(appliances=[],
                     filestore_dict[location] = etree.fromstring(filestore.text)
                 for directory in filestore_dict[location].xpath(".//directory"):
                     if fnmatch(directory.get("name"), path):
-                        print("\t\t{}".format(directory.get("name")))
+                        print(("\t\t{}".format(directory.get("name"))))
                         if len(directory) and not force:
                             print("\t\t\tDirectory not empty, use `--force` to remove this directory")
                             continue
@@ -51,12 +51,12 @@ def main(appliances=[],
                         )
                         resp = etree.fromstring(resp.text)
                         msg = " ".join(resp.itertext())
-                        print("\t\t\t{}".format(msg))
+                        print(("\t\t\t{}".format(msg)))
                         continue
                     for node in directory.xpath("./file"):
                         name = "/".join((node.getparent().get("name"), node.get("name")))
                         if fnmatch(name, path):
-                            print("\t\t{}".format(name))
+                            print(("\t\t{}".format(name)))
                             if dry_run:
                                 continue
                             resp = appliance.DeleteFile(
@@ -65,7 +65,7 @@ def main(appliances=[],
                             )
                             resp = etree.fromstring(resp.text)
                             msg = " ".join(resp.itertext())
-                            print("\t\t\t{}".format(msg))
+                            print(("\t\t\t{}".format(msg)))
 if __name__ == "__main__":
     cli = Cli(main=main, description=__doc__)
     try:

@@ -41,28 +41,28 @@ def main(
                 xcfg = etree.parse(_filename)
                 for _obj in xcfg.xpath("/datapower-configuration/configuration/*"):
                     klass, name = _obj.tag, _obj.get("name")
-                    objects = filter(
+                    objects = list(filter(
                         lambda obj: not (obj.klass == klass and obj.name == name),
                         objects,
-                    )
+                    ))
 
             # Filter out some things we are not interested in
-            objects = filter(
+            objects = list(filter(
                 lambda obj: obj.klass.lower() != "loglabel",
                 objects,
-            )
-            objects = filter(
+            ))
+            objects = list(filter(
                 lambda obj: obj.name.lower() != "default",
                 objects,
-            )
-            objects = filter(
+            ))
+            objects = list(filter(
                 lambda obj: obj.name.lower() != "test",
                 objects,
-            )
-            objects = filter(
+            ))
+            objects = list(filter(
                 lambda obj: obj.name.lower() != "all",
                 objects,
-            )
+            ))
 
             dirname = os.path.join(dirname, "files")
             for root, dirs, files in os.walk(dirname):
@@ -76,7 +76,7 @@ def main(
                                     referenced_objects[obj].append((_filename, lineno))
             print(referenced_objects)
             out_file.write("{}\n".format(filename))
-            for obj, refs in referenced_objects.items():
+            for obj, refs in list(referenced_objects.items()):
                 out_file.write("\n\t{}\n".format(obj))
                 for ref in refs:
                     out_file.write("\t\t{0} {1}\n".format(*ref))

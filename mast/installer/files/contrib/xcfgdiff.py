@@ -45,7 +45,7 @@ def sort_children(node):
         for child in sorted(groups[k], key=lambda child: child.get("name")):
             if len(child):
                 sort_children(child)
-            _attrib = OrderedDict((k, v) for k, v in sorted(child.attrib.items(), key=lambda n: n[0]))
+            _attrib = OrderedDict((k, v) for k, v in sorted(list(child.attrib.items()), key=lambda n: n[0]))
             node.remove(child)
             child.attrib.clear()
             child.attrib.update(_attrib)
@@ -131,16 +131,16 @@ def main(
     filenames = list(filenames)
     # sort by basename
     common_prefix = os.path.dirname(os.path.commonprefix(filenames))
-    _filenames = map(
+    _filenames = list(map(
         lambda x: x.replace(common_prefix, ""),
         filenames,
-    )
+    ))
 
     # remove leading path seperator
-    _filenames = map(
+    _filenames = list(map(
         lambda x: x.lstrip(os.path.sep),
         _filenames,
-    )
+    ))
 
     # Sort by dirname
     _filenames.sort(key=lambda p: p.split(os.path.sep))
@@ -149,7 +149,7 @@ def main(
     _filenames.sort(key=os.path.basename)
 
     for filename in _filenames:
-        print("{} {}".format(get_sha256(os.path.join(common_prefix, filename)), filename))
+        print(("{} {}".format(get_sha256(os.path.join(common_prefix, filename)), filename)))
 
     for index, (left_filename, right_filename) in enumerate(combinations(filenames, 2)):
         if get_sha256(left_filename) == get_sha256(right_filename):

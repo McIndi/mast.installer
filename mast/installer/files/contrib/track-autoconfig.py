@@ -8,7 +8,7 @@ from dulwich import porcelain as git
 from mast.timestamp import Timestamp
 from mast.datapower import datapower
 from mast.logging import make_logger
-from cStringIO import StringIO
+from io import StringIO
 from mast.cli import Cli
 import colorama
 import os
@@ -141,27 +141,27 @@ def main(appliances=[],
     try:
         repo = git.Repo(base_dir)
         first_sha1 = repo.head()
-        print first_sha1
+        print(first_sha1)
     except NotGitRepository:
-        print "Initializing git repository"
+        print("Initializing git repository")
         git.init(base_dir)
         git.add(base_dir)
         first_sha1 = git.commit(base_dir, message="Initial Commit")
-        print first_sha1
+        print(first_sha1)
     except KeyError:
         git.add(base_dir)
         git.commit(base_dir, message="Initial Commit")
-    print
+    print()
     pull_autoconfig(appliances=appliances,
                     credentials=credentials,
                     timeout=timeout,
                     no_check_hostname=no_check_hostname,
                     base_dir=base_dir)
     git.add(base_dir)
-    print git.status(base_dir)
+    print((git.status(base_dir)))
     second_sha1 = git.commit(base_dir, message=comment)
-    print second_sha1
-    print "\n\nDIFF\n\n"
+    print(second_sha1)
+    print("\n\nDIFF\n\n")
 
     tmp = StringIO()
     git.show(base_dir, outstream=tmp)
@@ -175,7 +175,7 @@ def main(appliances=[],
     if page:
         pprint.page(out)
     else:
-        print out
+        print(out)
 
 if __name__ == "__main__":
     cli = Cli(main=main, description=main.__doc__)

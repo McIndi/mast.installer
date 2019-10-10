@@ -21,7 +21,7 @@ def main(appliances=[],
         timeout,
         check_hostname=check_hostname)
     for appliance in env.appliances:
-        print("{}\n================\n\n".format(appliance.hostname))
+        print(("{}\n================\n\n".format(appliance.hostname)))
         _domains = domains
         if "all-domains" in domains:
             _domains = appliance.domains
@@ -51,7 +51,7 @@ def main(appliances=[],
         else:
             appliance.ssh_connect()
             for _command in _commands:
-                print(appliance.ssh_issue_command(_command))
+                print((appliance.ssh_issue_command(_command)))
             appliance.ssh_disconnect()
 
 

@@ -94,16 +94,16 @@ def main(
     filenames = list(filenames)
     # sort by basename
     common_prefix = os.path.dirname(os.path.commonprefix(filenames))
-    _filenames = map(
+    _filenames = list(map(
         lambda x: x.replace(common_prefix, ""),
         filenames,
-    )
+    ))
 
     # remove leading path seperator
-    _filenames = map(
+    _filenames = list(map(
         lambda x: x.lstrip(os.path.sep),
         _filenames,
-    )
+    ))
 
     # Sort by dirname
     _filenames.sort(key=lambda p: p.split(os.path.sep))
@@ -118,7 +118,7 @@ def main(
             fp.write(etree.tostring(tree, pretty_print=True))
 
     for filename in _filenames:
-        print("{} {}".format(get_sha256(os.path.join(common_prefix, filename)), filename))
+        print(("{} {}".format(get_sha256(os.path.join(common_prefix, filename)), filename)))
 
     # Gather top level nodes and compare
     for index, (left_filename, right_filename) in enumerate(combinations(filenames, 2)):
@@ -126,7 +126,7 @@ def main(
             continue
         if get_sha256(left_filename) == get_sha256(right_filename):
             continue
-        print("{} -> {}".format(left_filename, right_filename))
+        print(("{} -> {}".format(left_filename, right_filename)))
         html_rows = OrderedDict(
             (
                 ('/*/*[local-name()="import"]', []),
@@ -143,7 +143,7 @@ def main(
         right_tree = etree.parse(right_filename, parser)
         left_nodes = {}
         right_nodes = {}
-        for xpath, identifiers in XPATHS.items():
+        for xpath, identifiers in list(XPATHS.items()):
             left_nodes[xpath] = {}
             right_nodes[xpath] = {}
             for node in left_tree.xpath(xpath):
@@ -152,8 +152,8 @@ def main(
             for node in right_tree.xpath(xpath):
                 identity = tuple(node.get(identifier) for identifier in identifiers)
                 right_nodes[xpath][identity] = etree.tostring(node, pretty_print=True)
-        for xpath, identifiers in left_nodes.items():
-            for identifier, left_text in identifiers.items():
+        for xpath, identifiers in list(left_nodes.items()):
+            for identifier, left_text in list(identifiers.items()):
                 if identifier in right_nodes[xpath]:
                     # Item exists in both left and right
                     right_text = right_nodes[xpath][identifier]
@@ -184,8 +184,8 @@ def main(
                             )
                         )
                     )
-        for xpath, identifiers in right_nodes.items():
-            for identifier, right_text in identifiers.items():
+        for xpath, identifiers in list(right_nodes.items()):
+            for identifier, right_text in list(identifiers.items()):
                 if identifier not in left_nodes[xpath]:
                     lside = "{}\n".format(" "*(wrapcolumn-1)) * len(right_text.splitlines())
                     lside = lside.splitlines()
@@ -244,7 +244,7 @@ def main(
             diff_filename,
         )
         _html_rows = []
-        for xpath, rows in html_rows.items():
+        for xpath, rows in list(html_rows.items()):
             _html_rows.extend(rows)
         with open(diff_filename, "wb") as fp:
             fp.write(

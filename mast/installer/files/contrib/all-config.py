@@ -46,7 +46,7 @@ def recurse_config(header_row, hostname=None, domain=None, node=None, status=Non
                     row[index] = seperator.join((row[index], child.text))
             else:
                 row[index] = child.text
-            for attr in child.keys():
+            for attr in list(child.keys()):
                 if attr.lower() == "class":
                     if isinstance(row[index], list):
                         row[index].append({
@@ -106,12 +106,12 @@ def main(appliances=[],
     if not object_classes:
         object_classes = [None]
     for appliance in env.appliances:
-        print appliance.hostname
+        print((appliance.hostname))
         _domains = domains
         if "all-domains" in _domains:
             _domains = appliance.domains
         for domain in _domains:
-            print "\t{}".format(domain)
+            print(("\t{}".format(domain)))
             for object_class in object_classes:
                 config = etree.fromstring(
                     str(
@@ -216,12 +216,12 @@ def main(appliances=[],
                 for node in config.findall(datapower.CONFIG_XPATH):
                     object_class = node.tag
                     name = node.get("name")
-                    print "\t\t{} - {}".format(object_class, name)
+                    print(("\t\t{} - {}".format(object_class, name)))
                     append_row(worksheets[object_class], appliance.hostname, domain, node, object_status, seperator=seperator, obfuscate_passwords=obfuscate_passwords)
     if out_file.endswith(".xlsx"):
         workbook = openpyxl.Workbook()
         workbook.remove_sheet(workbook.active)
-        for title, data in worksheets.items():
+        for title, data in list(worksheets.items()):
             if len(title) > 31:
                 title = "...".join((title[:14], title[-14:]))
             worksheet = workbook.create_sheet(title=title)
@@ -233,7 +233,7 @@ def main(appliances=[],
         workbook.save(out_file)
     elif out_file.endswith(".sqlite"):
         con = sqlite3.connect(out_file)
-        for name, data in worksheets.items():
+        for name, data in list(worksheets.items()):
             for row_index, row in enumerate(list(data)):
                 for cell_index, cell in enumerate(list(row)):
                     if isinstance(cell, list):

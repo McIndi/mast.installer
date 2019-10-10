@@ -84,13 +84,13 @@ def main(appliances=[],
     )
     debug_mode_off = etree.fromstring("<DebugMode>off</DebugMode>")
     for appliance in env.appliances:
-        print appliance.hostname
+        print((appliance.hostname))
         _domains = domains
         if "all-domains" in domains:
             _domains = appliance.domains
         for domain in _domains:
             changed = False
-            print "\t", domain
+            print(("\t", domain))
             config = appliance.get_config(domain=domain, persisted=False)
             config = etree.fromstring(str(config))
             objs = config.xpath('.//*[./DebugMode/text()="on"]')
@@ -102,9 +102,9 @@ def main(appliances=[],
                     request = appliance.request.request(domain=domain).modify_config()[obj.tag](name=obj.attrib.get("name"))
                     request.append(debug_mode_off)
                     if not dry_run:
-                        print(appliance.send_request())
+                        print((appliance.send_request()))
                     else:
-                        print(appliance.request)
+                        print((appliance.request))
             if save_config and not dry_run and changed:
                 appliance.SaveConfig(domain=domain)
 

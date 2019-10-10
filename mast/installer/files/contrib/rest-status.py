@@ -52,15 +52,15 @@ def main(
                 try:
                     status = appliance.session.get(_url, verify=check_hostname, auth=(username, password)).json()[provider]
                 except KeyError:
-                    print("*** Error occured when calling {} ***".format(_url))
+                    print(("*** Error occured when calling {} ***".format(_url)))
                     continue
                 if isinstance(status, list):
                     for _status in status:
                         _status.update(hostname=appliance.hostname, domain=domain, provider=provider, uri=rest_uri)
-                        print(json.dumps(_status))
+                        print((json.dumps(_status)))
                 else:
                     status.update(hostname=appliance.hostname, domain=domain, provider=provider, uri=rest_uri)
-                    print(json.dumps(status))
+                    print((json.dumps(status)))
 
 
 if __name__ == "__main__":

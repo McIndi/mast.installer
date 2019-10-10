@@ -6,14 +6,14 @@ from mast.logging import make_logger
 import mast.datapower.datapower as datapower
 from mast import __version__
 from mast.cli import Cli
-from itertools import islice, cycle, izip
+from itertools import islice, cycle
 
 def splice(right, left):
     return islice(
-        izip(
+        list(zip(
             cycle(right),
             cycle(left),
-        ),
+        )),
         0,
         max(
             len(right),
@@ -55,15 +55,15 @@ def main(appliances=[],
         if "all-domains" in domains:
             _domains = appliance.domains
         for domain in _domains:
-            print("\t{}".format(domain))
+            print(("\t{}".format(domain)))
             logger.info("In domain {}".format(domain))
             config = etree.fromstring(str(appliance.get_config(domain=domain)))
             for object_class, object_name in splice(object_classes, object_names):
                 obj = config.xpath(".//{}[@name='{}']".format(object_class, object_name))
                 if not obj:
-                    print("\t\t{}: {} Not Found".format(object_class, object_name))
+                    print(("\t\t{}: {} Not Found".format(object_class, object_name)))
                     continue
-                print("\t\t{}: {}".format(object_class, object_name))
+                print(("\t\t{}: {}".format(object_class, object_name)))
                 node = out[hostname][domain]["{}: {}".format(object_class, object_name)]
                 recurse_config(config, object_class, object_name, node)
     with open(out_file, "wb") as fp:
@@ -71,7 +71,7 @@ def main(appliances=[],
 
 def recurse_config(config, object_class, object_name, node, level=1):
     for match in config.xpath(".//*[local-name()='config']/*[.//*/@class='{}' and .//*/text()='{}']".format(object_class, object_name)):
-        print("{}{}: {}".format("\t"*(2+level), match.tag, match.get("name")))
+        print(("{}{}: {}".format("\t"*(2+level), match.tag, match.get("name"))))
         klass, name = match.tag, match.get("name")
         _node = node["{}: {}".format(klass, name)]
         recurse_config(config, klass, name, _node, level=level+1)

@@ -10,7 +10,7 @@ from mast.logging import make_logger
 import mast.datapower.datapower as datapower
 
 def insert_newlines(string, every=64):
-    return '\n'.join(string[i:i+every] for i in xrange(0, len(string), every))
+    return '\n'.join(string[i:i+every] for i in range(0, len(string), every))
 
 def tree():
     return defaultdict(tree)
@@ -48,22 +48,20 @@ def main(appliances=[],
         if "all-domains" in domains:
             _domains = appliance.domains
         for domain in _domains:
-            print("\t{}".format(domain))
+            print(("\t{}".format(domain)))
             logger.info("In domain {}".format(domain))
             config = etree.fromstring(str(appliance.get_config(domain=domain)))
             certs = [x for x in config.xpath(".//CryptoCertificate")]
 
             # Filter out disabled objects because the results won't change,
             # but we will perform less network traffic
-            certs = filter(
-                lambda x: x.find("mAdminState").text == "enabled",
-                certs)
+            certs = [x for x in certs if x.find("mAdminState").text == "enabled"]
 
             for cert in certs:
                 logger.info("Exporting cert {}".format(cert))
                 filename = cert.find("Filename").text
                 name = cert.get("name")
-                print("\t\tCryptoCertificate: {}".format(name))
+                print(("\t\tCryptoCertificate: {}".format(name)))
                 _filename = name
 
                 appliance.CryptoExport(
@@ -170,7 +168,7 @@ def recurse_config(config, cert, cert_node, level=1):
     klass = cert.tag
     name = cert.get("name")
     for match in config.xpath(".//*[local-name()='config']/*[.//*/@class='{}' and .//*/text()='{}']".format(klass, name)):
-        print("{}{}: {}".format("\t"*(2+level), match.tag, match.get("name")))
+        print(("{}{}: {}".format("\t"*(2+level), match.tag, match.get("name"))))
         _node = cert_node["{}: {}".format(match.tag, match.get("name"))]
         recurse_config(config, match, _node, level=level+1)
 

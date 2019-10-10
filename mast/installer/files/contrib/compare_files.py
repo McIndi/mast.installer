@@ -21,16 +21,16 @@ def main(pattern="", out_dir="", wrapcolumn=80, tabsize=4, no_same_filenames=Fal
     for filename in glob.glob(pattern):
         filenames.append(os.path.abspath(filename))
     common_prefix = os.path.dirname(os.path.commonprefix(filenames))
-    _filenames = map(
+    _filenames = list(map(
         lambda x: x.replace(common_prefix, ""),
         filenames,
-    )
+    ))
 
     # remove leading /
-    _filenames = map(
+    _filenames = list(map(
         lambda x: x.lstrip(os.path.sep),
         _filenames,
-    )
+    ))
 
     # Sort by dirname
     _filenames.sort(key=lambda p: p.split("/"))
@@ -38,7 +38,7 @@ def main(pattern="", out_dir="", wrapcolumn=80, tabsize=4, no_same_filenames=Fal
     # sort by filename
     _filenames.sort(key=os.path.basename)
     for filename in _filenames:
-        print("{} {}".format(get_sha256(os.path.join(common_prefix, filename)), filename))
+        print(("{} {}".format(get_sha256(os.path.join(common_prefix, filename)), filename)))
     for index, (from_file, to_file) in enumerate(combinations(filenames, 2)):
         if same_filenames and os.path.basename(from_file) != os.path.basename(to_file):
             continue

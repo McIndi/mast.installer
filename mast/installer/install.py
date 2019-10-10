@@ -1,15 +1,15 @@
-from __future__ import print_function
+
 import os
 import sys
 import cli
 from shutil import *
 import logging
 import platform
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import zipfile
 import subprocess
 from tstamp import Timestamp
-from cStringIO import StringIO
+from io import StringIO
 from resources import (
     pip_dependencies,
     conda_dependencies,
@@ -196,7 +196,7 @@ def _install_packages(prefix, net_install):
     )
 
     if net_install:
-        for dependency in conda_dependencies[platform.system()][platform.architecture()[0]].keys():
+        for dependency in list(conda_dependencies[platform.system()][platform.architecture()[0]].keys()):
             print("### installing: {}".format(dependency))
             system_call(
                 " ".join([
@@ -220,13 +220,10 @@ def _install_packages(prefix, net_install):
                 ]),
             )
     else:
-        for dependency in conda_dependencies[platform.system()][platform.architecture()[0]].keys():
+        for dependency in list(conda_dependencies[platform.system()][platform.architecture()[0]].keys()):
             print("### installing: {}".format(dependency))
             _dependency = list(
-                filter(
-                    lambda filename: (dependency.lower() in filename.lower()) and (".tar.bz2" in filename),
-                    os.listdir(directory)
-                )
+                [filename for filename in os.listdir(directory) if (dependency.lower() in filename.lower()) and (".tar.bz2" in filename)]
             )
             _dependency = os.path.join(directory, _dependency[0])
 
@@ -276,7 +273,7 @@ def _install_packages(prefix, net_install):
 
 
 def render_template(string, mappings):
-    for k, v in mappings.items():
+    for k, v in list(mappings.items()):
         string = string.replace("<%{}%>".format(k), v)
     return string
 

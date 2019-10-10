@@ -53,19 +53,19 @@ def create_workbook(
         for appliance in env.appliances:
             if appliance in skip:
                 continue
-            print "checking {}".format(provider)
+            print(("checking {}".format(provider)))
             logger.info("Checking Status Provider {}".format(provider))
-            print "\t{}".format(appliance.hostname)
+            print(("\t{}".format(appliance.hostname)))
             try:
                 if "all-domains" in domains:
                     _domains = appliance.domains
                 else:
                     _domains = domains
             except:
-                print " ".join((
+                print((" ".join((
                     "ERROR: See log for details,",
                     "skipping appliance {}".format(appliance.hostname)
-                ))
+                ))))
                 logger.exception(
                     "An unhandled exception was raised while "
                     "retrieving list of domains."
@@ -74,7 +74,7 @@ def create_workbook(
                 skip.append(appliance)
                 continue
             for domain in _domains:
-                print "\t\t{}".format(domain)
+                print(("\t\t{}".format(domain)))
                 sleep(delay)
                 try:
                     logger.info(
@@ -89,10 +89,10 @@ def create_workbook(
                     logger.warn(
                         "Recieved AuthenticationFailure. "
                         "Retrying in 5 seconds...")
-                    print " ".join((
+                    print((" ".join((
                         "Recieved AuthenticationFailure.",
                         "Retrying in 5 seconds..."
-                    ))
+                    ))))
                     sleep(5)
                     try:
                         response = appliance.get_status(
@@ -100,17 +100,17 @@ def create_workbook(
                             domain=domain
                         )
                     except datapower.AuthenticationFailure:
-                        print "Received AuthenticationFailure again. Skipping."
+                        print("Received AuthenticationFailure again. Skipping.")
                         logger.error(
                             "Received AuthenticationFailure again. Skipping."
                         )
                         skip.append(appliance)
                         continue
                 except:
-                    print " ".join((
+                    print((" ".join((
                         "ERROR: See log for details,",
                         "skipping appliance {}".format(appliance.hostname)
-                    ))
+                    ))))
                     logger.exception(
                         "An unhandled exception was raised. "
                         "Skipping appliance {}.".format(appliance.hostname)

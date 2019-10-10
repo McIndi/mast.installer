@@ -17,12 +17,12 @@ def main(appliances=[],
         timeout,
         check_hostname=check_hostname)
     for appliance in env.appliances:
-        print(appliance.hostname)
+        print((appliance.hostname))
         _domains = domains
         if "all-domains" in domains:
             _domains = appliance.domains
         for domain in _domains:
-            print("\t{}".format(domain))
+            print(("\t{}".format(domain)))
             config = appliance.get_config(
                 _class="WSRRSubscription",
                 domain=domain,
@@ -32,9 +32,9 @@ def main(appliances=[],
             if not objs:
                 continue
             for obj in objs:
-                print("\t\t{}".format(obj.get("name")))
+                print(("\t\t{}".format(obj.get("name"))))
                 resp = appliance.WsrrSynchronize(domain=domain, WSRRSubscription=obj.get("name"))
-                print("\t\t\t" + "\n\t\t\t{}".join(resp.xml.find(".//{http://www.datapower.com/schemas/management}result").itertext()))
+                print(("\t\t\t" + "\n\t\t\t{}".join(resp.xml.find(".//{http://www.datapower.com/schemas/management}result").itertext())))
 
 if __name__ == "__main__":
     cli = Cli(main=main)

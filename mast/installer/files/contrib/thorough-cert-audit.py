@@ -37,11 +37,11 @@ def cert_file_audit(appliances=[],
     rows = []
 
     for appliance in env.appliances:
-        print appliance.hostname
+        print((appliance.hostname))
         domain = "default"
 
         for location in locations:
-            print "\t{}".format(location)
+            print(("\t{}".format(location)))
             filestore = appliance.get_filestore(domain=domain,
                                                 location=location)
             _location = filestore.xml.find(datapower.FILESTORE_XPATH)
@@ -54,7 +54,7 @@ def cert_file_audit(appliances=[],
                     filename = "/".join((dir_name, filename))
                     filename = re.sub(r":[/]*", ":///", filename)
                     base_filename = filename.split("/")[-1]
-                    print "\t\t{}".format(filename)
+                    print(("\t\t{}".format(filename)))
                     size = _file.find("size").text
                     modified = _file.find("modified").text
                     rows.append([appliance.hostname,
@@ -65,7 +65,7 @@ def cert_file_audit(appliances=[],
                                  modified])
             for directory in _location.findall(".//directory"):
                 dir_name = directory.get("name")
-                print "\t\t{}".format(dir_name)
+                print(("\t\t{}".format(dir_name)))
                 for _file in directory.findall(".//file"):
                     filename = _file.get("name")
                     filename = "/".join((dir_name, filename))
@@ -76,7 +76,7 @@ def cert_file_audit(appliances=[],
                     if location == "cert:":
                         _domain = filename.replace("///", "/").split("/")[1]
                         filename = filename.replace(_domain+"/", "")
-                    print "\t\t\t{}".format(filename)
+                    print(("\t\t\t{}".format(filename)))
                     size = _file.find("size").text
                     modified = _file.find("modified").text
 
@@ -95,7 +95,7 @@ def cert_file_audit(appliances=[],
     wb.save(out_file)
 
 def insert_newlines(string, every=64):
-    return '\n'.join(string[i:i+every] for i in xrange(0, len(string), every))
+    return '\n'.join(string[i:i+every] for i in range(0, len(string), every))
 
 
 def cert_audit(appliances=[],
@@ -129,21 +129,19 @@ def cert_audit(appliances=[],
 
     for appliance in env.appliances:
         logger.info("Checking appliance {}".format(appliance.hostname))
-        print appliance.hostname
+        print((appliance.hostname))
         _domains = domains
         if "all-domains" in domains:
             _domains = appliance.domains
         for domain in _domains:
             logger.info("In domain {}".format(domain))
-            print "\t", domain
+            print(("\t", domain))
             config = appliance.get_config("CryptoCertificate", domain=domain)
             certs = [x for x in config.xml.findall(datapower.CONFIG_XPATH)]
 
             # Filter out disabled objects because the results won't change,
             # but we will perform less network traffic
-            certs = filter(
-                lambda x: x.find("mAdminState").text == "enabled",
-                certs)
+            certs = [x for x in certs if x.find("mAdminState").text == "enabled"]
 
             for cert in certs:
                 logger.info("Exporting cert {}".format(cert))
@@ -151,7 +149,7 @@ def cert_audit(appliances=[],
                 filename = re.sub(r":[/]*", ":///", filename)
                 name = cert.get("name")
                 _filename = name
-                print "\t\t", name
+                print(("\t\t", name))
                 row = [appliance.hostname, domain, name, filename]
 
                 appliance.CryptoExport(
@@ -185,8 +183,8 @@ def cert_audit(appliances=[],
                     continue
                 except:
                     logger.exception("An unhandled exception has occurred")
-                    print appliance.history
-                    print "SKIPPING CERT"
+                    print((appliance.history))
+                    print("SKIPPING CERT")
                     continue
                 cert = etree.fromstring(cert)
                 _contents = insert_newlines(cert.find("certificate").text)
@@ -232,7 +230,7 @@ def main(appliances=[],
          out_file=default_out_file,
          clean_artifacts=False):
     # 1. perform the cert-file-audit
-    print "EXAMINING FILESYSTEMS"
+    print("EXAMINING FILESYSTEMS")
     cert_file_audit_file = os.path.join("tmp", "base-cert-file-audit.xlsx")
     cert_file_audit(appliances=appliances,
                     credentials=credentials,
@@ -241,7 +239,7 @@ def main(appliances=[],
                     out_file=cert_file_audit_file)
     # 2. Perform the cert-audit
     #      * Left-join results to cert-file-audit
-    print "EXAMINING CERTIFICATES"
+    print("EXAMINING CERTIFICATES")
 
     cert_audit_file = os.path.join("tmp", "cert-audit.xlsx")
     cert_audit(appliances=appliances,
@@ -270,7 +268,7 @@ def main(appliances=[],
     # 3. loop through object_classes
     #      * getconfig object class
     #      * left-join to cert-file-audit
-    print "EXAMINING KEYS"
+    print("EXAMINING KEYS")
     object_class_xlsx = os.path.join("tmp",
                                      "CryptoKey-config.xlsx")
     getconfig(appliances=appliances,
@@ -299,7 +297,7 @@ def main(appliances=[],
     if clean_artifacts:
         os.remove(object_class_xlsx )
 
-    print "EXAMINING CryptoSSKeys"
+    print("EXAMINING CryptoSSKeys")
     object_class_xlsx = os.path.join("tmp",
                                      "CryptoSSKey-config.xlsx")
     getconfig(appliances=appliances,
@@ -312,7 +310,7 @@ def main(appliances=[],
               no_prepend_timestamp=True,
               obfuscate_password=obfuscate_passwords)
     df = pd.read_excel(object_class_xlsx)
-    print df
+    print(df)
     df.rename(columns={"Object Name": "CryptoSSKey", "Filename": "filename"}, inplace=True)
     df.drop('Object Class', axis=1, inplace=True)
     keys = list(df.keys())
@@ -329,7 +327,7 @@ def main(appliances=[],
     if clean_artifacts:
         os.remove(object_class_xlsx )
 
-    print "EXAMINING CryptoValCreds"
+    print("EXAMINING CryptoValCreds")
     object_class_xlsx = os.path.join("tmp",
                                      "CryptoValCred-config.xlsx")
     getconfig(appliances=appliances,
@@ -359,7 +357,7 @@ def main(appliances=[],
     if clean_artifacts:
         os.remove(object_class_xlsx )
 
-    print "EXAMINING CryptoIdCreds"
+    print("EXAMINING CryptoIdCreds")
     object_class_xlsx = os.path.join("tmp",
                                      "CryptoIdentCred-config.xlsx")
     getconfig(appliances=appliances,
@@ -391,7 +389,7 @@ def main(appliances=[],
     if clean_artifacts:
         os.remove(object_class_xlsx )
 
-    print "EXAMINING CryptoProfiles"
+    print("EXAMINING CryptoProfiles")
     object_class_xlsx = os.path.join("tmp",
                                      "CryptoProfile-config.xlsx")
     getconfig(appliances=appliances,
@@ -424,7 +422,7 @@ def main(appliances=[],
         os.remove(object_class_xlsx )
 
     # 4. output excel file
-    print "WRITING {}".format(os.path.abspath(out_file))
+    print(("WRITING {}".format(os.path.abspath(out_file))))
     final_df.to_excel(out_file, index=False)
 
     if clean_artifacts:
