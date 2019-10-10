@@ -104,8 +104,10 @@ def main(appliances=[],
         for domain in _domains:
             print "\t", domain
             print "\t\t", obj_class
-            config = appliance.get_config(_class=obj_class,
-                                          domain=domain)
+            config = appliance.get_config(
+                _class=obj_class,
+                domain=domain
+            )
             objs = config.xml.findall(datapower.CONFIG_XPATH)
             objs = filter(
                 lambda x: obj_name_filter.search(x.get("name")),

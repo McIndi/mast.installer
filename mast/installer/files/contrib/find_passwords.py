@@ -24,7 +24,7 @@ def main(
     )
 
     rows = []
-    rows.append("localfile, xapth, remotefile, password")
+    rows.append("localfile, xpath, remotefile, password")
     for pattern in config_globs:
         for localfile in glob(pattern):
             # localfile should be an xml configuration
