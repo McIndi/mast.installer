@@ -47,20 +47,20 @@ def download_file(url, dst):
 if "Windows" in platform.system():
     # Set Windows parameters here
     if "32bit" in platform.architecture():
-        miniconda_installer = "Miniconda2-latest-Windows-x86.exe"
-        miniconda_installer_url = "https://repo.continuum.io/miniconda/Miniconda2-latest-Windows-x86.exe"
+        miniconda_installer = "Miniconda3-latest-Windows-x86.exe"
+        miniconda_installer_url = "https://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86.exe"
     elif "64bit" in platform.architecture():
-        miniconda_installer = "Miniconda2-latest-Windows-x86_64.exe"
-        miniconda_installer_url = "https://repo.continuum.io/miniconda/Miniconda2-latest-Windows-x86_64.exe"
+        miniconda_installer = "Miniconda3-latest-Windows-x86_64.exe"
+        miniconda_installer_url = "https://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe"
     spec_file = "install.spec.windows"
 elif "Linux" in platform.system():
     # Set Linux parameters here
     if '32bit' in platform.architecture():
-        miniconda_installer_url = "https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86.sh"
-        miniconda_installer = "Miniconda2-latest-linux32-install.sh"
+        miniconda_installer_url = "https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86.sh"
+        miniconda_installer = "Miniconda3-latest-linux32-install.sh"
     elif '64bit' in platform.architecture():
-        miniconda_installer_url = "https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh"
-        miniconda_installer = "Miniconda2-latest-linux64-install.sh"
+        miniconda_installer_url = "https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh"
+        miniconda_installer = "Miniconda3-latest-linux64-install.sh"
     spec_file = "install.spec.linux"
 
 # Grab the miniconda installer

@@ -82,26 +82,26 @@ if "Windows" in platform.system():
             cwd,
             "scripts",
             "miniconda",
-            "Miniconda2-latest-Windows-x86.exe")
+            "Miniconda3-latest-Windows-x86.exe")
     elif "64bit" in platform.architecture():
         ANACONDA_INSTALL_SCRIPT = os.path.join(
             cwd,
             "scripts",
             "miniconda",
-            "Miniconda2-latest-Windows-x86_64.exe")
+            "Miniconda3-latest-Windows-x86_64.exe")
 elif "Linux" in platform.system():
     if '32bit' in platform.architecture():
         ANACONDA_INSTALL_SCRIPT = os.path.join(
             cwd,
             "scripts",
             "miniconda",
-            "Miniconda2-latest-linux32-install.sh")
+            "Miniconda3-latest-linux32-install.sh")
     elif '64bit' in platform.architecture():
         ANACONDA_INSTALL_SCRIPT = os.path.join(
             cwd,
             "scripts",
             "miniconda",
-            "Miniconda2-latest-linux64-install.sh")
+            "Miniconda3-latest-linux64-install.sh")
 
 INSTALL_DIR = cwd
 

@@ -20,7 +20,7 @@ conda_dependencies = {
 }
 pip_dependencies = [
       "commandr",
-      "cherrypy<18.0.0",
+      "cherrypy",
       "paramiko",
       "markdown",
       "ecdsa",
@@ -30,7 +30,7 @@ pip_dependencies = [
       "lxml",
       "pygments",
       "colorama",
-      "git+https://github.com/mcindi/mast#egg=mast",
+      "git+https://github.com/mcindi/mast/archive/python-3.zip#egg=mast",
 
 ]
 if "Windows" in platform.system():
