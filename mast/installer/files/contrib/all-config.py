@@ -1,4 +1,4 @@
-from collections import OrderedDict, defaultdict
+from collections import defaultdict
 from mast.datapower import datapower
 from mast.logging import make_logger
 from mast.cli import Cli
@@ -7,11 +7,6 @@ import openpyxl
 import sqlite3
 import pandas as pd
 
-
-class OrderedDefaultDict(OrderedDict, defaultdict):
-    def __init__(self, default_factory=None, *args, **kwargs):
-        super(OrderedDefaultDict, self).__init__(*args, **kwargs)
-        self.default_factory = default_factory
 
 def recurse_config(header_row, hostname=None, domain=None, node=None, status=None, root=None, row=None, seperator="\n", obfuscate_passwords=False):
     if root is None:
@@ -102,7 +97,7 @@ def main(appliances=[],
                                 credentials,
                                 timeout=timeout,
                                 check_hostname=check_hostname)
-    worksheets = OrderedDefaultDict(lambda: [["appliance", "domain", "name"], ])
+    worksheets = defaultdict(lambda: [["appliance", "domain", "name"], ])
     if not object_classes:
         object_classes = [None]
     for appliance in env.appliances:
@@ -175,8 +170,8 @@ def main(appliances=[],
                 for node in services_status.findall(datapower.STATUS_XPATH):
                     sheet.append(
                         [
-                            appliance.hostname, 
-                            domain, 
+                            appliance.hostname,
+                            domain,
                             [
                                 {
                                     "hostname": appliance.hostname,
@@ -325,7 +320,7 @@ def main(appliances=[],
                             html += "<td>{}</td>".format(cell.replace(seperator, "<br />"))
                         else:
                             html += "<td>null</td>"
-                            
+
                 if len(row) < len(header):
                     for i in range(len(header)-len(row)):
                         html += "<td>null</td>"
@@ -391,4 +386,3 @@ if __name__ == "__main__":
     except:
         make_logger("error").exception("an unhandled exception occurred")
         raise
-

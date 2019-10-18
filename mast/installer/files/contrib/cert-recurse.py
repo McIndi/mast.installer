@@ -3,6 +3,7 @@ import json
 import OpenSSL
 from lxml import etree
 from mast.cli import Cli
+from mast.util import _s, _b
 from datetime import datetime
 from dateutil import parser, tz
 from collections import defaultdict
@@ -96,7 +97,7 @@ def main(appliances=[],
                         "error": "COULD NOT EXPORT"
                     }
                     continue
-                cert_export = etree.fromstring(cert_file)
+                cert_export = etree.fromstring(_b(cert_file))
                 _contents = insert_newlines(cert_export.find("certificate").text)
                 certificate = \
                     "-----BEGIN CERTIFICATE-----\n" +\
@@ -107,12 +108,12 @@ def main(appliances=[],
                     certificate)
                 subject = "'{}'".format(
                     ";".join(
-                        ["=".join(x)
-                         for x in _cert.get_subject().get_components()]))
+                        ["=".join((_s(x), _s(y)))
+                         for x, y in _cert.get_subject().get_components()]))
                 issuer = "'{}'".format(
                     ";".join(
-                        ["=".join(x)
-                         for x in _cert.get_issuer().get_components()]))
+                        ["=".join((_s(x), _s(y)))
+                         for x, y in _cert.get_issuer().get_components()]))
                 serial_number = _cert.get_serial_number()
                 sans = []
                 ext_count = _cert.get_extension_count()
@@ -153,7 +154,7 @@ def main(appliances=[],
                     cert_node["serial_number"] = str(serial_number)
                     cert_node["subject"] = subject
                     cert_node["sans"] = sans
-                    cert_node["signature_algorithm"] = signature_algorithm
+                    cert_node["signature_algorithm"] = _s(signature_algorithm)
                     cert_node["notBefore"] = notBefore
                     cert_node["notAfter"] = notAfter
                     cert_node["issuer"] = issuer
@@ -161,8 +162,18 @@ def main(appliances=[],
                     cert_node["time_since_expiration"] = time_since_expiration
                     cert_node["time_until_expiration"] = time_until_expiration
                     recurse_config(config, cert, cert_node)
-    with open(out_file, "wb") as fp:
+    with open(out_file, "w") as fp:
         json.dump(out, fp, indent=4)
+
+def recurse_tree(tree):
+    ret = {}
+    for k, v in tree.items():
+        if isinstance(v, defaultdict):
+            ret.update(dict(v))
+            recurse_tree(v)
+        else:
+            print(v)
+    return ret
 
 def recurse_config(config, cert, cert_node, level=1):
     klass = cert.tag
