@@ -1,4 +1,4 @@
-"""
+"""Remove files from DataPower using glob patterns
 """
 
 from mast.datapower import datapower
@@ -36,8 +36,9 @@ def main(appliances=[],
                 location = path.split(":")[0] + ":"
                 if location not in filestore_dict:
                     filestore = appliance.get_filestore(domain, location)
-                    filestore_dict[location] = etree.fromstring(filestore.text)
+                    filestore_dict[location] = filestore.xml
                 for directory in filestore_dict[location].xpath(".//directory"):
+                    # print(directory.get("name"))
                     if fnmatch(directory.get("name"), path):
                         print(("\t\t{}".format(directory.get("name"))))
                         if len(directory) and not force:
@@ -63,7 +64,7 @@ def main(appliances=[],
                                 domain=domain,
                                 File=name
                             )
-                            resp = etree.fromstring(resp.text)
+                            resp = resp.xml
                             msg = " ".join(resp.itertext())
                             print(("\t\t\t{}".format(msg)))
 if __name__ == "__main__":
