@@ -343,36 +343,38 @@ def _add_scripts(prefix):
             os.chmod(dst, 0o755)
 
     if "Windows" in platform.system():
+        pass
+        # Temporarily disable this python27 stuff, do we need for python3
         # copy python27.dll to site-packages/win32 directory to get around
         # issue when starting mastd
-        src = os.path.join(prefix, "miniconda", "python27.dll")
-        dst = os.path.join(
-            prefix,
-            "miniconda",
-            "Lib",
-            "site-packages",
-            "win32",
-            "python27.dll"
-        )
-        copyfile(src, dst)
-        for filename in ["pythoncom27.dll", "pythoncomloader27.dll", "pywintypes27.dll"]:
-            src = os.path.join(
-                prefix,
-                "miniconda",
-                "Lib",
-                "site-packages",
-                "pywin32_system32",
-                filename,
-            )
-            dst = os.path.join(
-                prefix,
-                "miniconda",
-                "Lib",
-                "site-packages",
-                "win32",
-                filename,
-            )
-            copyfile(src, dst)
+        # src = os.path.join(prefix, "miniconda", "python27.dll")
+        # dst = os.path.join(
+        #     prefix,
+        #     "miniconda",
+        #     "Lib",
+        #     "site-packages",
+        #     "win32",
+        #     "python27.dll"
+        # )
+        # copyfile(src, dst)
+        # for filename in ["pythoncom27.dll", "pythoncomloader27.dll", "pywintypes27.dll"]:
+        #     src = os.path.join(
+        #         prefix,
+        #         "miniconda",
+        #         "Lib",
+        #         "site-packages",
+        #         "pywin32_system32",
+        #         filename,
+        #     )
+        #     dst = os.path.join(
+        #         prefix,
+        #         "miniconda",
+        #         "Lib",
+        #         "site-packages",
+        #         "win32",
+        #         filename,
+        #     )
+        #     copyfile(src, dst)
     copytree(
         os.path.join(INSTALL_DIR, "files", "bin"),
         os.path.join(prefix, "bin")

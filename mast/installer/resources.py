@@ -30,7 +30,7 @@ pip_dependencies = [
       "lxml",
       "pygments",
       "colorama",
-      "git+https://github.com/mcindi/mast/archive/python-3.zip#egg=mast",
+      "https://github.com/mcindi/mast/archive/python-3.zip#egg=mast",
 
 ]
 if "Windows" in platform.system():

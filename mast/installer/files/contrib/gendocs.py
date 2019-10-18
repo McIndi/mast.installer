@@ -271,6 +271,9 @@ def generate_cli_reference():
 
         command = [_script, "--help"]
         out, err = system_call(command)
+        out = out.decode()
+        if err:
+            err = err.decode()
         out = out.replace("  -", "    -")
         # Put all subcommand into an unordered list
         out = re.sub(r"^  (\w)", r"* \1", out, flags=re.MULTILINE)
@@ -327,11 +330,11 @@ def main(out_dir="doc"):
 
             print(("Output: {}".format(html_file)))
             with open(html_file, "wb") as fout:
-                fout.write(html)
+                fout.write(html.encode())
 
             print(("Output: {}".format(md_file)))
             with open(md_file, "wb") as fout:
-                fout.write(md)
+                fout.write(md.encode())
 
     api_objects = get_objects(api_modules)
     api_md = generate_markdown(api_objects)
