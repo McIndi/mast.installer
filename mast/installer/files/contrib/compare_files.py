@@ -67,7 +67,7 @@ def main(pattern="", out_dir="", wrapcolumn=80, tabsize=4, no_same_filenames=Fal
             out_dir,
             diff_filename,
         )
-        with open(diff_filename, "wb") as fp:
+        with open(diff_filename, "w") as fp:
             fp.write(
                 diff.make_file(
                     from_lines,
