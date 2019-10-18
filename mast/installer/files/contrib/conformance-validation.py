@@ -1,8 +1,10 @@
 import os
 import openpyxl
+from lxml import etree
+from mast.cli import Cli
 from mast.datapower import datapower
 from mast.logging import make_logger
-from mast.cli import Cli
+from mast.datapower.datapower import MGMT_NAMESPACE
 
 def main(appliances=[],
          credentials=[],
@@ -49,7 +51,10 @@ def main(appliances=[],
             for profile in profiles:
                 print(("\t\t", profile))
                 appliance.request.clear()
-                appliance.request.request(domain=domain).get_conformance_report(profile=profile)
+                req = appliance.request.request
+                req.set('domain', domain)
+                gcr = etree.SubElement(req, f'{{{MGMT_NAMESPACE}}}get-conformance-report')
+                gcr.set('profile', profile)
                 resp = appliance.send_request()
                 reports = resp.xml.findall(".//Report")
                 for report in reports:
