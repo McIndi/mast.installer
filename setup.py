@@ -10,7 +10,7 @@ def read(fname):
 
 setup(
     name = "mast.installer",
-    version = "2.4.6",
+    version = "2.5.0",
     author = "Clifford Bressette",
     author_email = "cliffordbressette@mcindi.com",
     description = ("The MAST installer"),
@@ -26,4 +26,3 @@ setup(
         "License :: OSI Approved :: GPLv3",
     ],
 )
-
