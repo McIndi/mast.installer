@@ -1,7 +1,7 @@
 import mast.cli
 import mast.config
 import mast.cron
-import mast.daemon
+import mast._daemon
 import mast.datapower.accounts
 import mast.datapower.backups
 import mast.datapower.crypto
@@ -165,7 +165,7 @@ api_modules = LastUpdatedOrderedDict([
     (mast.cli, LastUpdatedOrderedDict()),
     (mast.config, LastUpdatedOrderedDict()),
     (mast.cron, LastUpdatedOrderedDict()),
-    (mast.daemon, LastUpdatedOrderedDict()),
+    (mast._daemon, LastUpdatedOrderedDict()),
     (mast.datapower.datapower, LastUpdatedOrderedDict()),
     (mast.datapower.web, LastUpdatedOrderedDict()),
     (mast.hashes, LastUpdatedOrderedDict()),
