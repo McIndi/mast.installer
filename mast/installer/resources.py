@@ -35,5 +35,4 @@ pip_dependencies = [
 ]
 if "Windows" in platform.system():
       pip_dependencies.insert(0, "pyreadline")
-elif "Linux" in platform.system():
-      pip_dependencies.insert(0, "sander-daemon")
+
