@@ -129,6 +129,7 @@ for dependency in pip_dependencies:
         stdout=sys.stdout,
         stderr=sys.stderr,
     )
+
 # Pyinstaller bahaves strangely if the spec file doesn't end in .spec
 print("Renaming spec file")
 os.rename(spec_file, "install.spec")

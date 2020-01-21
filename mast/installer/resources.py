@@ -30,9 +30,8 @@ pip_dependencies = [
       "lxml",
       "pygments",
       "colorama",
-      "https://github.com/mcindi/mast/archive/python-3.zip#egg=mast",
+      "git+https://github.com/mcindi/mast@python-3#egg=mast",
 
 ]
 if "Windows" in platform.system():
       pip_dependencies.insert(0, "pyreadline")
-
