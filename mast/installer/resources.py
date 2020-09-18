@@ -19,7 +19,7 @@ conda_dependencies = {
       },
 }
 pip_dependencies = [
-      "commandr",
+      "commandr==1.5.0",
       "cherrypy<18.0.0",
       "paramiko",
       "markdown",
