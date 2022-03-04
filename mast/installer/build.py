@@ -62,6 +62,11 @@ elif "Linux" in platform.system():
         miniconda_installer_url = "https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh"
         miniconda_installer = "Miniconda3-latest-linux64-install.sh"
     spec_file = "install.spec.linux"
+elif "Darwin" in platform.system():
+    # Set Mac parameters here
+    miniconda_installer_url = "https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh"
+    miniconda_installer = "Miniconda3-latest-macosx64-install.sh"
+    spec_file = "install.spec.linux"
 
 # Grab the miniconda installer
 dst = os.path.join(

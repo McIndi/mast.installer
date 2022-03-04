@@ -17,6 +17,13 @@ conda_dependencies = {
             },
 
       },
+      "Darwin": {
+            "64bit": {
+            },
+            "32bit": {
+            },
+
+      },
 }
 pip_dependencies = [
       "commandr",

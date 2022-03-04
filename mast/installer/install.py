@@ -102,6 +102,13 @@ elif "Linux" in platform.system():
             "scripts",
             "miniconda",
             "Miniconda3-latest-linux64-install.sh")
+elif "Darwin" in platform.system():
+    if '64bit' in platform.architecture():
+        ANACONDA_INSTALL_SCRIPT = os.path.join(
+            cwd,
+            "scripts",
+            "miniconda",
+            "Miniconda3-latest-macosx64-install.sh")
 
 INSTALL_DIR = cwd
 
@@ -148,6 +155,13 @@ def install_anaconda(prefix):
             "-p",
             "{}".format(prefix),
             "-f"])
+    elif "Darwin" in platform.system():
+        command = " ".join([
+            ANACONDA_INSTALL_SCRIPT,
+            "-b",
+            "-p",
+            "{}".format(prefix),
+            "-f"])
     system_call(command)
 
 
@@ -169,6 +183,10 @@ def _install_packages(prefix, net_install):
     if "Windows" in platform.system():
         python = os.path.join(prefix, "python")
     elif "Linux" in platform.system():
+        bin_dir = os.path.join(prefix, "bin")
+        lib_dir = os.path.join(prefix, "lib")
+        os.putenv('PYTHONPATH', '{}:{}'.format(bin_dir, lib_dir))
+    elif "Darwin" in platform.system():
         bin_dir = os.path.join(prefix, "bin")
         lib_dir = os.path.join(prefix, "lib")
         os.putenv('PYTHONPATH', '{}:{}'.format(bin_dir, lib_dir))
@@ -332,6 +350,24 @@ def _add_scripts(prefix):
             "mastd",
             "set-env",
         ]
+    elif "Darwin" in platform.system():
+        script_dir = os.path.join(INSTALL_DIR, "files", "linux")
+        files = [
+            "mast",
+            "mast-system",
+            "mast-accounts",
+            "mast-backups",
+            "mast-crypto",
+            "mast-deployment",
+            "mast-developer",
+            "mast-network",
+            "test-mast",
+            "mast-version",
+            "mast-web",
+            "mast-ssh",
+            "mastd",
+            "set-env",
+        ]
 
     for f in files:
         dst = os.path.join(prefix, f)
@@ -340,6 +376,8 @@ def _add_scripts(prefix):
         content = render_template_file(src, mapping)
         write_file(dst, content)
         if "Linux" in platform.system():
+            os.chmod(dst, 0o755)
+        if "Darwin" in platform.system():
             os.chmod(dst, 0o755)
 
     if "Windows" in platform.system():
@@ -409,6 +447,8 @@ def generate_docs(prefix):
     if "Windows" in platform.system():
         mast = os.path.join(prefix, "mast.bat")
     if "Linux" in platform.system():
+        mast = os.path.join(prefix, "mast")
+    if "Darwin" in platform.system():
         mast = os.path.join(prefix, "mast")
     system_call(
         " ".join([mast, "contrib/gendocs.py"]),
