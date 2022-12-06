@@ -186,6 +186,7 @@ def _install_packages(prefix, net_install):
         bin_dir = os.path.join(prefix, "bin")
         lib_dir = os.path.join(prefix, "lib")
         os.putenv('PYTHONPATH', '{}:{}'.format(bin_dir, lib_dir))
+        python = os.path.join(prefix, "bin", "python")
     elif "Darwin" in platform.system():
         bin_dir = os.path.join(prefix, "bin")
         lib_dir = os.path.join(prefix, "lib")
