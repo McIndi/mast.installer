@@ -119,21 +119,40 @@ for dependency, url in list(conda_dependencies[platform.system()][platform.archi
     )
     download_file(url, dst)
 for dependency in pip_dependencies:
-    system_call(
-        " ".join([
-            sys.executable,
-            "-m",
-            "pip",
-            "download",
-            "--exists-action",
-            "i",
-            "--dest",
-            "packages",
-            '"{}"'.format(dependency)
-        ]),
-        stdout=sys.stdout,
-        stderr=sys.stderr,
-    )
+    if dependency == "lxml":
+        system_call(
+            " ".join([
+                sys.executable,
+                "-m",
+                "pip",
+                "download",
+                "--exists-action",
+                "i",
+                "--only-binary",
+                ":all:",
+                "--dest",
+                "packages",
+                '"{}"'.format(dependency)
+            ]),
+            stdout=sys.stdout,
+            stderr=sys.stderr,
+        )
+    else:
+        system_call(
+            " ".join([
+                sys.executable,
+                "-m",
+                "pip",
+                "download",
+                "--exists-action",
+                "i",
+                "--dest",
+                "packages",
+                '"{}"'.format(dependency)
+            ]),
+            stdout=sys.stdout,
+            stderr=sys.stderr,
+        )
 
 # Pyinstaller bahaves strangely if the spec file doesn't end in .spec
 print("Renaming spec file")
@@ -143,7 +162,7 @@ print("\tDone.")
 # Build the installer executable
 print("Building Executable installer")
 system_call(
-    " ".join(["pyinstaller", "--onefile", "install.spec"]),
+    " ".join(["pyinstaller", "install.spec"]),
     stdout=sys.stdout,
     stderr=sys.stderr,
 )

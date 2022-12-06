@@ -229,15 +229,29 @@ def _install_packages(prefix, net_install):
         for dependency in pip_dependencies:
             print("### installing: {}".format(dependency))
 
-            system_call(
-                " ".join([
-                    python,
-                    "-m",
-                    "pip",
-                    "install",
-                    '"{}"'.format(dependency),
-                ]),
-            )
+            if dependency == "lxml":
+                system_call(
+                    " ".join([
+                        python,
+                        "-m",
+                        "pip",
+                        "install",
+                        "--only-binary",
+                        ":all:",
+                        '"{}"'.format(dependency),
+                    ]),
+                )
+            else:
+                system_call(
+                    " ".join([
+                        python,
+                        "-m",
+                        "pip",
+                        "install",
+                        '"{}"'.format(dependency),
+                    ]),
+                )
+
     else:
         for dependency in list(conda_dependencies[platform.system()][platform.architecture()[0]].keys()):
             print("### installing: {}".format(dependency))
@@ -276,19 +290,37 @@ def _install_packages(prefix, net_install):
                     ]),
                 )
             else:
-                system_call(
-                    " ".join([
-                        python,
-                        "-m",
-                        "pip",
-                        "install",
-                        "--upgrade",
-                        "--no-index",
-                        "--find-links",
-                        directory,
-                        '"{}"'.format(_dependency),
-                    ]),
-                )
+                if dependency == "lxml":
+                    system_call(
+                        " ".join([
+                            python,
+                            "-m",
+                            "pip",
+                            "install",
+                            "--upgrade",
+                            "--no-index",
+                            "--only-binary",
+                            ":all:",
+                            "--find-links",
+                            directory,
+                            '"{}"'.format(_dependency),
+                        ]),
+                    )
+                else:
+                    system_call(
+                        " ".join([
+                            python,
+                            "-m",
+                            "pip",
+                            "install",
+                            "--upgrade",
+                            "--no-index",
+                            "--find-links",
+                            directory,
+                            '"{}"'.format(_dependency),
+                        ]),
+                    )
+
 
 
 def render_template(string, mappings):

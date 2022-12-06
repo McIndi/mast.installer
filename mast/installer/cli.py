@@ -11,6 +11,8 @@ import sys
 import inspect
 import argparse
 
+if not hasattr(inspect, 'getargspec'):
+    inspect.getargspec = inspect.getfullargspec
 
 class Cli(object):
 
@@ -32,6 +34,7 @@ class Cli(object):
         self.functions[name] = fn
 
         desc = fn.__doc__
+        # For Python 3.11 need to change to: _args, varargs, varkw, defaults, kwonlyargs, kwonlydefaults, annotations = inspect.getargspec(func)
         args, _, __, defaults = inspect.getargspec(fn)
 
         args = [] if not args else args
@@ -92,6 +95,7 @@ class Cli(object):
     def run(self):
         args = self.parser.parse_args()
         func = args.func
+        # For Python 3.11 need to change to: _args, varargs, varkw, defaults, kwonlyargs, kwonlydefaults, annotations = inspect.getargspec(func)
         _args, _, __, defaults = inspect.getargspec(func)
         kwargs = {}
         for arg in _args:
