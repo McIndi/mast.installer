@@ -22,7 +22,7 @@ real-time monitoring, configuration auditing/versioning/deployment.
 administration / operations / management and saves time by streamlining
 repeated tasks so that personnel can more efficiently administrate, develop
 and operate the environment.
-* The tool has a web based interface, API and command line that are all
+* The tool has a Web Based Interface, Python API and a Command Line Interface that are all
 completely configurable, allowing for scheduled tasks and customization in
 situations where your organization has special needs.
 * As an open source product with an API, MAST, provides for both in-house

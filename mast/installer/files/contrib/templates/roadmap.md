@@ -87,7 +87,11 @@ made in the past as well as decisions which we are currently making.
     * Dynamically populate version throughout product to help with
      troubleshooting
     * Lots more, please check out our [release notes](./releasenotes.html)
-* Version 3
+* Version 3.0.0
+    * Migrate to Python 3
+        * Python 2 support will end January 2020, so we need to migrate to
+        Python 3.7.
+* Version3.1.0
     * Improve the process of contributing to our projects
         * Adopt a better, more modern development workflow
         really utilizing GitHub and all of it's community
@@ -97,11 +101,7 @@ made in the past as well as decisions which we are currently making.
         * MAST for docker
         * MAST for Linux
         * MAST for Windows
-    * Migrate to Python 3
-        * Python 2 support will end January 2020, so we need to migrate to
-        Python 3.7.
     * Rewrite the Web GUI to have a more useful, modern UI
-    based on bootstrap, JQuery and D3
 * Version 4
     * The sky is the limit, we will continue to develop our product
     based on the needs of our new and existing customers and community

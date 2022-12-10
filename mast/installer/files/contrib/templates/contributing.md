@@ -17,7 +17,7 @@ We will list several guidelines here. It should be the goal of any contributer t
 this section.
 
 1. Every change needs to start with an issue (the mast.installer repository is a good place to start). We will
-make use oof a new feature on GitHub which allows us to provide our users with issue and pull-request templates.
+make use of a feature of GitHub which allows us to provide our users with issue and pull-request templates.
 2. The issue is where discussion should take place regarding the actual problem and possible solutions.
 3. A pull request normally won't be considered until the original issue is at least 24 hours old. This
 is to allow interested parties time to comment.
@@ -32,8 +32,7 @@ a unit test associated with it.
 anyone who might be interested in a particular issue or pull request)
 7. If you are interested in updates to our project, you should
 [watch](https://help.github.com/articles/be-social/#watch-a-project)
-the [mast.installer](https://github.com/mcindi/mast.installer) project or one of the sub-projects,
-which can be found [here](https://github.com/McIndi)
+the [mast.installer](https://github.com/mcindi/mast.installer) project.
 
 # Building
 
@@ -41,8 +40,8 @@ which can be found [here](https://github.com/McIndi)
 
 You must have the following software installed and on the `PATH` on the build machine:
 
-* Python 2.7
-* pyinstaller==2.1
+* Python 3.3, 3.4, 3.5, 3.6, 3.7, 3.8 and 3.9
+* pyinstaller
 * git (optional, but recomended for automated builds)
 
 ## building
@@ -61,5 +60,4 @@ command line and pass in the `--help` flag.
 
 ## Running tests
 
-This is not a user-facing feature yet. We are working on making our tests
-public, please bear with us while we make the transition.
+The tests can be run with the utility `test-mast.bat -A`.

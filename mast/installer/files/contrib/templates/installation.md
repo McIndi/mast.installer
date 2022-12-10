@@ -53,7 +53,7 @@ operating system. Please follow the instructions for your particular platform.
 
 ## Windows
 
-As part of a mast installation, a script is provided "mastd.sh". You can use this
+As part of a mast installation, a script is provided "mastd.bat". You can use this
 script to install, control and remove the mastd service. You can install the mastd
 service with the following command:
 
@@ -64,7 +64,7 @@ service with the following command:
 This will install mastd as a Windows service and it can be controlled and configured
 as a standard Windows service. You can also provide certain parameters to control
 how the service will run (ie which user to run as, or whether to start on boot),
-please provide a "--help" option to mastd install to see all the available options.
+please provide a "/?" option to mastd install to see all the available options.
 
 ## Linux
 

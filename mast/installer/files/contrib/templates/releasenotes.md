@@ -4,6 +4,36 @@
 
 [TOC]
 
+# MAST Version 3.0.4
+
+## Bug Fixes
+
+* Python 3 compatibility changes
+
+# MAST Version 3.0.3
+
+## Bug Fixes
+
+* Python 3 compatibility changes
+
+# MAST Version 3.0.2
+
+## Bug Fixes
+
+* Python 3 compatibility changes
+
+# MAST Version 3.0.1
+
+## Bug Fixes
+
+* Python 3 compatibility changes
+
+# MAST Version 3.0.0
+
+## Bug Fixes
+
+* Python 3 compatibility changes
+
 # MAST Version 2.4.4
 
 ## Enhancements
