@@ -96,7 +96,7 @@ class Cli(object):
         args = self.parser.parse_args()
         func = args.func
         # For Python 3.11 need to change to: _args, varargs, varkw, defaults, kwonlyargs, kwonlydefaults, annotations = inspect.getargspec(func)
-        _args, _, __, defaults, *___ = inspect.getfullargspec(fn)
+        _args, _, __, defaults, *___ = inspect.getfullargspec(func)
         kwargs = {}
         for arg in _args:
             kwargs[arg] = getattr(args, arg)

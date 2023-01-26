@@ -42,3 +42,4 @@ pip_dependencies = [
 ]
 if "Windows" in platform.system():
       pip_dependencies.insert(0, "pyreadline")
+      pip_dependencies.insert(0, "pywin32")
