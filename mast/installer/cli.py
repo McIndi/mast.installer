@@ -35,7 +35,7 @@ class Cli(object):
 
         desc = fn.__doc__
         # For Python 3.11 need to change to: _args, varargs, varkw, defaults, kwonlyargs, kwonlydefaults, annotations = inspect.getargspec(func)
-        args, _, __, defaults = inspect.getargspec(fn)
+        args, _, __, defaults, *___ = inspect.getfullargspec(fn)
 
         args = [] if not args else args
         defaults = [] if not defaults else defaults
