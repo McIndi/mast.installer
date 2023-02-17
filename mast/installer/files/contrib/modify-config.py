@@ -63,6 +63,8 @@ from mast.datapower import datapower
 from mast.logging import make_logger
 from mast.cli import Cli
 from mast.pprint import pprint_xml_str, pprint_xml
+from mast.datapower.datapower import MGMT_NAMESPACE
+from lxml import etree
 import os
 import re
 
@@ -81,66 +83,101 @@ def main(appliances=[],
          mods=[],
          dry_run=False,
          save_config=False):
+    log = make_logger("modify-config")
     check_hostname = not no_check_hostname
     env = datapower.Environment(appliances,
                                 credentials,
                                 timeout=timeout,
                                 check_hostname=check_hostname)
     if obj_name_filter:
+        log.info(f"Compiling Object Name Filter regular expression: {obj_name_filter}")
         obj_name_filter = re.compile(obj_name_filter)
     else:
+        log.info(f"No Object Name Filter regular expression found, using '.*'.")
         obj_name_filter = re.compile(".*")
 
     if obj_filter:
+        log.info(f"Compiling Object Filter regular expression: {obj_filter}")
         obj_filter = re.compile(obj_filter)
     else:
+        log.info(f"No Object Filter regular expression found, using '.*'.")
         obj_filter = re.compile(".*")
 
     for appliance in env.appliances:
-        print((appliance.hostname))
+        log.info(f"Found appliance: {appliance}")
+        print(appliance.hostname)
         _domains = domains
         if "all-domains" in domains:
             _domains = appliance.domains
         for domain in _domains:
-            print(("\t", domain))
-            print(("\t\t", obj_class))
+            log.info(f"Found Domain: {domain}")
+            print(f"\t{domain}")
+            log.info(f"Found object_class: {obj_class}")
+            print(f"\t\t{obj_class}")
+            log.debug(f"Retrieving configuration of {obj_class} in {domain} on {appliance}")
             config = appliance.get_config(
                 _class=obj_class,
                 domain=domain
             )
             objs = config.xml.findall(datapower.CONFIG_XPATH)
             objs = [x for x in objs if obj_name_filter.search(x.get("name"))]
-            objs = [x for x in objs if obj_filter.search(datapower.etree.tostring(x))]
+            objs = [x for x in objs if obj_filter.search(datapower.etree.tostring(x).decode())]
             for obj in objs:
                 name = obj.get("name")
+                log.debug(f"Found obj '{name}': {obj}")
                 print(("\t\t\t{}".format(name)))
                 appliance.request.clear()
-                request = appliance.request.request(domain=domain).modify_config()[obj_class](name=name)
+                # Old way: request = appliance.request.request(domain=domain).modify_config()[obj_class](name=name)
+                req = appliance.request.request
+                req.set("domain", domain)
+                modify_config = etree.SubElement(req, f'{{{MGMT_NAMESPACE}}}modify-config')
+                object_node = etree.SubElement(modify_config, obj_class)
+                object_node.set("name", name)
+                log.info(f"Request so far: {appliance.request}")
 
                 parsed_mods = tree()
                 for mod in mods:
+                    log.info(f"Found mod: {mod}")
                     k, v = mod.split("=")
+                    log.debug(f"Found k: {k}, v: {v}")
                     if "/" in k:
+                        log.debug(f"Mod has slash, recursing")
                         ks = k.split("/")
+                        log.debug(f"Found parts: {ks}")
                         level = parsed_mods
                         for _k in ks:
                             last_level = level
+                            log.debug(f"working on {_k}")
                             level = level[_k]
                         last_level[_k] = v
+                        log.info(f"Level built: {level}")
                     else:
+                        log.debug(f"No slash in {k}, setting value")
                         parsed_mods[k] = v
 
-                def append_mods(request, mods):
+                def append_mods(node, mods):
+                    log.debug(f"Found node: {node}")
+                    log.debug(f"Found mods: {mods}")
                     for k, v in list(mods.items()):
+                        log.debug(f"Found k: {k}, v: {v}")
                         if k.startswith("(vector-add)"):
+                            log.warn(f"Vector Add detected, This feature is experimental. Be sure to review the output of a dry-run")
                             k = k.replace("(vector-add)", "")
-                            for node in obj.findall(k):
-                                request.append(node)
-                        if isinstance(v, defaultdict):
-                            append_mods(request[k], v)
+                            for item in obj.findall(f".//{k}"):
+                                log.debug(f"Found vector item: {item}")
+                                node.append(item)
+                            _child = etree.SubElement(node, k)
+                            _child.text = v
+                        elif isinstance(v, defaultdict):
+                            log.debug(f"defaultdict found: {v}")
+                            _child = etree.SubElement(node, k)
+                            log.info(f"Built child: {_child}")
+                            append_mods(_child, v)
                         else:
-                            request[k](v)
-                append_mods(request, parsed_mods)
+                            elem = etree.SubElement(node, k)
+                            elem.text = v
+                            # node[k](v)
+                append_mods(object_node, parsed_mods)
 
                 if dry_run:
                     pprint_xml(obj)
