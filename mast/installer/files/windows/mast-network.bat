@@ -1,6 +1,6 @@
 @echo off
 
-SET MAST_HOME=<%MAST_HOME%>
+SET MAST_HOME=%~dp0
 
 cd /d %MAST_HOME%
 
